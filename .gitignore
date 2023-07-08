@@ -1,0 +1,36 @@
+# C# build files
+bin/
+obj/
+
+# User-specific files
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
+
+# JetBrains Rider IDE files
+.idea/
+*.DotSettings.user
+
+# Visual Studio Code files
+.vscode/
+
+# Miscellaneous
+*.pidb
+*.log
+*.bak
+*.swp
+*.swx
+*.db
+*.dbmdl
+*.cache
+*.DS_Store
+*.tmp
+*.bak.*
+*.swp.*
+*.swx.*
+*.db.*
+*.dbmdl.*
+*.cache.*
+*.DS_Store.*
+*.tmp.*
