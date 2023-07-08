@@ -25,7 +25,7 @@ class ChessEngine
 
     private bool ProcessInput(int waitMs = 50)
     {
-        Terminal.Write("\rchess > ", ConsoleColor.Green);
+        Terminal.Write("\rchess> ", ConsoleColor.Green);
         if (_inputProcessor.IsNewInputAvailable())
         {
             var input = _inputProcessor.GetNewInput();
