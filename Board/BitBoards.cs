@@ -53,20 +53,3 @@ public class BitBoard
         KingBlack   = 0x1000000000000000;
     }
 }
-
-
-public enum PieceType
-{
-    PawnWhite,
-    PawnBlack,
-    KnightWhite,
-    KnightBlack,
-    BishopWhite,
-    BishopBlack,
-    RookWhite,
-    RookBlack,
-    QueenWhite,
-    QueenBlack,
-    KingWhite,
-    KingBlack
-}
