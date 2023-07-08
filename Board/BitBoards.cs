@@ -12,19 +12,14 @@ public class BitBoard
     public ColourBitBoard White { get; set; }
     public ColourBitBoard Black { get; set; }
 
+    public ulong Occupied => White.All | Black.All;
+    public ulong Empty => ~Occupied;
+
     public BitBoard()
     {
         White = ColourBitBoard.FromColour(Colour.White);
         Black = ColourBitBoard.FromColour(Colour.Black);
     }
-
-    public ulong OfColour(Colour colour) => colour switch
-    {
-        Colour.White => White.Pawn | White.Knight | White.Bishop | White.Rook | White.Queen | White.King,
-        Colour.Black => Black.Pawn | Black.Knight | Black.Bishop | Black.Rook | Black.Queen | Black.King,
-        _ => throw new ArgumentException("Invalid colour"),
-    };
-
 }
 
 public class ColourBitBoard
@@ -35,6 +30,8 @@ public class ColourBitBoard
     public ulong Rook   { get; set; }
     public ulong Queen  { get; set; }
     public ulong King   { get; set; }
+
+    public ulong All => Pawn | Knight | Bishop | Rook | Queen | King;
 
     public static ColourBitBoard FromColour(Colour colour) => colour switch
     {

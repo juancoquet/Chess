@@ -8,18 +8,12 @@ public enum Colour
 
 public enum PieceType
 {
-    PawnWhite,
-    PawnBlack,
-    KnightWhite,
-    KnightBlack,
-    BishopWhite,
-    BishopBlack,
-    RookWhite,
-    RookBlack,
-    QueenWhite,
-    QueenBlack,
-    KingWhite,
-    KingBlack
+    Pawn,
+    Knight,
+    Bishop,
+    Rook,
+    Queen,
+    King
 }
 
 public enum Squares
