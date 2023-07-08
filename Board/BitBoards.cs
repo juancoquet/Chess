@@ -1,55 +1,61 @@
+using Generics;
+
 namespace Board;
 
 /// <summary>
-/// A bitboard is a 64-bit integer (ulong) that represents the state
-/// of a piece type on the  chess board. The least significant bit (LSB)
-/// is the A1 square, and the most significant bit (MSB) is the H8 square.
+/// Represents the state of all the pieces on the board.
+/// Each piece type is represented by a ulong, where each bit represents a square.
+/// A 1 means that a piece of that type is on that square, and a 0 means that it is not.
 /// </summary>
-public interface IBitBoard
-{
-    public ulong PawnWhite   { get; set; }
-    public ulong PawnBlack   { get; set; }
-    public ulong KnightWhite { get; set; }
-    public ulong KnightBlack { get; set; }
-    public ulong BishopWhite { get; set; }
-    public ulong BishopBlack { get; set; }
-    public ulong RookWhite   { get; set; }
-    public ulong RookBlack   { get; set; }
-    public ulong QueenWhite  { get; set; }
-    public ulong QueenBlack  { get; set; }
-    public ulong KingWhite   { get; set; }
-    public ulong KingBlack   { get; set; }
-}
-
 public class BitBoard
 {
-    public ulong PawnWhite   { get; set; }
-    public ulong PawnBlack   { get; set; }
-    public ulong KnightWhite { get; set; }
-    public ulong KnightBlack { get; set; }
-    public ulong BishopWhite { get; set; }
-    public ulong BishopBlack { get; set; }
-    public ulong RookWhite   { get; set; }
-    public ulong RookBlack   { get; set; }
-    public ulong QueenWhite  { get; set; }
-    public ulong QueenBlack  { get; set; }
-    public ulong KingWhite   { get; set; }
-    public ulong KingBlack   { get; set; }
+    public ColourBitBoard White { get; set; }
+    public ColourBitBoard Black { get; set; }
 
     public BitBoard()
     {
-        // using hexadecimal for conciseness
-        PawnWhite   = 0x000000000000FF00;
-        PawnBlack   = 0x00FF000000000000;
-        KnightWhite = 0x0000000000000042;
-        KnightBlack = 0x4200000000000000;
-        BishopWhite = 0x0000000000000024;
-        BishopBlack = 0x2400000000000000;
-        RookWhite   = 0x0000000000000081;
-        RookBlack   = 0x8100000000000000;
-        QueenWhite  = 0x0000000000000008;
-        QueenBlack  = 0x0800000000000000;
-        KingWhite   = 0x0000000000000010;
-        KingBlack   = 0x1000000000000000;
+        White = ColourBitBoard.FromColour(Colour.White);
+        Black = ColourBitBoard.FromColour(Colour.Black);
     }
+
+    public ulong OfColour(Colour colour) => colour switch
+    {
+        Colour.White => White.Pawn | White.Knight | White.Bishop | White.Rook | White.Queen | White.King,
+        Colour.Black => Black.Pawn | Black.Knight | Black.Bishop | Black.Rook | Black.Queen | Black.King,
+        _ => throw new ArgumentException("Invalid colour"),
+    };
+
+}
+
+public class ColourBitBoard
+{
+    public ulong Pawn   { get; set; }
+    public ulong Knight { get; set; }
+    public ulong Bishop { get; set; }
+    public ulong Rook   { get; set; }
+    public ulong Queen  { get; set; }
+    public ulong King   { get; set; }
+
+    public static ColourBitBoard FromColour(Colour colour) => colour switch
+    {
+        Colour.White => new ColourBitBoard()
+        {
+            Pawn    = 0x000000000000FF00,
+            Knight  = 0x0000000000000042,
+            Bishop  = 0x0000000000000024,
+            Rook    = 0x0000000000000081,
+            Queen   = 0x0000000000000008,
+            King    = 0x0000000000000010,
+        },
+        Colour.Black => new ColourBitBoard()
+        {
+            Pawn    = 0x00FF000000000000,
+            Knight  = 0x4200000000000000,
+            Bishop  = 0x2400000000000000,
+            Rook    = 0x8100000000000000,
+            Queen   = 0x0800000000000000,
+            King    = 0x1000000000000000,
+        },
+        _ => throw new ArgumentException("Invalid colour"),
+    };
 }
