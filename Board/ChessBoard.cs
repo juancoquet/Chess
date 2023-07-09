@@ -8,6 +8,7 @@ public class ChessBoard
     public IPiece[] Squares           { get; set; }
     public Colour Turn                { get; set; } = Colour.White;
     public int MoveNumber             { get; set; } = 1;
+    public int HalfMoveClock          { get; set; } = 1;
     public bool InCheck               { get; set; } = false;
     public Square EnPassantTarget     { get; set; } = Square.None;
     public ICastleRights CastleRights { get; set; }
@@ -66,6 +67,7 @@ public class ChessBoard
             Squares = Squares,
             Turn = Turn,
             MoveNumber = MoveNumber,
+            HalfMoveClock = HalfMoveClock,
             InCheck = InCheck,
             EnPassantTarget = EnPassantTarget,
             CastleRights = CastleRights
@@ -78,6 +80,7 @@ public class ChessBoard
         public required IPiece[] Squares           { get; init; }
         public required Colour Turn                { get; init; }
         public required int MoveNumber             { get; init; }
+        public required int HalfMoveClock          { get; init; }
         public required bool InCheck               { get; init; }
         public required Square EnPassantTarget     { get; init; }
         public required ICastleRights CastleRights { get; init; }
