@@ -5,7 +5,7 @@ namespace Board;
 public class ChessBoard
 {
     public BitBoard BitBoard          { get; set; } = new BitBoard();
-    public IPiece[] Squares           { get; set; }
+    public Piece[] Squares            { get; set; }
     public Colour Turn                { get; set; } = Colour.White;
     public int MoveNumber             { get; set; } = 1;
     public int HalfMoveClock          { get; set; } = 1;
@@ -27,25 +27,6 @@ public class ChessBoard
         Squares[(int)sq] = new Piece(colour, pieceType);
     }
 
-    public interface IPiece
-    {
-        Colour Colour { get; set; }
-        PieceType Type { get; set; }
-    }
-
-    internal class Piece : IPiece
-    {
-        public Colour Colour { get; set; }
-        public PieceType Type { get; set; }
-
-        public Piece(Colour colour, PieceType pieceType)
-        {
-            Colour = colour;
-            Type = pieceType;
-        }
-
-        public static Piece None() => new Piece(Colour.None, PieceType.None);
-    }
 
     public interface ICastleRights
     {
@@ -77,7 +58,7 @@ public class ChessBoard
     internal record BoardState
     {
         public required BitBoard BitBoard          { get; init; }
-        public required IPiece[] Squares           { get; init; }
+        public required Piece[] Squares           { get; init; }
         public required Colour Turn                { get; init; }
         public required int MoveNumber             { get; init; }
         public required int HalfMoveClock          { get; init; }
@@ -85,4 +66,18 @@ public class ChessBoard
         public required Square EnPassantTarget     { get; init; }
         public required ICastleRights CastleRights { get; init; }
     }
+}
+
+public class Piece
+{
+    public Colour Colour { get; set; }
+    public PieceType Type { get; set; }
+
+    public Piece(Colour colour, PieceType pieceType)
+    {
+        Colour = colour;
+        Type = pieceType;
+    }
+
+    public static Piece None() => new Piece(Colour.None, PieceType.None);
 }
