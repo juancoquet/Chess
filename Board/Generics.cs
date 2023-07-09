@@ -31,7 +31,7 @@ public enum Square
     None
 }
 
-public enum CastleRights
+public enum ECastleRights
 {
     KingSide,
     QueenSide,
