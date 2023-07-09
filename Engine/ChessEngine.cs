@@ -1,12 +1,14 @@
+using Board;
 using ConsoleExtensions;
 
 namespace Engine;
 
 class ChessEngine
 {
-    private InputProcessor _inputProcessor;
+    private InputProcessor _inputProcessor = new InputProcessor();
+    private ChessBoard _board = new ChessBoard();
 
-    public ChessEngine() => _inputProcessor = new InputProcessor();
+    public ChessEngine() { }
 
     public void Run()
     {
