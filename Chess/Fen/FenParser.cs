@@ -1,7 +1,7 @@
 using Board;
 using Generics;
 
-namespace Fen;
+namespace Chess.Fen;
 
 /// <summary>
 /// A FEN contains 6 space-separated fields. The fields are:
@@ -18,7 +18,7 @@ namespace Fen;
 /// </summary>
 public class FenParser
 {
-    public static ChessBoard Parse(string fen)
+    public ChessBoard Parse(string fen)
     {
         var fields = fen.Split();
         if (fields.Length != 6)
@@ -29,7 +29,7 @@ public class FenParser
         return new ChessBoard();
     }
 
-    private static IEnumerable<Piece> ParsePieces(string fenRanks)
+    internal Piece[] ParsePieces(string fenRanks)
     {
         var ranks = fenRanks.Split('/').Reverse();
         if (ranks.Count() != 8)
@@ -54,7 +54,7 @@ public class FenParser
                         'r' => new Piece(colour, PieceType.Rook),
                         'q' => new Piece(colour, PieceType.Queen),
                         'k' => new Piece(colour, PieceType.King),
-                        _ => throw new ArgumentException($"Invalid piece type: {token}")
+                         _ => throw new ArgumentException($"Invalid piece type: {token}")
                     };
                     return new[] { piece };
                 })
@@ -63,6 +63,6 @@ public class FenParser
         {
             throw new ArgumentException("FEN must contain 64 squares");
         }
-        return pieces;
+        return pieces.ToArray();
     }
 }
