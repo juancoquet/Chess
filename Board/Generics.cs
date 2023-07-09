@@ -3,7 +3,8 @@ namespace Generics;
 public enum Colour
 {
     White,
-    Black
+    Black,
+    None
 }
 
 public enum PieceType
@@ -13,7 +14,8 @@ public enum PieceType
     Bishop,
     Rook,
     Queen,
-    King
+    King,
+    None
 }
 
 public enum Squares
