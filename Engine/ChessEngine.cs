@@ -6,47 +6,32 @@ class ChessEngine
 {
     private InputProcessor _inputProcessor;
 
-    public ChessEngine()
-    {
-        _inputProcessor = new InputProcessor();
-    }
+    public ChessEngine() => _inputProcessor = new InputProcessor();
 
     public void Run()
     {
         Terminal.WriteLine("starting chess engine...");
         while (true)
         {
-            if (!ProcessInput(50))
-            {
-                break;
-            }
+            if (!ProcessInput(50)) { break; }
         }
     }
 
     private bool ProcessInput(int waitMs = 50)
     {
         Terminal.Write("\rchess> ", ConsoleColor.Green);
-        if (_inputProcessor.IsNewInputAvailable())
+        if (_inputProcessor.IsNewInputAvailable)
         {
-            var input = _inputProcessor.GetNewInput();
-            if (input.Length > 0)
-            {
-                return HandleInput(input);
-            }
+            var input = _inputProcessor.NewInput;
+            if (input.Length > 0) { return HandleInput(input); }
         }
-        else
-        {
-            Thread.Sleep(waitMs);
-        }
+        else { Thread.Sleep(waitMs); }
         return true;
     }
 
     private bool HandleInput(string input)
     {
-        if (input == "q")
-        {
-            return false;
-        }
+        if (input == "q") { return false; }
         SendUciCommand(input);
         return true;
     }
@@ -62,13 +47,7 @@ class InputProcessor
 {
     public InputProcessor() { }
 
-    public bool IsNewInputAvailable()
-    {
-        return Console.KeyAvailable;
-    }
+    public bool IsNewInputAvailable => Console.KeyAvailable;
 
-    public string GetNewInput()
-    {
-        return Console.ReadLine() ?? "";
-    }
+    public string NewInput => Console.ReadLine() ?? "";
 }
