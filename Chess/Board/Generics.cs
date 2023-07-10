@@ -1,4 +1,4 @@
-namespace Generics;
+namespace Chess.Generics;
 
 public enum Colour
 {

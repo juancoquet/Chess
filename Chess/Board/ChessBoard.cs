@@ -1,6 +1,6 @@
-using Generics;
+using Chess.Generics;
 
-namespace Board;
+namespace Chess.Board;
 
 public class ChessBoard
 {

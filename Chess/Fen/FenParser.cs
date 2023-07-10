@@ -1,5 +1,5 @@
-using Board;
-using Generics;
+using Chess.Board;
+using Chess.Generics;
 
 namespace Chess.Fen;
 

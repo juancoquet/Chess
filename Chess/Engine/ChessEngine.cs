@@ -1,7 +1,7 @@
-using Board;
+using Chess.Board;
 using ConsoleExtensions;
 
-namespace Engine;
+namespace Chess.Engine;
 
 class ChessEngine
 {

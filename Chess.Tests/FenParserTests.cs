@@ -1,5 +1,5 @@
 using Chess.Fen;
-using Generics;
+using Chess.Generics;
 
 namespace Chess.Tests;
 
