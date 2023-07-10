@@ -1,5 +1,6 @@
 using Chess.Board;
 using Chess.Generics;
+using ConsoleExtensions;
 
 namespace Chess.Fen;
 
@@ -96,14 +97,20 @@ public class FenParser
         }
 
         var tokens = fenCastleRights.ToCharArray();
-        var whiteTokens = tokens.Where(c => char.IsUpper(c)).SomeNotNull();
-        var blackTokens = tokens.Where(c => char.IsLower(c)).SomeNotNull();
+        var whiteTokens = tokens.Where(c => char.IsUpper(c)).SomeWhen(
+            tokenSet => tokenSet.Count() > 0,
+            () => Option.None<IEnumerable<char>>()
+        );
+        var blackTokens = tokens.Where(c => char.IsLower(c)).SomeWhen(
+            tokenSet => tokenSet.Count() > 0,
+            () => Option.None<IEnumerable<char>>()
+        );
         var bothTokenSets = new[] { whiteTokens, blackTokens };
         var bothRights = bothTokenSets.Select(
             tokenSet =>
                 tokenSet.Match(
-                    hasRights => TokensToCastleRights(hasRights),
-                    () => ECastleRights.None
+                    tokens   => TokensToCastleRights(tokens),
+                    noTokens => ECastleRights.None
                 )
         );
 
@@ -116,7 +123,6 @@ public class FenParser
 
     private static ECastleRights TokensToCastleRights(IEnumerable<char> tokens)
     {
-
         var tokenStr = string.Join("", tokens).ToLower();
         var rights = tokenStr switch
         {

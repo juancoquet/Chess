@@ -198,4 +198,20 @@ public class FenParserTests
         Assert.Throws<ArgumentException>(() => _fenParser.ParsePieces("abc"));
         Assert.Throws<ArgumentException>(() => _fenParser.ParsePieces("rnbqkbnr/pppppppp"));
     }
+
+    [Fact]
+    public void TestParseCastleRightsSimple()
+    {
+        var noCastleRights = _fenParser.ParseCastleRights("-");
+        noCastleRights.White.Should().Be(ECastleRights.None);
+        noCastleRights.Black.Should().Be(ECastleRights.None);
+
+        var whiteQueenSide = _fenParser.ParseCastleRights("Q");
+        whiteQueenSide.White.Should().Be(ECastleRights.QueenSide);
+        whiteQueenSide.Black.Should().Be(ECastleRights.None);
+
+        var blackKingSide = _fenParser.ParseCastleRights("k");
+        blackKingSide.White.Should().Be(ECastleRights.None);
+        blackKingSide.Black.Should().Be(ECastleRights.KingSide);
+    }
 }
