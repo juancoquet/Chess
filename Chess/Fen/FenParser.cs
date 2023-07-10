@@ -25,7 +25,15 @@ public class FenParser
         {
             throw new ArgumentException("FEN must contain 6 space-separated fields");
         }
-        var pieces = ParsePieces(fields[0]);
+        var pieces = ParsePieces(fields[1]);
+        var turn = fields[1] switch
+        {
+            "w" => Colour.White,
+            "b" => Colour.Black,
+            _ => throw new ArgumentException($"Invalid turn: {fields[1]}")
+        };
+        var castleRights = ParseCastleRights(fields[2]);
+
         return new ChessBoard();
     }
 
@@ -65,4 +73,60 @@ public class FenParser
         }
         return pieces.ToArray();
     }
+
+    internal ChessBoard.ICastleRights ParseCastleRights(string fenCastleRights)
+    {
+        var expectedSet = new HashSet<char>() { 'k', 'q', 'K', 'Q', '-' };
+        if (fenCastleRights.ToCharArray().Any(c => !expectedSet.Contains(c)))
+        {
+            throw new ArgumentException($"Invalid character(s) castle rights FEN string: {fenCastleRights}");
+        }
+        if (fenCastleRights.Length < 1 || fenCastleRights.Length > 4)
+        {
+            throw new ArgumentException("FEN castle rights string must be between 1 and 4 characters long");
+        }
+
+        if (fenCastleRights == "-")
+        {
+            return new ChessBoard.CastleRightsState()
+            {
+                White = ECastleRights.None,
+                Black = ECastleRights.None
+            };
+        }
+
+        var tokens = fenCastleRights.ToCharArray();
+        var whiteTokens = tokens.Where(c => char.IsUpper(c)).SomeNotNull();
+        var blackTokens = tokens.Where(c => char.IsLower(c)).SomeNotNull();
+        var bothTokenSets = new[] { whiteTokens, blackTokens };
+        var bothRights = bothTokenSets.Select(
+            tokenSet =>
+                tokenSet.Match(
+                    hasRights => TokensToCastleRights(hasRights),
+                    () => ECastleRights.None
+                )
+        );
+
+        return new ChessBoard.CastleRightsState()
+        {
+            White = bothRights.First(),
+            Black = bothRights.Last()
+        };
+    }
+
+    private static ECastleRights TokensToCastleRights(IEnumerable<char> tokens)
+    {
+
+        var tokenStr = string.Join("", tokens).ToLower();
+        var rights = tokenStr switch
+        {
+            "k"  => ECastleRights.KingSide,
+            "q"  => ECastleRights.QueenSide,
+            "kq" => ECastleRights.BothSides,
+            "qk" => ECastleRights.BothSides,
+            _ => throw new ArgumentException($"Invalid castle rights FEN string: {tokenStr}")
+        };
+        return rights;
+    }
+
 }

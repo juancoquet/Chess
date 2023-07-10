@@ -34,10 +34,10 @@ public class ChessBoard
         ECastleRights Black { get; set; }
     }
 
-    private class CastleRightsState : ICastleRights
+    internal class CastleRightsState : ICastleRights
     {
-        public ECastleRights White { get; set; } = ECastleRights.Both;
-        public ECastleRights Black { get; set; } = ECastleRights.Both;
+        public ECastleRights White { get; set; } = ECastleRights.BothSides;
+        public ECastleRights Black { get; set; } = ECastleRights.BothSides;
     }
 
     private void RecordState()
@@ -58,7 +58,7 @@ public class ChessBoard
     internal record BoardState
     {
         public required BitBoard BitBoard          { get; init; }
-        public required Piece[] Squares           { get; init; }
+        public required Piece[] Squares            { get; init; }
         public required Colour Turn                { get; init; }
         public required int MoveNumber             { get; init; }
         public required int HalfMoveClock          { get; init; }

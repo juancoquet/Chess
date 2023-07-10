@@ -35,6 +35,6 @@ public enum ECastleRights
 {
     KingSide,
     QueenSide,
-    Both,
+    BothSides,
     None
 }
