@@ -21,9 +21,9 @@ public class FenParserTests
     {
         var pieces = _fenParser.ParsePieces(FenParser.StartPosition.Split().First());
         Assert.Equal(64, pieces.Count());
-        Assert.Equal(16, pieces.Count(piece => piece.Colour == Colour.White));
-        Assert.Equal(16, pieces.Count(piece => piece.Colour == Colour.Black));
-        Assert.Equal(32, pieces.Count(piece => piece.Type == PieceType.None));
+        Assert.Equal(16, pieces.Count(piece => piece.Is(Colour.White)));
+        Assert.Equal(16, pieces.Count(piece => piece.Is(Colour.Black)));
+        Assert.Equal(32, pieces.Count(piece => piece.Is(PieceType.None)));
         
         // ParsePieces reverses the fen input ranks so that the output is A1 to H8
         Assert.All(pieces.Take(16), piece => Assert.Equal(Colour.White, piece.Colour));
@@ -33,54 +33,18 @@ public class FenParserTests
         Assert.Equal((Colour.White, PieceType.Queen), (firstPiece.Colour, firstPiece.Type));
         Assert.Equal((Colour.Black, PieceType.Queen), (lastPiece.Colour, lastPiece.Type));
 
-        Assert.Equal(
-            8,
-            pieces.Count(piece => piece.Colour == Colour.White && piece.Type == PieceType.Pawn)
-        );
-        Assert.Equal(
-            8,
-            pieces.Count(piece => piece.Colour == Colour.Black && piece.Type == PieceType.Pawn)
-        );
-        Assert.Equal(
-            2,
-            pieces.Count(piece => piece.Colour == Colour.White && piece.Type == PieceType.Knight)
-        );
-        Assert.Equal(
-            2,
-            pieces.Count(piece => piece.Colour == Colour.Black && piece.Type == PieceType.Knight)
-        );
-        Assert.Equal(
-            2,
-            pieces.Count(piece => piece.Colour == Colour.White && piece.Type == PieceType.Bishop)
-        );
-        Assert.Equal(
-            2,
-            pieces.Count(piece => piece.Colour == Colour.Black && piece.Type == PieceType.Bishop)
-        );
-        Assert.Equal(
-            2,
-            pieces.Count(piece => piece.Colour == Colour.White && piece.Type == PieceType.Rook)
-        );
-        Assert.Equal(
-            2,
-            pieces.Count(piece => piece.Colour == Colour.Black && piece.Type == PieceType.Rook)
-        );
-        Assert.Equal(
-            1,
-            pieces.Count(piece => piece.Colour == Colour.White && piece.Type == PieceType.Queen)
-        );
-        Assert.Equal(
-            1,
-            pieces.Count(piece => piece.Colour == Colour.Black && piece.Type == PieceType.Queen)
-        );
-        Assert.Equal(
-            1,
-            pieces.Count(piece => piece.Colour == Colour.White && piece.Type == PieceType.King)
-        );
-        Assert.Equal(
-            1,
-            pieces.Count(piece => piece.Colour == Colour.Black && piece.Type == PieceType.King)
-        );
+        Assert.Equal(8, pieces.Count(piece => piece.Is(Colour.White, PieceType.Pawn)));
+        Assert.Equal(8, pieces.Count(piece => piece.Is(Colour.Black, PieceType.Pawn)));
+        Assert.Equal(2, pieces.Count(piece => piece.Is(Colour.White, PieceType.Knight)));
+        Assert.Equal(2, pieces.Count(piece => piece.Is(Colour.Black, PieceType.Knight)));
+        Assert.Equal(2, pieces.Count(piece => piece.Is(Colour.White, PieceType.Bishop)));
+        Assert.Equal(2, pieces.Count(piece => piece.Is(Colour.Black, PieceType.Bishop)));
+        Assert.Equal(2, pieces.Count(piece => piece.Is(Colour.White, PieceType.Rook)));
+        Assert.Equal(2, pieces.Count(piece => piece.Is(Colour.Black, PieceType.Rook)));
+        Assert.Equal(1, pieces.Count(piece => piece.Is(Colour.White, PieceType.Queen)));
+        Assert.Equal(1, pieces.Count(piece => piece.Is(Colour.Black, PieceType.Queen)));
+        Assert.Equal(1, pieces.Count(piece => piece.Is(Colour.White, PieceType.King)));
+        Assert.Equal(1, pieces.Count(piece => piece.Is(Colour.Black, PieceType.King)));
     }
 
     [Fact]
@@ -88,8 +52,8 @@ public class FenParserTests
     {
         var pieces = _fenParser.ParsePieces("r1bk3r/p2pBpNp/n4n2/1p1NP2P/6P1/3P4/P1P1K3/q5b1");
         Assert.Equal(64, pieces.Count());
-        Assert.Equal(10, pieces.Count(piece => piece.Colour == Colour.White));
-        Assert.Equal(13, pieces.Count(piece => piece.Colour == Colour.Black));
+        Assert.Equal(10, pieces.Count(piece => piece.Is(Colour.White)));
+        Assert.Equal(13, pieces.Count(piece => piece.Is(Colour.Black)));
 
         var ranks = pieces.Batch(8);
 

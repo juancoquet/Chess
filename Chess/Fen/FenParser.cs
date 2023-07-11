@@ -184,7 +184,7 @@ public class FenParser
             var typesAndBits = pieceTypes.Select(pieceType =>
             {
                 var bits = pieces.Select((piece, i) =>
-                    piece.Colour == colour && piece.Type == pieceType ? 1UL << i : 0UL
+                    piece.Is(colour, pieceType) ? 1UL << i : 0UL
                 ).Aggregate((a, b) => a | b);
                 return (pieceType, bits);
             }).ToDictionary(
