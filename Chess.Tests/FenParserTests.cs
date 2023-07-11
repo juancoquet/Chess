@@ -1,5 +1,6 @@
 using Chess.Fen;
 using Chess.Generics;
+using ConsoleExtensions;
 
 namespace Chess.Tests;
 
@@ -289,5 +290,18 @@ public class FenParserTests
         _fenParser.Invoking(parser => parser.ParseCastleRights("KQkqKq"))
             .Should().Throw<ArgumentException>()
             .WithMessage("FEN castle rights string must be between 1 and 4 characters long");
+    }
+
+    [Fact]
+    public void TestParseEnPassantSquare()
+    {
+        var noEnPassant = _fenParser.ParseEnPassantSquare("-");
+        noEnPassant.Should().Be(Square.None);
+
+        var a3 = _fenParser.ParseEnPassantSquare("a3");
+        a3.Should().Be(Square.A3);
+
+        var h6 = _fenParser.ParseEnPassantSquare("h8");
+        h6.Should().Be(Square.H8);
     }
 }

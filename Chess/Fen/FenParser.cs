@@ -1,5 +1,6 @@
 using Chess.Board;
 using Chess.Generics;
+using ConsoleExtensions;
 
 namespace Chess.Fen;
 
@@ -76,7 +77,7 @@ public class FenParser
 
     internal ChessBoard.ICastleRights ParseCastleRights(string fenCastleRights)
     {
-        ValidateCastleRights(fenCastleRights);
+        ValidateCastleRightsFen(fenCastleRights);
         if (fenCastleRights == "-")
         {
             return new ChessBoard.CastleRightsState()
@@ -125,7 +126,7 @@ public class FenParser
         return rights;
     }
 
-    private static void ValidateCastleRights(string fenCastleRights)
+    private static void ValidateCastleRightsFen(string fenCastleRights)
     {
         var expectedSet = new HashSet<char>() { 'k', 'q', 'K', 'Q', '-' };
         if (fenCastleRights.ToCharArray().Any(c => !expectedSet.Contains(c)))
@@ -138,4 +139,26 @@ public class FenParser
         }
     }
 
+    internal Square ParseEnPassantSquare(string fenEnPassant)
+    {
+        if (fenEnPassant == "-") { return Square.None; }
+        ValidateEnPassantFen(fenEnPassant);
+        return (Square) Enum.Parse(typeof(Square), fenEnPassant.ToUpper());
+    }
+
+    private static void ValidateEnPassantFen(string fenEnPassant)
+    {
+        if (fenEnPassant.Length != 2)
+        {
+            throw new ArgumentException("FEN en passant target square string must be 2 character long");
+        }
+        var ranks = new HashSet<char> { 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h' };
+        var files = MoreLinq.MoreEnumerable.ToHashSet(Enumerable.Range(1, 8));
+        var tokens = fenEnPassant.ToCharArray();
+        Terminal.WriteLine($"tokens: {tokens[0]}, {tokens[1]}");
+        if (!ranks.Contains(tokens[0]) && !files.Contains(tokens[1]))
+        {
+            throw new ArgumentException($"FEN string for en passant target is not a valid square {fenEnPassant}");
+        }
+    }
 }
