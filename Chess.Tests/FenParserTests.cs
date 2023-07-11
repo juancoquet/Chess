@@ -278,4 +278,16 @@ public class FenParserTests
         QueenSideAndBoth.White.Should().Be(ECastleRights.QueenSide);
         QueenSideAndBoth.Black.Should().Be(ECastleRights.BothSides);
     }
+
+    [Fact]
+    public void TestInvalidCatleRightsFenThrows()
+    {
+        _fenParser.Invoking(parser => parser.ParseCastleRights("abc"))
+            .Should().Throw<ArgumentException>()
+            .WithMessage("Invalid character(s) castle rights FEN string: abc");
+
+        _fenParser.Invoking(parser => parser.ParseCastleRights("KQkqKq"))
+            .Should().Throw<ArgumentException>()
+            .WithMessage("FEN castle rights string must be between 1 and 4 characters long");
+    }
 }
