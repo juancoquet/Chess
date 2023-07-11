@@ -1,6 +1,5 @@
 using Chess.Board;
 using Chess.Generics;
-using ConsoleExtensions;
 
 namespace Chess.Fen;
 
@@ -153,11 +152,11 @@ public class FenParser
             throw new ArgumentException("FEN en passant target square string must be 2 character long");
         }
         var ranks = new HashSet<char> { 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h' };
-        var files = MoreLinq.MoreEnumerable.ToHashSet(Enumerable.Range(1, 8));
+        var files = new HashSet<char> { '1', '2', '3', '4', '5', '6', '7', '8' };
         var tokens = fenEnPassant.ToCharArray().Select(c => char.ToLower(c)).ToArray();
-        if (!ranks.Contains(tokens[0]) && !files.Contains(tokens[1]))
+        if (!ranks.Contains(tokens[0]) | !files.Contains(tokens[1]))
         {
-            throw new ArgumentException($"FEN string for en passant target is not a valid square {fenEnPassant}");
+            throw new ArgumentException($"FEN string for en passant target is not a valid square: {fenEnPassant}");
         }
     }
 }

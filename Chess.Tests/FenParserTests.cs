@@ -307,4 +307,24 @@ public class FenParserTests
         var h8 = _fenParser.ParseEnPassantSquare("h8");
         h8.Should().Be(Square.H8);
     }
+
+    [Fact]
+    public void TestParseEnPassantInvalidThrows()
+    {
+        _fenParser.Invoking(parser => parser.ParseEnPassantSquare("a9"))
+            .Should().Throw<ArgumentException>()
+            .WithMessage("FEN string for en passant target is not a valid square: a9");
+
+        _fenParser.Invoking(parser => parser.ParseEnPassantSquare(""))
+            .Should().Throw<ArgumentException>()
+            .WithMessage("FEN en passant target square string must be 2 character long");
+
+        _fenParser.Invoking(parser => parser.ParseEnPassantSquare("abc"))
+            .Should().Throw<ArgumentException>()
+            .WithMessage("FEN en passant target square string must be 2 character long");
+
+        _fenParser.Invoking(parser => parser.ParseEnPassantSquare("a"))
+            .Should().Throw<ArgumentException>()
+            .WithMessage("FEN en passant target square string must be 2 character long");
+    }
 }
