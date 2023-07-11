@@ -246,4 +246,36 @@ public class FenParserTests
         QueenSideAndBoth.White.Should().Be(ECastleRights.QueenSide);
         QueenSideAndBoth.Black.Should().Be(ECastleRights.BothSides);
     }
+
+    [Fact]
+    public void TestCastleRightsTokenOrderIrrelevant()
+    {
+        var allRights = _fenParser.ParseCastleRights("KqQk");
+        allRights.White.Should().Be(ECastleRights.BothSides);
+        allRights.Black.Should().Be(ECastleRights.BothSides);
+
+        var bothAndNone = _fenParser.ParseCastleRights("QK");
+        bothAndNone.White.Should().Be(ECastleRights.BothSides);
+        bothAndNone.Black.Should().Be(ECastleRights.None);
+
+        var bothAndKingSide = _fenParser.ParseCastleRights("kQK");
+        bothAndKingSide.White.Should().Be(ECastleRights.BothSides);
+        bothAndKingSide.Black.Should().Be(ECastleRights.KingSide);
+
+        var bothAndQueenSide = _fenParser.ParseCastleRights("KqQ");
+        bothAndQueenSide.White.Should().Be(ECastleRights.BothSides);
+        bothAndQueenSide.Black.Should().Be(ECastleRights.QueenSide);
+
+        var noneAndBoth = _fenParser.ParseCastleRights("qk");
+        noneAndBoth.White.Should().Be(ECastleRights.None);
+        noneAndBoth.Black.Should().Be(ECastleRights.BothSides);
+
+        var KingSideAndBoth = _fenParser.ParseCastleRights("qKk");
+        KingSideAndBoth.White.Should().Be(ECastleRights.KingSide);
+        KingSideAndBoth.Black.Should().Be(ECastleRights.BothSides);
+
+        var QueenSideAndBoth = _fenParser.ParseCastleRights("qkQ");
+        QueenSideAndBoth.White.Should().Be(ECastleRights.QueenSide);
+        QueenSideAndBoth.Black.Should().Be(ECastleRights.BothSides);
+    }
 }
