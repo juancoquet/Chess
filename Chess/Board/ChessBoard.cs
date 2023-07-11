@@ -1,10 +1,11 @@
 using Chess.Generics;
+using Chess.Fen;
 
 namespace Chess.Board;
 
 public class ChessBoard
 {
-    public BitBoard BitBoard          { get; set; } = new BitBoard();
+    public BitBoard BitBoard          { get; set; }
     public Piece[] Squares            { get; set; }
     public Colour Turn                { get; set; } = Colour.White;
     public int MoveNumber             { get; set; } = 1;
@@ -20,6 +21,12 @@ public class ChessBoard
         Squares = Enumerable.Repeat(Piece.None(), 64).ToArray();
         CastleRights = new CastleRightsState();
         RecordState();
+    }
+
+    public ChessBoard FromFen(string fen)
+    {
+        var fenParser = new FenParser(); 
+        return fenParser.Parse(fen);
     }
 
     private void PlacePiece(Square sq, Colour colour, PieceType pieceType)

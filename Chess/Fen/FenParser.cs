@@ -18,6 +18,8 @@ namespace Chess.Fen;
 /// </summary>
 public class FenParser
 {
+    public const string StartPosition = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1";
+
     public ChessBoard Parse(string fen)
     {
         var fields = fen.Split();
@@ -33,7 +35,18 @@ public class FenParser
             _ => throw new ArgumentException($"Invalid turn: {fields[1]}")
         };
         var castleRights = ParseCastleRights(fields[2]);
+        var enPassantTarget = ParseEnPassantSquare(fields[3]);
+        var halfMoveClock = int.Parse(fields[4]);
+        var moveNumber = int.Parse(fields[5]);
 
+        // public BitBoard BitBoard          { get; set; } = new BitBoard();
+        /// public Piece[] Squares            { get; set; }
+        /// public Colour Turn                { get; set; } = Colour.White;
+        /// public int MoveNumber             { get; set; } = 1;
+        /// public int HalfMoveClock          { get; set; } = 1;
+        // public bool InCheck               { get; set; } = false; // calculate
+        // public Square EnPassantTarget     { get; set; } = Square.None;
+        // public ICastleRights CastleRights { get; set; }
         return new ChessBoard();
     }
 
@@ -158,5 +171,46 @@ public class FenParser
         {
             throw new ArgumentException($"FEN string for en passant target is not a valid square: {fenEnPassant}");
         }
+    }
+
+    internal BitBoard ParseBitBoard(string fenRanks)
+    {
+        var pieces = ParsePieces(fenRanks);
+        var colours = Enum.GetValues(typeof(Colour)).Cast<Colour>();
+        var pieceTypes = Enum.GetValues(typeof(PieceType)).Cast<PieceType>();
+
+        var colourBitBoards = colours.Select(colour =>
+        {
+            var typesAndBits = pieceTypes.Select(pieceType =>
+            {
+                var bits = pieces.Select((piece, i) =>
+                    piece.Colour == colour && piece.Type == pieceType ? 1UL << i : 0UL
+                ).Aggregate((a, b) => a | b);
+                return (pieceType, bits);
+            }).ToDictionary(
+                tuple => tuple.pieceType,
+                tuple => tuple.bits
+            );
+
+            var colourBitBoard = new ColourBitBoard()
+            {
+                Pawn   = typesAndBits[PieceType.Pawn],
+                Knight = typesAndBits[PieceType.Knight],
+                Bishop = typesAndBits[PieceType.Bishop],
+                Rook   = typesAndBits[PieceType.Rook],
+                Queen  = typesAndBits[PieceType.Queen],
+                King   = typesAndBits[PieceType.King]
+            };
+
+            return (colour, colourBitBoard);
+        }).ToDictionary(
+            tuple => tuple.colour,
+            tuple => tuple.colourBitBoard
+        );
+
+        return new BitBoard(
+            colourBitBoards[Colour.White],
+            colourBitBoards[Colour.Black]
+        );
     }
 }

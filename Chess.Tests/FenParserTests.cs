@@ -1,6 +1,5 @@
 using Chess.Fen;
 using Chess.Generics;
-using ConsoleExtensions;
 
 namespace Chess.Tests;
 
@@ -20,7 +19,7 @@ public class FenParserTests
     [Fact]
     public void TestParsePiecesSimple()
     {
-        var pieces = _fenParser.ParsePieces("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR");
+        var pieces = _fenParser.ParsePieces(FenParser.StartPosition.Split().First());
         Assert.Equal(64, pieces.Count());
         Assert.Equal(16, pieces.Count(piece => piece.Colour == Colour.White));
         Assert.Equal(16, pieces.Count(piece => piece.Colour == Colour.Black));
@@ -326,5 +325,15 @@ public class FenParserTests
         _fenParser.Invoking(parser => parser.ParseEnPassantSquare("a"))
             .Should().Throw<ArgumentException>()
             .WithMessage("FEN en passant target square string must be 2 character long");
+    }
+
+    [Fact]
+    public void TestParseBitBoardStartPosition()
+    {
+        var startPosition = FenParser.StartPosition.Split().First();
+        var bitBoard = _fenParser.ParseBitBoard(startPosition);
+        bitBoard.White.Pawn.Should().Be(0x000000000000FF00);
+        bitBoard.Black.Pawn.Should().Be(0x00FF000000000000);
+        Assert.True(false, "Finish implementing this test");
     }
 }
