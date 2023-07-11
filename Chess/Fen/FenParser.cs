@@ -1,6 +1,5 @@
 using Chess.Board;
 using Chess.Generics;
-using ConsoleExtensions;
 
 namespace Chess.Fen;
 
@@ -77,16 +76,7 @@ public class FenParser
 
     internal ChessBoard.ICastleRights ParseCastleRights(string fenCastleRights)
     {
-        var expectedSet = new HashSet<char>() { 'k', 'q', 'K', 'Q', '-' };
-        if (fenCastleRights.ToCharArray().Any(c => !expectedSet.Contains(c)))
-        {
-            throw new ArgumentException($"Invalid character(s) castle rights FEN string: {fenCastleRights}");
-        }
-        if (fenCastleRights.Length < 1 || fenCastleRights.Length > 4)
-        {
-            throw new ArgumentException("FEN castle rights string must be between 1 and 4 characters long");
-        }
-
+        ValidateCastleRights(fenCastleRights);
         if (fenCastleRights == "-")
         {
             return new ChessBoard.CastleRightsState()
@@ -105,19 +95,19 @@ public class FenParser
             tokenSet => tokenSet.Count() > 0,
             () => Option.None<IEnumerable<char>>()
         );
-        var bothTokenSets = new[] { whiteTokens, blackTokens };
-        var bothRights = bothTokenSets.Select(
-            tokenSet =>
-                tokenSet.Match(
-                    tokens   => TokensToCastleRights(tokens),
-                    noTokens => ECastleRights.None
-                )
+        var whiteCastleRights = whiteTokens.Match(
+            tokens   => TokensToCastleRights(tokens),
+            noTokens => ECastleRights.None
+        );
+        var blackCastleRights = blackTokens.Match(
+            tokens   => TokensToCastleRights(tokens),
+            noTokens => ECastleRights.None
         );
 
         return new ChessBoard.CastleRightsState()
         {
-            White = bothRights.First(),
-            Black = bothRights.Last()
+            White = whiteCastleRights,
+            Black = blackCastleRights
         };
     }
 
@@ -133,6 +123,19 @@ public class FenParser
             _ => throw new ArgumentException($"Invalid castle rights FEN string: {tokenStr}")
         };
         return rights;
+    }
+
+    private static void ValidateCastleRights(string fenCastleRights)
+    {
+        var expectedSet = new HashSet<char>() { 'k', 'q', 'K', 'Q', '-' };
+        if (fenCastleRights.ToCharArray().Any(c => !expectedSet.Contains(c)))
+        {
+            throw new ArgumentException($"Invalid character(s) castle rights FEN string: {fenCastleRights}");
+        }
+        if (fenCastleRights.Length < 1 || fenCastleRights.Length > 4)
+        {
+            throw new ArgumentException("FEN castle rights string must be between 1 and 4 characters long");
+        }
     }
 
 }
