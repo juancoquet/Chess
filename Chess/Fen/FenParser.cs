@@ -154,8 +154,7 @@ public class FenParser
         }
         var ranks = new HashSet<char> { 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h' };
         var files = MoreLinq.MoreEnumerable.ToHashSet(Enumerable.Range(1, 8));
-        var tokens = fenEnPassant.ToCharArray();
-        Terminal.WriteLine($"tokens: {tokens[0]}, {tokens[1]}");
+        var tokens = fenEnPassant.ToCharArray().Select(c => char.ToLower(c)).ToArray();
         if (!ranks.Contains(tokens[0]) && !files.Contains(tokens[1]))
         {
             throw new ArgumentException($"FEN string for en passant target is not a valid square {fenEnPassant}");

@@ -298,10 +298,13 @@ public class FenParserTests
         var noEnPassant = _fenParser.ParseEnPassantSquare("-");
         noEnPassant.Should().Be(Square.None);
 
-        var a3 = _fenParser.ParseEnPassantSquare("a3");
-        a3.Should().Be(Square.A3);
+        var a1 = _fenParser.ParseEnPassantSquare("a1");
+        a1.Should().Be(Square.A1);
 
-        var h6 = _fenParser.ParseEnPassantSquare("h8");
-        h6.Should().Be(Square.H8);
+        var c4 = _fenParser.ParseEnPassantSquare("C4");
+        c4.Should().Be(Square.C4);
+
+        var h8 = _fenParser.ParseEnPassantSquare("h8");
+        h8.Should().Be(Square.H8);
     }
 }
