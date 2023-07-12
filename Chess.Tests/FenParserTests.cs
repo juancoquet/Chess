@@ -292,12 +292,21 @@ public class FenParserTests
     }
 
     [Fact]
-    public void TestParseBitBoardStartPosition()
+    public void TestParseBitBoardFromFenStartPosition()
     {
         var startPosition = FenParser.StartPosition.Split().First();
         var bitBoard = _fenParser.ParseBitBoard(startPosition);
-        bitBoard.White.Pawn.Should().Be(0x000000000000FF00);
-        bitBoard.Black.Pawn.Should().Be(0x00FF000000000000);
-        Assert.True(false, "Finish implementing this test");
+        bitBoard.White.Pawn  .Should().Be(0x000000000000FF00);
+        bitBoard.Black.Pawn  .Should().Be(0x00FF000000000000);
+        bitBoard.White.Knight.Should().Be(0x0000000000000042);
+        bitBoard.Black.Knight.Should().Be(0x4200000000000000);
+        bitBoard.White.Bishop.Should().Be(0x0000000000000024);
+        bitBoard.Black.Bishop.Should().Be(0x2400000000000000);
+        bitBoard.White.Rook  .Should().Be(0x0000000000000081);
+        bitBoard.Black.Rook  .Should().Be(0x8100000000000000);
+        bitBoard.White.Queen .Should().Be(0x0000000000000008);
+        bitBoard.Black.Queen .Should().Be(0x0800000000000000);
+        bitBoard.White.King  .Should().Be(0x0000000000000010);
+        bitBoard.Black.King  .Should().Be(0x1000000000000000);
     }
 }

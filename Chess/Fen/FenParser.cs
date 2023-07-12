@@ -38,6 +38,7 @@ public class FenParser
         var enPassantTarget = ParseEnPassantSquare(fields[3]);
         var halfMoveClock = int.Parse(fields[4]);
         var moveNumber = int.Parse(fields[5]);
+        var bitBoard = ParseBitBoard(pieces);
 
         // public BitBoard BitBoard          { get; set; } = new BitBoard();
         /// public Piece[] Squares            { get; set; }
@@ -176,6 +177,11 @@ public class FenParser
     internal BitBoard ParseBitBoard(string fenRanks)
     {
         var pieces = ParsePieces(fenRanks);
+        return ParseBitBoard(pieces);
+    }
+
+    internal BitBoard ParseBitBoard(Piece[] pieces)
+    {
         var colours = Enum.GetValues(typeof(Colour)).Cast<Colour>();
         var pieceTypes = Enum.GetValues(typeof(PieceType)).Cast<PieceType>();
 
