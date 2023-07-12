@@ -1,3 +1,4 @@
+using Chess.Board;
 using Chess.Fen;
 using Chess.Generics;
 
@@ -298,6 +299,99 @@ public class FenParserTests
         var bitBoard = _fenParser.ParseBitBoard(startPosition);
         bitBoard.White.Pawn  .Should().Be(0x000000000000FF00);
         bitBoard.Black.Pawn  .Should().Be(0x00FF000000000000);
+        bitBoard.White.Knight.Should().Be(0x0000000000000042);
+        bitBoard.Black.Knight.Should().Be(0x4200000000000000);
+        bitBoard.White.Bishop.Should().Be(0x0000000000000024);
+        bitBoard.Black.Bishop.Should().Be(0x2400000000000000);
+        bitBoard.White.Rook  .Should().Be(0x0000000000000081);
+        bitBoard.Black.Rook  .Should().Be(0x8100000000000000);
+        bitBoard.White.Queen .Should().Be(0x0000000000000008);
+        bitBoard.Black.Queen .Should().Be(0x0800000000000000);
+        bitBoard.White.King  .Should().Be(0x0000000000000010);
+        bitBoard.Black.King  .Should().Be(0x1000000000000000);
+    }
+
+    [Fact]
+    public void TestParseBitBoardFromFenEmptyPosition()
+    {
+        var emptyPosition = "8/8/8/8/8/8/8/8";
+        var bitBoard = _fenParser.ParseBitBoard(emptyPosition);
+        bitBoard.White.Pawn  .Should().Be(0x0000000000000000);
+        bitBoard.Black.Pawn  .Should().Be(0x0000000000000000);
+        bitBoard.White.Knight.Should().Be(0x0000000000000000);
+        bitBoard.Black.Knight.Should().Be(0x0000000000000000);
+        bitBoard.White.Bishop.Should().Be(0x0000000000000000);
+        bitBoard.Black.Bishop.Should().Be(0x0000000000000000);
+        bitBoard.White.Rook  .Should().Be(0x0000000000000000);
+        bitBoard.Black.Rook  .Should().Be(0x0000000000000000);
+        bitBoard.White.Queen .Should().Be(0x0000000000000000);
+        bitBoard.Black.Queen .Should().Be(0x0000000000000000);
+        bitBoard.White.King  .Should().Be(0x0000000000000000);
+        bitBoard.Black.King  .Should().Be(0x0000000000000000);
+    }
+
+    [Fact]
+    public void TestParseBitBoardFromFenCustomPosition()
+    {
+        var customPosition = "r3k2r/1pp1qpb1/p1np1np1/3Pp3/2P1P3/2N2N2/PP2BPPP/R1BQK2R";
+        var bitBoard = _fenParser.ParseBitBoard(customPosition);
+        bitBoard.White.Pawn  .Should().Be(0x000000081400E300);  // h8 00000000 00000000 00000000 00001000 00010100 00000000 11100011 00000000 a1
+        bitBoard.Black.Pawn  .Should().Be(0x0026491000000000);  // h8 00000000 00100110 01001001 00010000 00000000 00000000 00000000 00000000 a1
+        bitBoard.White.Knight.Should().Be(0x0000000000240000);  // h8 00000000 00000000 00000000 00000000 00000000 00100100 00000000 00000000 a1
+        bitBoard.Black.Knight.Should().Be(0x0000240000000000);  // h8 00000000 00000000 00100100 00000000 00000000 00000000 00000000 00000000 a1
+        bitBoard.White.Bishop.Should().Be(0x0000000000001004);  // h8 00000000 00000000 00000000 00000000 00000000 00000000 00010000 00000100 a1
+        bitBoard.Black.Bishop.Should().Be(0x0040000000000000);  // h8 00000000 01000000 00000000 00000000 00000000 00000000 00000000 00000000 a1
+        bitBoard.White.Rook  .Should().Be(0x0000000000000081);  // h8 00000000 00000000 00000000 00000000 00000000 00000000 00000000 10000001 a1
+        bitBoard.Black.Rook  .Should().Be(0x8100000000000000);  // h8 10000001 00000000 00000000 00000000 00000000 00000000 00000000 00000000 a1
+        bitBoard.White.Queen .Should().Be(0x0000000000000008);  // h8 00000000 00000000 00000000 00000000 00000000 00000000 00000000 00001000 a1
+        bitBoard.Black.Queen .Should().Be(0x0010000000000000);  // h8 00000000 00010000 00000000 00000000 00000000 00000000 00000000 00000000 a1
+        bitBoard.White.King  .Should().Be(0x0000000000000010);  // h8 00000000 00000000 00000000 00000000 00000000 00000000 00000000 00010000 a1
+        bitBoard.Black.King  .Should().Be(0x1000000000000000);  // h8 00010000 00000000 00000000 00000000 00000000 00000000 00000000 00000000 a1
+    }
+
+    [Fact]
+    public void TestParseBitBoardFromFenInvalidPosition()
+    {
+        var invalidPosition = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNX";
+        Action act = () => _fenParser.ParseBitBoard(invalidPosition);
+        act.Should().Throw<ArgumentException>();
+    }
+
+    [Fact]
+    public void TestParseBitBoardFromPieceArray()
+    {
+        var empty = new Piece(Colour.None, PieceType.None);
+        var wPawn = new Piece(Colour.White, PieceType.Pawn);
+        var bPawn = new Piece(Colour.Black, PieceType.Pawn);
+        var pieceArray = new[]
+        {
+            new Piece(Colour.White, PieceType.Rook),   // a1
+            new Piece(Colour.White, PieceType.Knight), // b1
+            new Piece(Colour.White, PieceType.Bishop), // c1
+            new Piece(Colour.White, PieceType.Queen),  // d1
+            new Piece(Colour.White, PieceType.King),   // e1
+            new Piece(Colour.White, PieceType.Bishop), // f1
+            new Piece(Colour.White, PieceType.Knight), // g1
+            new Piece(Colour.White, PieceType.Rook),   // h1
+            wPawn, wPawn, wPawn, empty, empty, wPawn, wPawn, wPawn, // a2 - h2
+            empty, empty, empty, empty, wPawn, empty, empty, empty, // a3 - h3
+            empty, empty, empty, wPawn, empty, empty, empty, empty, // a4 - h4
+            empty, empty, empty, empty, empty, empty, empty, bPawn, // a5 - h5
+            empty, empty, empty, empty, empty, empty, empty, empty, // a6 - h6
+            bPawn, bPawn, bPawn, bPawn, bPawn, bPawn, bPawn, empty, // a7 - h7
+            new Piece(Colour.Black, PieceType.Rook),   // a8
+            new Piece(Colour.Black, PieceType.Knight), // b8
+            new Piece(Colour.Black, PieceType.Bishop), // c8
+            new Piece(Colour.Black, PieceType.Queen),  // d8
+            new Piece(Colour.Black, PieceType.King),   // e8
+            new Piece(Colour.Black, PieceType.Bishop), // f8
+            new Piece(Colour.Black, PieceType.Knight), // g8
+            new Piece(Colour.Black, PieceType.Rook),   // h8
+        };
+
+        var bitBoard = _fenParser.ParseBitBoard(pieceArray);
+        bitBoard.White.Pawn  .Should().Be(0x000000000810E700); // h8 00000000 00000000 00000000 00000000 00001000 00010000 11100111 00000000 a1
+        bitBoard.Black.Pawn  .Should().Be(0x007F008000000000); // h8 00000000 01111111 00000000 10000000 00000000 00000000 00000000 00000000 a1
         bitBoard.White.Knight.Should().Be(0x0000000000000042);
         bitBoard.Black.Knight.Should().Be(0x4200000000000000);
         bitBoard.White.Bishop.Should().Be(0x0000000000000024);
