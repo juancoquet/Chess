@@ -1,4 +1,4 @@
-namespace Generics;
+namespace Chess.Generics;
 
 public enum Colour
 {
@@ -35,6 +35,6 @@ public enum ECastleRights
 {
     KingSide,
     QueenSide,
-    Both,
+    BothSides,
     None
 }

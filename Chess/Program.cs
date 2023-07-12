@@ -1,4 +1,4 @@
-﻿using Engine;
+﻿using Chess.Engine;
 
 namespace Chess;
 
