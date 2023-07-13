@@ -14,7 +14,15 @@ public class FenParserTests
     public void TestParseStartPosition()
     {
         var board = _fenParser.Parse(FenParser.StartPosition);
+        board.BitBoard.Should().Be(CreateStartPositionBitBoard());
         board.Squares.Should().Equal(_startPositionPieceArray);
+        board.Turn.Should().Be(Colour.White);
+        board.MoveNumber.Should().Be(1);
+        board.HalfMoveClock.Should().Be(0);
+        board.InCheck.Should().BeFalse();
+        board.EnPassantTarget.Should().Be(Square.None);
+        board.CastleRights.White.Should().Be(ECastleRights.BothSides);
+        board.CastleRights.Black.Should().Be(ECastleRights.BothSides);
     }
 
     [Fact]
@@ -420,5 +428,29 @@ public class FenParserTests
             new Piece(Colour.Black, PieceType.Knight), // g8
             new Piece(Colour.Black, PieceType.Rook)    // h8
         };
+    }
+
+    private static BitBoard CreateStartPositionBitBoard()
+    {
+        return new BitBoard(
+            white: new ColourBitBoard()
+            {
+                Pawn    = 0x000000000000FF00,
+                Knight  = 0x0000000000000042,
+                Bishop  = 0x0000000000000024,
+                Rook    = 0x0000000000000081,
+                Queen   = 0x0000000000000008,
+                King    = 0x0000000000000010,
+            },
+            black: new ColourBitBoard()
+            {
+                Pawn    = 0x00FF000000000000,
+                Knight  = 0x4200000000000000,
+                Bishop  = 0x2400000000000000,
+                Rook    = 0x8100000000000000,
+                Queen   = 0x0800000000000000,
+                King    = 0x1000000000000000,
+            }
+        );
     }
 }

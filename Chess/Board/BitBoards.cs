@@ -21,6 +21,18 @@ public class BitBoard
         White = white;
         Black = black;
     }
+
+    public override bool Equals(object obj)
+    {
+        return obj is BitBoard other &&
+            EqualityComparer<ColourBitBoard>.Default.Equals(White, other.White) &&
+            EqualityComparer<ColourBitBoard>.Default.Equals(Black, other.Black);
+    }
+
+    public override int GetHashCode()
+    {
+        return HashCode.Combine(White, Black);
+    }
 }
 
 public class ColourBitBoard
@@ -33,4 +45,20 @@ public class ColourBitBoard
     public ulong King   { get; set; }
 
     public ulong All => Pawn | Knight | Bishop | Rook | Queen | King;
+
+    public override bool Equals(object obj)
+    {
+        return obj is ColourBitBoard other &&
+            Pawn == other.Pawn &&
+            Knight == other.Knight &&
+            Bishop == other.Bishop &&
+            Rook == other.Rook &&
+            Queen == other.Queen &&
+            King == other.King;
+    }
+
+    public override int GetHashCode()
+    {
+        return HashCode.Combine(Pawn, Knight, Bishop, Rook, Queen, King);
+    }
 }
