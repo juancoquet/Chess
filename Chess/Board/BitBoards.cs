@@ -21,6 +21,18 @@ public class BitBoard
         White = white;
         Black = black;
     }
+
+    public override bool Equals(object obj)
+    {
+        return obj is BitBoard other &&
+            EqualityComparer<ColourBitBoard>.Default.Equals(White, other.White) &&
+            EqualityComparer<ColourBitBoard>.Default.Equals(Black, other.Black);
+    }
+
+    public override int GetHashCode()
+    {
+        return HashCode.Combine(White, Black);
+    }
 }
 
 public class ColourBitBoard
@@ -34,26 +46,19 @@ public class ColourBitBoard
 
     public ulong All => Pawn | Knight | Bishop | Rook | Queen | King;
 
-    internal static ColourBitBoard FromStartPosition(Colour colour) => colour switch
+    public override bool Equals(object obj)
     {
-        Colour.White => new ColourBitBoard()
-        {
-            Pawn    = 0x000000000000FF00,
-            Knight  = 0x0000000000000042,
-            Bishop  = 0x0000000000000024,
-            Rook    = 0x0000000000000081,
-            Queen   = 0x0000000000000008,
-            King    = 0x0000000000000010,
-        },
-        Colour.Black => new ColourBitBoard()
-        {
-            Pawn    = 0x00FF000000000000,
-            Knight  = 0x4200000000000000,
-            Bishop  = 0x2400000000000000,
-            Rook    = 0x8100000000000000,
-            Queen   = 0x0800000000000000,
-            King    = 0x1000000000000000,
-        },
-        _ => throw new ArgumentException("Invalid colour"),
-    };
+        return obj is ColourBitBoard other &&
+            Pawn == other.Pawn &&
+            Knight == other.Knight &&
+            Bishop == other.Bishop &&
+            Rook == other.Rook &&
+            Queen == other.Queen &&
+            King == other.King;
+    }
+
+    public override int GetHashCode()
+    {
+        return HashCode.Combine(Pawn, Knight, Bishop, Rook, Queen, King);
+    }
 }
