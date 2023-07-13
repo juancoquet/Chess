@@ -8,6 +8,15 @@ public class FenParserTests
 {
     private readonly FenParser _fenParser = new();
 
+    private static Piece[] _startPositionPieceArray = CreateStartPositionPieceArray();
+
+    [Fact]
+    public void TestParseStartPosition()
+    {
+        var board = _fenParser.Parse(FenParser.StartPosition);
+        board.Squares.Should().Equal(_startPositionPieceArray);
+    }
+
     [Fact]
     public void TestInvalidInputThrows()
     {
@@ -21,31 +30,7 @@ public class FenParserTests
     public void TestParsePiecesSimple()
     {
         var pieces = _fenParser.ParsePieces(FenParser.StartPosition.Split().First());
-        Assert.Equal(64, pieces.Count());
-        Assert.Equal(16, pieces.Count(piece => piece.Is(Colour.White)));
-        Assert.Equal(16, pieces.Count(piece => piece.Is(Colour.Black)));
-        Assert.Equal(32, pieces.Count(piece => piece.Is(PieceType.None)));
-        
-        // ParsePieces reverses the fen input ranks so that the output is A1 to H8
-        Assert.All(pieces.Take(16), piece => Assert.Equal(Colour.White, piece.Colour));
-        Assert.All(pieces.Skip(48), piece => Assert.Equal(Colour.Black, piece.Colour));
-        var firstPiece = pieces.ElementAt(3);
-        var lastPiece = pieces.ElementAt(59);
-        Assert.Equal((Colour.White, PieceType.Queen), (firstPiece.Colour, firstPiece.Type));
-        Assert.Equal((Colour.Black, PieceType.Queen), (lastPiece.Colour, lastPiece.Type));
-
-        Assert.Equal(8, pieces.Count(piece => piece.Is(Colour.White, PieceType.Pawn)));
-        Assert.Equal(8, pieces.Count(piece => piece.Is(Colour.Black, PieceType.Pawn)));
-        Assert.Equal(2, pieces.Count(piece => piece.Is(Colour.White, PieceType.Knight)));
-        Assert.Equal(2, pieces.Count(piece => piece.Is(Colour.Black, PieceType.Knight)));
-        Assert.Equal(2, pieces.Count(piece => piece.Is(Colour.White, PieceType.Bishop)));
-        Assert.Equal(2, pieces.Count(piece => piece.Is(Colour.Black, PieceType.Bishop)));
-        Assert.Equal(2, pieces.Count(piece => piece.Is(Colour.White, PieceType.Rook)));
-        Assert.Equal(2, pieces.Count(piece => piece.Is(Colour.Black, PieceType.Rook)));
-        Assert.Equal(1, pieces.Count(piece => piece.Is(Colour.White, PieceType.Queen)));
-        Assert.Equal(1, pieces.Count(piece => piece.Is(Colour.Black, PieceType.Queen)));
-        Assert.Equal(1, pieces.Count(piece => piece.Is(Colour.White, PieceType.King)));
-        Assert.Equal(1, pieces.Count(piece => piece.Is(Colour.Black, PieceType.King)));
+        pieces.Should().Equal(_startPositionPieceArray);
     }
 
     [Fact]
@@ -402,5 +387,38 @@ public class FenParserTests
         bitBoard.Black.Queen .Should().Be(0x0800000000000000);
         bitBoard.White.King  .Should().Be(0x0000000000000010);
         bitBoard.Black.King  .Should().Be(0x1000000000000000);
+    }
+
+    private static Piece[] CreateStartPositionPieceArray()
+    {
+        var empty = new Piece(Colour.None, PieceType.None);
+        var wPawn = new Piece(Colour.White, PieceType.Pawn);
+        var bPawn = new Piece(Colour.Black, PieceType.Pawn);
+
+        return new[]
+        {
+            new Piece(Colour.White, PieceType.Rook),   // a1
+            new Piece(Colour.White, PieceType.Knight), // b1
+            new Piece(Colour.White, PieceType.Bishop), // c1
+            new Piece(Colour.White, PieceType.Queen),  // d1
+            new Piece(Colour.White, PieceType.King),   // e1
+            new Piece(Colour.White, PieceType.Bishop), // f1
+            new Piece(Colour.White, PieceType.Knight), // g1
+            new Piece(Colour.White, PieceType.Rook),   // h1
+            wPawn, wPawn, wPawn, wPawn, wPawn, wPawn, wPawn, wPawn, // a2 - h2
+            empty, empty, empty, empty, empty, empty, empty, empty, // a3 - h3
+            empty, empty, empty, empty, empty, empty, empty, empty, // a4 - h4
+            empty, empty, empty, empty, empty, empty, empty, empty, // a5 - h5
+            empty, empty, empty, empty, empty, empty, empty, empty, // a6 - h6
+            bPawn, bPawn, bPawn, bPawn, bPawn, bPawn, bPawn, bPawn, // a7 - h7
+            new Piece(Colour.Black, PieceType.Rook),   // a8
+            new Piece(Colour.Black, PieceType.Knight), // b8
+            new Piece(Colour.Black, PieceType.Bishop), // c8
+            new Piece(Colour.Black, PieceType.Queen),  // d8
+            new Piece(Colour.Black, PieceType.King),   // e8
+            new Piece(Colour.Black, PieceType.Bishop), // f8
+            new Piece(Colour.Black, PieceType.Knight), // g8
+            new Piece(Colour.Black, PieceType.Rook)    // h8
+        };
     }
 }

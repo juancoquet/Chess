@@ -7,33 +7,20 @@ public class ChessBoard
 {
     public BitBoard BitBoard          { get; set; }
     public Piece[] Squares            { get; set; }
-    public Colour Turn                { get; set; } = Colour.White;
-    public int MoveNumber             { get; set; } = 1;
-    public int HalfMoveClock          { get; set; } = 1;
-    public bool InCheck               { get; set; } = false;
-    public Square EnPassantTarget     { get; set; } = Square.None;
+    public Colour Turn                { get; set; }
+    public int MoveNumber             { get; set; }
+    public int HalfMoveClock          { get; set; }
+    public bool InCheck               { get; set; }
+    public Square EnPassantTarget     { get; set; }
     public ICastleRights CastleRights { get; set; }
 
     private List<BoardState> _history { get; set; } = new List<BoardState>();
-
-    public ChessBoard()
-    {
-        Squares = Enumerable.Repeat(Piece.None(), 64).ToArray();
-        CastleRights = new CastleRightsState();
-        RecordState();
-    }
 
     public ChessBoard FromFen(string fen)
     {
         var fenParser = new FenParser(); 
         return fenParser.Parse(fen);
     }
-
-    private void PlacePiece(Square sq, Colour colour, PieceType pieceType)
-    {
-        Squares[(int)sq] = new Piece(colour, pieceType);
-    }
-
 
     public interface ICastleRights
     {
@@ -101,5 +88,19 @@ public class Piece
     public bool Is(PieceType pieceType)
     {
         return Type == pieceType;
+    }
+
+    public override bool Equals(object obj)
+    {
+        if (obj is Piece piece)
+        {
+            return piece.Colour == Colour && piece.Type == Type;
+        }
+        return false;
+    }
+
+    public override int GetHashCode()
+    {
+        return HashCode.Combine(Colour, Type);
     }
 }

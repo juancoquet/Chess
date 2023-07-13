@@ -27,7 +27,7 @@ public class FenParser
         {
             throw new ArgumentException("FEN must contain 6 space-separated fields");
         }
-        var pieces = ParsePieces(fields[1]);
+        var pieces = ParsePieces(fields[0]);
         var turn = fields[1] switch
         {
             "w" => Colour.White,
@@ -40,15 +40,17 @@ public class FenParser
         var moveNumber = int.Parse(fields[5]);
         var bitBoard = ParseBitBoard(pieces);
 
-        // public BitBoard BitBoard          { get; set; } = new BitBoard();
-        /// public Piece[] Squares            { get; set; }
-        /// public Colour Turn                { get; set; } = Colour.White;
-        /// public int MoveNumber             { get; set; } = 1;
-        /// public int HalfMoveClock          { get; set; } = 1;
-        // public bool InCheck               { get; set; } = false; // calculate
-        // public Square EnPassantTarget     { get; set; } = Square.None;
-        // public ICastleRights CastleRights { get; set; }
-        return new ChessBoard();
+        return new ChessBoard()
+        {
+            BitBoard = bitBoard,
+            Squares = pieces,
+            Turn = turn,
+            MoveNumber = moveNumber,
+            HalfMoveClock = halfMoveClock,
+            InCheck = false,  // TODO: calculate from bitboard
+            EnPassantTarget = enPassantTarget,
+            CastleRights = castleRights
+        };
     }
 
     internal Piece[] ParsePieces(string fenRanks)
@@ -56,7 +58,7 @@ public class FenParser
         var ranks = fenRanks.Split('/').Reverse();
         if (ranks.Count() != 8)
         {
-            throw new ArgumentException("FEN must contain 8 ranks");
+            throw new ArgumentException($"FEN must contain 8 ranks, invalid:\n{fenRanks}");
         }
         var pieces = ranks.SelectMany(
             rank =>
