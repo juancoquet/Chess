@@ -75,32 +75,15 @@ public class Piece
 
     public static Piece None() => new Piece(Colour.None, PieceType.None);
 
-    public bool Is(Colour colour, PieceType pieceType)
-    {
-        return Colour == colour && Type == pieceType;
-    }
+    public bool Is(Colour colour, PieceType pieceType) => Colour == colour && Type == pieceType;
 
-    public bool Is(Colour colour)
-    {
-        return Colour == colour;
-    }
+    public bool Is(Colour colour) => Colour == colour;
 
-    public bool Is(PieceType pieceType)
-    {
-        return Type == pieceType;
-    }
+    public bool Is(PieceType pieceType) => Type == pieceType;
 
-    public override bool Equals(object obj)
-    {
-        if (obj is Piece piece)
-        {
-            return piece.Colour == Colour && piece.Type == Type;
-        }
-        return false;
-    }
+    public override bool Equals(object obj) => obj is Piece other &&
+        Colour == other.Colour &&
+        Type == other.Type;
 
-    public override int GetHashCode()
-    {
-        return HashCode.Combine(Colour, Type);
-    }
+    public override int GetHashCode() => HashCode.Combine(Colour, Type);
 }
