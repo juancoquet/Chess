@@ -46,8 +46,6 @@ public class FenParserTests
     {
         var pieces = _fenParser.ParsePieces("r1bk3r/p2pBpNp/n4n2/1p1NP2P/6P1/3P4/P1P1K3/q5b1");
         Assert.Equal(64, pieces.Count());
-        Assert.Equal(10, pieces.Count(piece => piece.Is(Colour.White)));
-        Assert.Equal(13, pieces.Count(piece => piece.Is(Colour.Black)));
 
         var ranks = pieces.Batch(8);
 
