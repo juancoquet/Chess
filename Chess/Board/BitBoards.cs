@@ -10,8 +10,10 @@ namespace Chess.Board;
 /// </summary>
 public class BitBoard
 {
-
     private Dictionary<int, ulong> _bitBoards { get; set; } = new Dictionary<int, ulong>();
+
+    public ulong Occupied => this[Colour.White] | this[Colour.Black];
+    public ulong Empty => ~Occupied;
 
     public static BitBoard FromDictionary(Dictionary<int, ulong> bitBoards)
     {
@@ -52,8 +54,40 @@ public class BitBoard
         }
     }
 
-    public ulong Occupied => this[Colour.White] | this[Colour.Black];
-    public ulong Empty => ~Occupied;
+    // noWe         nort         noEa
+    //          +7   +8   +9
+    //             \  |  /
+    // west    -1 <-  0 -> +1    east
+    //             /  |  \
+    //          -9   -8   -7
+    // soWe         sout         soEa
+
+    private ulong nortOne(ulong bitBoard) => bitBoard << 8;
+    private ulong soutOne(ulong bitBoard) => bitBoard >> 8;
+    private ulong eastOne(ulong bitBoard) => (bitBoard & ~(ulong)Files.H) << 1; // H file can't move east
+    private ulong noEaOne(ulong bitBoard) => (bitBoard & ~(ulong)Files.H) << 9; // H file can't move east
+    private ulong soEaOne(ulong bitBoard) => (bitBoard & ~(ulong)Files.H) >> 7; // H file can't move east
+    private ulong westOne(ulong bitBoard) => (bitBoard & ~(ulong)Files.A) >> 1; // A file can't move west
+    private ulong soWeOne(ulong bitBoard) => (bitBoard & ~(ulong)Files.A) >> 9; // A file can't move west
+    private ulong noWeOne(ulong bitBoard) => (bitBoard & ~(ulong)Files.A) << 7; // A file can't move west
+
+    private ulong wPawnSinglePushTargets() => nortOne(this[Colour.White, PieceType.WPawn]) & Empty;
+    private ulong wPawnDoublePushTargets() => nortOne(wPawnSinglePushTargets()) & Empty & (ulong)Ranks.R4;
+    private ulong wPawnsAbleToSinglePush() => soutOne(Empty) & this[Colour.White, PieceType.WPawn];
+    private ulong wPawnsAbleToDoublePush()
+    {
+        var emptyR3SquaresWithEmptyR4SquaresAhead = soutOne(Empty & (ulong)Ranks.R4) & Empty;
+        return soutOne(emptyR3SquaresWithEmptyR4SquaresAhead) & this[Colour.White, PieceType.WPawn];
+    }
+
+    private ulong bPawnSinglePushTargets() => soutOne(this[Colour.Black, PieceType.BPawn]) & Empty;
+    private ulong bPawnDoublePushTargets() => soutOne(bPawnSinglePushTargets()) & Empty & (ulong)Ranks.R5;
+    private ulong bPawnsAbleToSinglePush() => nortOne(Empty) & this[Colour.Black, PieceType.BPawn];
+    private ulong bPawnsAbleToDoublePush()
+    {
+        var emptyR6SquaresWithEmptyR5SquaresAhead = nortOne(Empty & (ulong)Ranks.R5) & Empty;
+        return nortOne(emptyR6SquaresWithEmptyR5SquaresAhead) & this[Colour.Black, PieceType.BPawn];
+    }
 
     public override bool Equals(object obj) => obj is BitBoard other &&
         this[Colour.White, PieceType.WPawn]  == other[Colour.White, PieceType.WPawn]  &&
@@ -69,6 +103,5 @@ public class BitBoard
         this[Colour.Black, PieceType.Queen]  == other[Colour.Black, PieceType.Queen]  &&
         this[Colour.Black, PieceType.King]   == other[Colour.Black, PieceType.King];
 
-    public override int GetHashCode() => HashCode.Combine(_bitBoards);
+    public override int GetHashCode() => HashCode.Combine( _bitBoards);
 }
-

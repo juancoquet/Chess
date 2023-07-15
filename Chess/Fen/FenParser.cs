@@ -47,7 +47,6 @@ public class FenParser
             Turn = turn,
             MoveNumber = moveNumber,
             HalfMoveClock = halfMoveClock,
-            InCheck = false,  // TODO: calculate from bitboard
             EnPassantTarget = enPassantTarget,
             CastleRights = castleRights
         };
