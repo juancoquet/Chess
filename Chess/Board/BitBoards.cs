@@ -54,4 +54,18 @@ public class BitBoard
 
     public ulong Occupied => this[Colour.White] | this[Colour.Black];
     public ulong Empty => ~Occupied;
+
+    public override bool Equals(object obj) => obj is BitBoard other &&
+        this[Colour.White, PieceType.WPawn]  == other[Colour.White, PieceType.WPawn]  &&
+        this[Colour.White, PieceType.Knight] == other[Colour.White, PieceType.Knight] &&
+        this[Colour.White, PieceType.Bishop] == other[Colour.White, PieceType.Bishop] &&
+        this[Colour.White, PieceType.Rook]   == other[Colour.White, PieceType.Rook]   &&
+        this[Colour.White, PieceType.Queen]  == other[Colour.White, PieceType.Queen]  &&
+        this[Colour.White, PieceType.King]   == other[Colour.White, PieceType.King]   &&
+        this[Colour.Black, PieceType.BPawn]  == other[Colour.Black, PieceType.BPawn]  &&
+        this[Colour.Black, PieceType.Knight] == other[Colour.Black, PieceType.Knight] &&
+        this[Colour.Black, PieceType.Bishop] == other[Colour.Black, PieceType.Bishop] &&
+        this[Colour.Black, PieceType.Rook]   == other[Colour.Black, PieceType.Rook]   &&
+        this[Colour.Black, PieceType.Queen]  == other[Colour.Black, PieceType.Queen]  &&
+        this[Colour.Black, PieceType.King]   == other[Colour.Black, PieceType.King];
 }
