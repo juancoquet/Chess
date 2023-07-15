@@ -68,4 +68,7 @@ public class BitBoard
         this[Colour.Black, PieceType.Rook]   == other[Colour.Black, PieceType.Rook]   &&
         this[Colour.Black, PieceType.Queen]  == other[Colour.Black, PieceType.Queen]  &&
         this[Colour.Black, PieceType.King]   == other[Colour.Black, PieceType.King];
+
+    public override int GetHashCode() => HashCode.Combine(_bitBoards);
 }
+
