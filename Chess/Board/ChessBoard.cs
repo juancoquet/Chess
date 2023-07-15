@@ -73,7 +73,7 @@ public class Piece
         Type = pieceType;
     }
 
-    public static Piece None() => new Piece(Colour.None, PieceType.None);
+    public static Piece None() => new Piece(Colour.White, PieceType.None);
 
     public bool Is(Colour colour, PieceType pieceType) => Colour == colour && Type == pieceType;
 

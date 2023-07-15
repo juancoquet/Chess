@@ -1,21 +1,23 @@
 namespace Chess.Generics;
 
-public enum Colour
+[Flags]
+public enum Colour : byte
 {
-    White,
-    Black,
-    None
+    White = 0,
+    Black = 1
 }
 
-public enum PieceType
+[Flags]
+public enum PieceType : byte
 {
-    Pawn,
-    Knight,
-    Bishop,
-    Rook,
-    Queen,
-    King,
-    None
+    None   = 0,
+    WPawn  = 1,
+    BPawn  = 2,
+    Knight = 3,
+    Bishop = 4,
+    Rook   = 5,
+    Queen  = 6,
+    King   = 7
 }
 
 public enum Square

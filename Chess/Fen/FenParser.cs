@@ -72,7 +72,7 @@ public class FenParser
                     var colour = char.IsUpper(token) ? Colour.White : Colour.Black;
                     var piece = char.ToLower(token) switch
                     {
-                        'p' => new Piece(colour, PieceType.Pawn),
+                        'p' => new Piece(colour, colour == Colour.White ? PieceType.WPawn : PieceType.BPawn),
                         'n' => new Piece(colour, PieceType.Knight),
                         'b' => new Piece(colour, PieceType.Bishop),
                         'r' => new Piece(colour, PieceType.Rook),
@@ -187,38 +187,25 @@ public class FenParser
         var colours = Enum.GetValues(typeof(Colour)).Cast<Colour>();
         var pieceTypes = Enum.GetValues(typeof(PieceType)).Cast<PieceType>();
 
-        var colourBitBoards = colours.Select(colour =>
+        var pieceBitBoards = colours.SelectMany(colour =>
         {
-            var typesAndBits = pieceTypes.Select(pieceType =>
+            var pieceBitBoards = pieceTypes.Select(pieceType =>
             {
+                var pieceCode = (byte)colour << 3 | (byte)pieceType;
                 var bits = pieces.Select((piece, i) =>
                     piece.Is(colour, pieceType) ? 1UL << i : 0UL
                 ).Aggregate((a, b) => a | b);
-                return (pieceType, bits);
+                return (pieceCode, bits);
             }).ToDictionary(
-                tuple => tuple.pieceType,
+                tuple => tuple.pieceCode,
                 tuple => tuple.bits
             );
-
-            var colourBitBoard = new ColourBitBoard()
-            {
-                Pawn   = typesAndBits[PieceType.Pawn],
-                Knight = typesAndBits[PieceType.Knight],
-                Bishop = typesAndBits[PieceType.Bishop],
-                Rook   = typesAndBits[PieceType.Rook],
-                Queen  = typesAndBits[PieceType.Queen],
-                King   = typesAndBits[PieceType.King]
-            };
-
-            return (colour, colourBitBoard);
+            return pieceBitBoards;
         }).ToDictionary(
-            tuple => tuple.colour,
-            tuple => tuple.colourBitBoard
+            pair => pair.Key,
+            pair => pair.Value
         );
 
-        return new BitBoard(
-            colourBitBoards[Colour.White],
-            colourBitBoards[Colour.Black]
-        );
+        return BitBoard.FromDictionary(pieceBitBoards);
     }
 }
