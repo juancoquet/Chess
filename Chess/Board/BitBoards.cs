@@ -10,7 +10,6 @@ namespace Chess.Board;
 /// </summary>
 public class BitBoard
 {
-
     private Dictionary<int, ulong> _bitBoards { get; set; } = new Dictionary<int, ulong>();
 
     public static BitBoard FromDictionary(Dictionary<int, ulong> bitBoards)
@@ -69,6 +68,5 @@ public class BitBoard
         this[Colour.Black, PieceType.Queen]  == other[Colour.Black, PieceType.Queen]  &&
         this[Colour.Black, PieceType.King]   == other[Colour.Black, PieceType.King];
 
-    public override int GetHashCode() => HashCode.Combine(_bitBoards);
+    public override int GetHashCode() => HashCode.Combine( _bitBoards);
 }
-

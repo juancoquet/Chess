@@ -10,7 +10,6 @@ public class ChessBoard
     public Colour Turn                { get; set; }
     public int MoveNumber             { get; set; }
     public int HalfMoveClock          { get; set; }
-    public bool InCheck               { get; set; }
     public Square EnPassantTarget     { get; set; }
     public ICastleRights CastleRights { get; set; }
 
@@ -43,7 +42,6 @@ public class ChessBoard
             Turn = Turn,
             MoveNumber = MoveNumber,
             HalfMoveClock = HalfMoveClock,
-            InCheck = InCheck,
             EnPassantTarget = EnPassantTarget,
             CastleRights = CastleRights
         });
@@ -56,7 +54,6 @@ public class ChessBoard
         public required Colour Turn                { get; init; }
         public required int MoveNumber             { get; init; }
         public required int HalfMoveClock          { get; init; }
-        public required bool InCheck               { get; init; }
         public required Square EnPassantTarget     { get; init; }
         public required ICastleRights CastleRights { get; init; }
     }

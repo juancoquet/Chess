@@ -19,7 +19,6 @@ public class FenParserTests
         board.Turn.Should().Be(Colour.White);
         board.MoveNumber.Should().Be(1);
         board.HalfMoveClock.Should().Be(0);
-        board.InCheck.Should().BeFalse();
         board.EnPassantTarget.Should().Be(Square.None);
         board.CastleRights.White.Should().Be(ECastleRights.BothSides);
         board.CastleRights.Black.Should().Be(ECastleRights.BothSides);
