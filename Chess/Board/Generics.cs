@@ -1,21 +1,23 @@
 namespace Chess.Generics;
 
+[Flags]
 public enum Colour
 {
-    White,
-    Black,
-    None
+    White = 0,
+    Black = 1
 }
 
+[Flags]
 public enum PieceType
 {
-    Pawn,
+    None,
+    WPawn,
+    BPawn,
     Knight,
     Bishop,
     Rook,
     Queen,
-    King,
-    None
+    King
 }
 
 public enum Square

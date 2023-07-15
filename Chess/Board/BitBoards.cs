@@ -10,43 +10,48 @@ namespace Chess.Board;
 /// </summary>
 public class BitBoard
 {
-    public ColourBitBoard White { get; set; }
-    public ColourBitBoard Black { get; set; }
 
-    public ulong Occupied => White.All | Black.All;
-    public ulong Empty => ~Occupied;
+    private Dictionary<int, ulong> _bitBoards { get; set; } = new Dictionary<int, ulong>();
 
-    public BitBoard(ColourBitBoard white, ColourBitBoard black)
+    public static BitBoard FromDictionary(Dictionary<int, ulong> bitBoards)
     {
-        White = white;
-        Black = black;
+        var bitBoard = new BitBoard();
+        bitBoard._bitBoards = bitBoards;
+        return bitBoard;
     }
 
-    public override bool Equals(object obj) => obj is BitBoard other &&
-        EqualityComparer<ColourBitBoard>.Default.Equals(White, other.White) &&
-        EqualityComparer<ColourBitBoard>.Default.Equals(Black, other.Black);
+    public ulong this[Colour colour, PieceType pieceType]
+    {
+        get => _bitBoards[(byte)colour << 3 | (byte)pieceType];
+        set => _bitBoards[(byte)colour << 3 | (byte)pieceType] = value;
+    }
 
-    public override int GetHashCode() => HashCode.Combine(White, Black);
-}
+    public ulong this[Colour colour]
+    {
+        get
+        {
+            var pawn  = colour == Colour.White ? PieceType.WPawn  : PieceType.BPawn;
+            return this[colour, pawn]
+                |  this[colour, PieceType.Knight]
+                |  this[colour, PieceType.Bishop]
+                |  this[colour, PieceType.Rook]
+                |  this[colour, PieceType.Queen]
+                |  this[colour, PieceType.King];
+        }
+    }
 
-public class ColourBitBoard
-{
-    public ulong Pawn   { get; set; }
-    public ulong Knight { get; set; }
-    public ulong Bishop { get; set; }
-    public ulong Rook   { get; set; }
-    public ulong Queen  { get; set; }
-    public ulong King   { get; set; }
+    public ulong this[PieceType pieceType]
+    {
+        get
+        {
+            if (pieceType == PieceType.WPawn || pieceType == PieceType.BPawn)
+            {
+                return this[Colour.White, PieceType.WPawn] | this[Colour.Black, PieceType.BPawn];
+            }
+            return this[Colour.White, pieceType] | this[Colour.Black, pieceType];
+        }
+    }
 
-    public ulong All => Pawn | Knight | Bishop | Rook | Queen | King;
-
-    public override bool Equals(object obj) => obj is ColourBitBoard other &&
-        Pawn == other.Pawn &&
-        Knight == other.Knight &&
-        Bishop == other.Bishop &&
-        Rook == other.Rook &&
-        Queen == other.Queen &&
-        King == other.King;
-
-    public override int GetHashCode() => HashCode.Combine(Pawn, Knight, Bishop, Rook, Queen, King);
+    public ulong Occupied => this[Colour.White] | this[Colour.Black];
+    public ulong Empty => ~Occupied;
 }
