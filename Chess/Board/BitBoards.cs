@@ -12,6 +12,12 @@ public class BitBoard
 {
     private Dictionary<int, ulong> _bitBoards { get; set; } = new Dictionary<int, ulong>();
 
+    public ulong Occupied => this[Colour.White] | this[Colour.Black];
+    public ulong Empty => ~Occupied;
+
+    private ulong _notAFile = 0xfefefefefefefefe; // 11111110 x8; clears the A file
+    private ulong _notHFile = 0x7f7f7f7f7f7f7f7f; // 01111111 x8; clears the H file
+
     public static BitBoard FromDictionary(Dictionary<int, ulong> bitBoards)
     {
         var bitBoard = new BitBoard();
@@ -51,8 +57,24 @@ public class BitBoard
         }
     }
 
-    public ulong Occupied => this[Colour.White] | this[Colour.Black];
-    public ulong Empty => ~Occupied;
+    // northwest    north   northeast
+    // noWe         nort         noEa
+    //          +7   +8   +9
+    //             \  |  /
+    // west    -1 <-  0 -> +1    east
+    //             /  |  \
+    //          -9   -8   -7
+    // soWe         sout         soEa
+    // southwest    south   southeast
+
+    private ulong nortOne(ulong bitBoard) => bitBoard << 8;
+    private ulong soutOne(ulong bitBoard) => bitBoard >> 8;
+    private ulong eastOne(ulong bitBoard) => (bitBoard & _notHFile) << 1; // H file can't move east
+    private ulong noEaOne(ulong bitBoard) => (bitBoard & _notHFile) << 9; // H file can't move east
+    private ulong soEaOne(ulong bitBoard) => (bitBoard & _notHFile) >> 7; // H file can't move east
+    private ulong westOne(ulong bitBoard) => (bitBoard & _notAFile) >> 1; // A file can't move west
+    private ulong soWeOne(ulong bitBoard) => (bitBoard & _notAFile) >> 9; // A file can't move west
+    private ulong noWeOne(ulong bitBoard) => (bitBoard & _notAFile) << 7; // A file can't move west
 
     public override bool Equals(object obj) => obj is BitBoard other &&
         this[Colour.White, PieceType.WPawn]  == other[Colour.White, PieceType.WPawn]  &&
