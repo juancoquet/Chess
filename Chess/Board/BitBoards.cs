@@ -79,6 +79,7 @@ public class BitBoard
         var emptyR3SquaresWithEmptyR4SquaresAhead = soutOne(Empty & (ulong)Ranks.R4) & Empty;
         return soutOne(emptyR3SquaresWithEmptyR4SquaresAhead) & this[Colour.White, PieceType.WPawn];
     }
+    private ulong wPawnAttacks() => noEaOne(this[Colour.White, PieceType.WPawn]) | noWeOne(this[Colour.White, PieceType.WPawn]);
 
     private ulong bPawnSinglePushTargets() => soutOne(this[Colour.Black, PieceType.BPawn]) & Empty;
     private ulong bPawnDoublePushTargets() => soutOne(bPawnSinglePushTargets()) & Empty & (ulong)Ranks.R5;
@@ -88,6 +89,7 @@ public class BitBoard
         var emptyR6SquaresWithEmptyR5SquaresAhead = nortOne(Empty & (ulong)Ranks.R5) & Empty;
         return nortOne(emptyR6SquaresWithEmptyR5SquaresAhead) & this[Colour.Black, PieceType.BPawn];
     }
+    private ulong bPawnAttacks() => soEaOne(this[Colour.Black, PieceType.BPawn]) | soWeOne(this[Colour.Black, PieceType.BPawn]);
 
     public override bool Equals(object obj) => obj is BitBoard other &&
         this[Colour.White, PieceType.WPawn]  == other[Colour.White, PieceType.WPawn]  &&
