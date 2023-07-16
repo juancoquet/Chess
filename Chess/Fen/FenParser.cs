@@ -30,8 +30,8 @@ public class FenParser
         var pieces = ParsePieces(fields[0]);
         var turn = fields[1] switch
         {
-            "w" => Colour.White,
-            "b" => Colour.Black,
+            "w" => C.White,
+            "b" => C.Black,
             _ => throw new ArgumentException($"Invalid turn: {fields[1]}")
         };
         var castleRights = ParseCastleRights(fields[2]);
@@ -68,15 +68,15 @@ public class FenParser
                         var numEmptySquares = int.Parse(token.ToString());
                         return Enumerable.Repeat(Piece.None(), numEmptySquares);
                     }
-                    var colour = char.IsUpper(token) ? Colour.White : Colour.Black;
+                    var colour = char.IsUpper(token) ? C.White : C.Black;
                     var piece = char.ToLower(token) switch
                     {
-                        'p' => new Piece(colour, colour == Colour.White ? PieceType.WPawn : PieceType.BPawn),
-                        'n' => new Piece(colour, PieceType.Knight),
-                        'b' => new Piece(colour, PieceType.Bishop),
-                        'r' => new Piece(colour, PieceType.Rook),
-                        'q' => new Piece(colour, PieceType.Queen),
-                        'k' => new Piece(colour, PieceType.King),
+                        'p' => new Piece(colour, colour == C.White ? PType.WPawn : PType.BPawn),
+                        'n' => new Piece(colour, PType.Knight),
+                        'b' => new Piece(colour, PType.Bishop),
+                        'r' => new Piece(colour, PType.Rook),
+                        'q' => new Piece(colour, PType.Queen),
+                        'k' => new Piece(colour, PType.King),
                          _ => throw new ArgumentException($"Invalid piece type: {token}")
                     };
                     return new[] { piece };
@@ -183,8 +183,8 @@ public class FenParser
 
     internal BitBoard ParseBitBoard(Piece[] pieces)
     {
-        var colours = Enum.GetValues(typeof(Colour)).Cast<Colour>();
-        var pieceTypes = Enum.GetValues(typeof(PieceType)).Cast<PieceType>();
+        var colours = Enum.GetValues(typeof(C)).Cast<C>();
+        var pieceTypes = Enum.GetValues(typeof(PType)).Cast<PType>();
 
         var pieceBitBoards = colours.SelectMany(colour =>
         {

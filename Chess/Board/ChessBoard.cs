@@ -7,7 +7,7 @@ public class ChessBoard
 {
     public BitBoard BitBoard          { get; set; }
     public Piece[] Squares            { get; set; }
-    public Colour Turn                { get; set; }
+    public C Turn                { get; set; }
     public int MoveNumber             { get; set; }
     public int HalfMoveClock          { get; set; }
     public Square EnPassantTarget     { get; set; }
@@ -51,7 +51,7 @@ public class ChessBoard
     {
         public required BitBoard BitBoard          { get; init; }
         public required Piece[] Squares            { get; init; }
-        public required Colour Turn                { get; init; }
+        public required C Turn                { get; init; }
         public required int MoveNumber             { get; init; }
         public required int HalfMoveClock          { get; init; }
         public required Square EnPassantTarget     { get; init; }
@@ -61,22 +61,22 @@ public class ChessBoard
 
 public class Piece
 {
-    public Colour Colour { get; set; }
-    public PieceType Type { get; set; }
+    public C Colour { get; set; }
+    public PType Type { get; set; }
 
-    public Piece(Colour colour, PieceType pieceType)
+    public Piece(C colour, PType pieceType)
     {
         Colour = colour;
         Type = pieceType;
     }
 
-    public static Piece None() => new Piece(Colour.White, PieceType.None);
+    public static Piece None() => new Piece(C.White, PType.None);
 
-    public bool Is(Colour colour, PieceType pieceType) => Colour == colour && Type == pieceType;
+    public bool Is(C colour, PType pieceType) => Colour == colour && Type == pieceType;
 
-    public bool Is(Colour colour) => Colour == colour;
+    public bool Is(C colour) => Colour == colour;
 
-    public bool Is(PieceType pieceType) => Type == pieceType;
+    public bool Is(PType pieceType) => Type == pieceType;
 
     public override bool Equals(object obj) => obj is Piece other &&
         Colour == other.Colour &&
