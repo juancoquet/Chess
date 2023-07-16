@@ -62,7 +62,7 @@ public enum Square
 
 public static class SquareExtensions
 {
-    public static ulong ToBitMask(this Square square) => 1UL << (int)square;
+    public static ulong BitMask(this Square square) => 1UL << (int)square;
 }
 
 public enum ECastleRights
