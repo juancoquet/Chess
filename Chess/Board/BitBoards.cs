@@ -54,6 +54,15 @@ public class BitBoard
         }
     }
 
+    private bool SquareIsAttackedBy(Square square, C colour) => (Attacks(colour) & square.BitMask()) != 0;
+
+    private ulong Attacks(C colour)
+    {
+        var pawnAttacks = colour == C.White ? WPawnAttacks() : BPawnAttacks();
+        return pawnAttacks | KnightAttacks(colour) | BishopAttacks(colour) |
+            RookAttacks(colour) | QueenAttacks(colour) | KingAttacks(colour);
+    }
+
     private ulong WPawnSinglePushTargets() => NortOne(this[C.White, PType.WPawn]) & Empty;
     private ulong WPawnDoublePushTargets() => NortOne(WPawnSinglePushTargets()) & Empty & (ulong)Ranks.R4;
     private ulong WPawnsAbleToSinglePush() => SoutOne(Empty) & this[C.White, PType.WPawn];
