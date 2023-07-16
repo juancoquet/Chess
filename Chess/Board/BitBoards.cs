@@ -54,32 +54,6 @@ public class BitBoard
         }
     }
 
-    // noWe         nort         noEa
-    //          +7   +8   +9
-    //             \  |  /
-    // west    -1 <-  0 -> +1    east
-    //             /  |  \
-    //          -9   -8   -7
-    // soWe         sout         soEa
-
-    private ulong nortOne(ulong bitBoard) => bitBoard << 8;
-    private ulong soutOne(ulong bitBoard) => bitBoard >> 8;
-    private ulong eastOne(ulong bitBoard) => (bitBoard & ~(ulong)Files.H) << 1; // H file can't move east
-    private ulong noEaOne(ulong bitBoard) => (bitBoard & ~(ulong)Files.H) << 9; // H file can't move east
-    private ulong soEaOne(ulong bitBoard) => (bitBoard & ~(ulong)Files.H) >> 7; // H file can't move east
-    private ulong westOne(ulong bitBoard) => (bitBoard & ~(ulong)Files.A) >> 1; // A file can't move west
-    private ulong soWeOne(ulong bitBoard) => (bitBoard & ~(ulong)Files.A) >> 9; // A file can't move west
-    private ulong noWeOne(ulong bitBoard) => (bitBoard & ~(ulong)Files.A) << 7; // A file can't move west
-
-    private ulong noNoEa(ulong bitBoard) => (bitBoard & ~(ulong)Files.H) << 17;
-    private ulong noEaEa(ulong bitBoard) => (bitBoard & ~(ulong)Files.G & ~(ulong)Files.H) << 10;
-    private ulong soEaEa(ulong bitBoard) => (bitBoard & ~(ulong)Files.G & ~(ulong)Files.H) >> 6;
-    private ulong soSoEa(ulong bitBoard) => (bitBoard & ~(ulong)Files.H) >> 15;
-    private ulong soSoWe(ulong bitBoard) => (bitBoard & ~(ulong)Files.A) >> 17;
-    private ulong soWeWe(ulong bitBoard) => (bitBoard & ~(ulong)Files.A & ~(ulong)Files.B) >> 10;
-    private ulong noWeWe(ulong bitBoard) => (bitBoard & ~(ulong)Files.A & ~(ulong)Files.B) << 6;
-    private ulong noNoWe(ulong bitBoard) => (bitBoard & ~(ulong)Files.A) << 15;
-
     private ulong wPawnSinglePushTargets() => nortOne(this[C.White, PType.WPawn]) & Empty;
     private ulong wPawnDoublePushTargets() => nortOne(wPawnSinglePushTargets()) & Empty & (ulong)Ranks.R4;
     private ulong wPawnsAbleToSinglePush() => soutOne(Empty) & this[C.White, PType.WPawn];
@@ -106,12 +80,56 @@ public class BitBoard
         soSoWe(this[colour, PType.Knight]) | soWeWe(this[colour, PType.Knight]) |
         noWeWe(this[colour, PType.Knight]) | noNoWe(this[colour, PType.Knight]);
 
-    public ulong kingAttacks(C colour)
+    private ulong kingAttacks(C colour)
     {
         var laterals = eastOne(this[colour, PType.King]) | westOne(this[colour, PType.King]);
         var threeSqMask = laterals | this[colour, PType.King];
         return nortOne(threeSqMask) | soutOne(threeSqMask) | laterals;
     }
+
+    private ulong rayAttacks(ulong bitBoard, Func<ulong, ulong> directionOneStep, Files[] boundaryWrapExclusion)
+    {
+        var occludedFill = dumb7Fill(bitBoard, directionOneStep, boundaryWrapExclusion);
+        var empty = Empty & ~(ulong)boundaryWrapExclusion
+            .Aggregate((ulong)0, (firstBoundaryFile, potentialSecond) =>
+                (ulong)firstBoundaryFile | (ulong)potentialSecond);
+        return directionOneStep(empty & occludedFill);
+    }
+
+    private ulong dumb7Fill(ulong bitBoard, Func<ulong, ulong> directionOneStep, Files[] boundaryWrapExclusion)
+    {
+        var empty = Empty & ~(ulong)boundaryWrapExclusion
+            .Aggregate((ulong)0, (firstBoundaryFile, potentialSecond) =>
+                (ulong)firstBoundaryFile | (ulong)potentialSecond);
+        return Enumerable.Range(0, 7)
+            .Aggregate(bitBoard, (current, _) => (empty & directionOneStep(current)) | current);
+    }
+
+    // noWe         nort         noEa
+    //          +7   +8   +9
+    //             \  |  /
+    // west    -1 <-  0 -> +1    east
+    //             /  |  \
+    //          -9   -8   -7
+    // soWe         sout         soEa
+
+    private ulong nortOne(ulong bitBoard) => bitBoard << 8;
+    private ulong soutOne(ulong bitBoard) => bitBoard >> 8;
+    private ulong eastOne(ulong bitBoard) => (bitBoard & ~(ulong)Files.H) << 1; // H file can't move east
+    private ulong noEaOne(ulong bitBoard) => (bitBoard & ~(ulong)Files.H) << 9; // H file can't move east
+    private ulong soEaOne(ulong bitBoard) => (bitBoard & ~(ulong)Files.H) >> 7; // H file can't move east
+    private ulong westOne(ulong bitBoard) => (bitBoard & ~(ulong)Files.A) >> 1; // A file can't move west
+    private ulong soWeOne(ulong bitBoard) => (bitBoard & ~(ulong)Files.A) >> 9; // A file can't move west
+    private ulong noWeOne(ulong bitBoard) => (bitBoard & ~(ulong)Files.A) << 7; // A file can't move west
+
+    private ulong noNoEa(ulong bitBoard) => (bitBoard & ~(ulong)Files.H) << 17;
+    private ulong noEaEa(ulong bitBoard) => (bitBoard & ~(ulong)Files.G & ~(ulong)Files.H) << 10;
+    private ulong soEaEa(ulong bitBoard) => (bitBoard & ~(ulong)Files.G & ~(ulong)Files.H) >> 6;
+    private ulong soSoEa(ulong bitBoard) => (bitBoard & ~(ulong)Files.H) >> 15;
+    private ulong soSoWe(ulong bitBoard) => (bitBoard & ~(ulong)Files.A) >> 17;
+    private ulong soWeWe(ulong bitBoard) => (bitBoard & ~(ulong)Files.A & ~(ulong)Files.B) >> 10;
+    private ulong noWeWe(ulong bitBoard) => (bitBoard & ~(ulong)Files.A & ~(ulong)Files.B) << 6;
+    private ulong noNoWe(ulong bitBoard) => (bitBoard & ~(ulong)Files.A) << 15;
 
     public override bool Equals(object obj) => obj is BitBoard other &&
         this[C.White, PType.WPawn]  == other[C.White, PType.WPawn]  &&
