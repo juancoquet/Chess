@@ -16,7 +16,7 @@ public class FenParserTests
         var board = _fenParser.Parse(FenParser.StartPosition);
         board.BitBoard.Should().Be(CreateStartPositionBitBoard());
         board.Squares.Should().Equal(_startPositionPieceArray);
-        board.Turn.Should().Be(Colour.White);
+        board.Turn.Should().Be(C.White);
         board.MoveNumber.Should().Be(1);
         board.HalfMoveClock.Should().Be(0);
         board.EnPassantTarget.Should().Be(Square.None);
@@ -50,91 +50,91 @@ public class FenParserTests
 
         var expected0 = new[]
         {   // q5b1
-            (Colour.Black,  PieceType.Queen),     // q
-            (Colour.White,  PieceType.None),      // 5
-            (Colour.White,  PieceType.None),
-            (Colour.White,  PieceType.None),
-            (Colour.White,  PieceType.None),
-            (Colour.White,  PieceType.None),
-            (Colour.Black,  PieceType.Bishop),   // b
-            (Colour.White,  PieceType.None)      // 1
+            (C.Black,  PType.Queen),     // q
+            (C.White,  PType.None),      // 5
+            (C.White,  PType.None),
+            (C.White,  PType.None),
+            (C.White,  PType.None),
+            (C.White,  PType.None),
+            (C.Black,  PType.Bishop),   // b
+            (C.White,  PType.None)      // 1
         };
         var expected1 = new[]
         {   // P1P1K3
-            (Colour.White,  PieceType.WPawn),     // P
-            (Colour.White,  PieceType.None),     // 1
-            (Colour.White,  PieceType.WPawn),     // P
-            (Colour.White,  PieceType.None),     // 1
-            (Colour.White,  PieceType.King),     // K
-            (Colour.White,  PieceType.None),     // 3
-            (Colour.White,  PieceType.None),
-            (Colour.White,  PieceType.None)
+            (C.White,  PType.WPawn),     // P
+            (C.White,  PType.None),     // 1
+            (C.White,  PType.WPawn),     // P
+            (C.White,  PType.None),     // 1
+            (C.White,  PType.King),     // K
+            (C.White,  PType.None),     // 3
+            (C.White,  PType.None),
+            (C.White,  PType.None)
         };
         var expected2 = new[]
         {   // 3P4
-            (Colour.White,  PieceType.None),     // 3
-            (Colour.White,  PieceType.None),
-            (Colour.White,  PieceType.None),
-            (Colour.White,  PieceType.WPawn),     // P
-            (Colour.White,  PieceType.None),     // 4
-            (Colour.White,  PieceType.None),
-            (Colour.White,  PieceType.None),
-            (Colour.White,  PieceType.None)
+            (C.White,  PType.None),     // 3
+            (C.White,  PType.None),
+            (C.White,  PType.None),
+            (C.White,  PType.WPawn),     // P
+            (C.White,  PType.None),     // 4
+            (C.White,  PType.None),
+            (C.White,  PType.None),
+            (C.White,  PType.None)
         };
         var expected3 = new[]
         {   // 6P1
-            (Colour.White,  PieceType.None),     // 6
-            (Colour.White,  PieceType.None),
-            (Colour.White,  PieceType.None),
-            (Colour.White,  PieceType.None),
-            (Colour.White,  PieceType.None),
-            (Colour.White,  PieceType.None),
-            (Colour.White,  PieceType.WPawn),     // P
-            (Colour.White,  PieceType.None)      // 1
+            (C.White,  PType.None),     // 6
+            (C.White,  PType.None),
+            (C.White,  PType.None),
+            (C.White,  PType.None),
+            (C.White,  PType.None),
+            (C.White,  PType.None),
+            (C.White,  PType.WPawn),     // P
+            (C.White,  PType.None)      // 1
         };
         var expected4 = new[]
         {   // 1p1NP2P
-            (Colour.White,  PieceType.None),     // 1
-            (Colour.Black,  PieceType.BPawn),     // p
-            (Colour.White,  PieceType.None),     // 1
-            (Colour.White, PieceType.Knight),   // N
-            (Colour.White, PieceType.WPawn),     // P
-            (Colour.White,  PieceType.None),     // 2
-            (Colour.White,  PieceType.None),
-            (Colour.White, PieceType.WPawn),     // P
+            (C.White,  PType.None),     // 1
+            (C.Black,  PType.BPawn),     // p
+            (C.White,  PType.None),     // 1
+            (C.White, PType.Knight),   // N
+            (C.White, PType.WPawn),     // P
+            (C.White,  PType.None),     // 2
+            (C.White,  PType.None),
+            (C.White, PType.WPawn),     // P
         };
         var expected5 = new[]
         {   // n4n2
-            (Colour.Black, PieceType.Knight),   // n
-            (Colour.White,  PieceType.None),     // 4
-            (Colour.White,  PieceType.None),
-            (Colour.White,  PieceType.None),
-            (Colour.White,  PieceType.None),
-            (Colour.Black, PieceType.Knight),   // n
-            (Colour.White,  PieceType.None),     // 2
-            (Colour.White,  PieceType.None)
+            (C.Black, PType.Knight),   // n
+            (C.White,  PType.None),     // 4
+            (C.White,  PType.None),
+            (C.White,  PType.None),
+            (C.White,  PType.None),
+            (C.Black, PType.Knight),   // n
+            (C.White,  PType.None),     // 2
+            (C.White,  PType.None)
         };
         var expected6 = new[]
         {   // p2pBpNp
-            (Colour.Black, PieceType.BPawn),     // p
-            (Colour.White,  PieceType.None),     // 2
-            (Colour.White,  PieceType.None),
-            (Colour.Black, PieceType.BPawn),     // p
-            (Colour.White, PieceType.Bishop),   // B
-            (Colour.Black, PieceType.BPawn),     // p
-            (Colour.White, PieceType.Knight),   // N
-            (Colour.Black, PieceType.BPawn),     // p
+            (C.Black, PType.BPawn),     // p
+            (C.White,  PType.None),     // 2
+            (C.White,  PType.None),
+            (C.Black, PType.BPawn),     // p
+            (C.White, PType.Bishop),   // B
+            (C.Black, PType.BPawn),     // p
+            (C.White, PType.Knight),   // N
+            (C.Black, PType.BPawn),     // p
         };
         var expected7 = new[]
         {   // r1bk3r
-            (Colour.Black, PieceType.Rook),     // r
-            (Colour.White,  PieceType.None),     // 1
-            (Colour.Black, PieceType.Bishop),   // b
-            (Colour.Black, PieceType.King),     // k
-            (Colour.White,  PieceType.None),     // 3
-            (Colour.White,  PieceType.None),
-            (Colour.White,  PieceType.None),
-            (Colour.Black, PieceType.Rook),     // r
+            (C.Black, PType.Rook),     // r
+            (C.White,  PType.None),     // 1
+            (C.Black, PType.Bishop),   // b
+            (C.Black, PType.King),     // k
+            (C.White,  PType.None),     // 3
+            (C.White,  PType.None),
+            (C.White,  PType.None),
+            (C.Black, PType.Rook),     // r
         };
         Assert.Equal(expected0, ranks.ElementAt(0).Select(piece => (piece.Colour, piece.Type)));
         Assert.Equal(expected1, ranks.ElementAt(1).Select(piece => (piece.Colour, piece.Type)));
@@ -287,18 +287,18 @@ public class FenParserTests
     {
         var startPosition = FenParser.StartPosition.Split().First();
         var bitBoard = _fenParser.ParseBitBoard(startPosition);
-        bitBoard[Colour.White, PieceType.WPawn]  .Should().Be(0x000000000000FF00);
-        bitBoard[Colour.Black, PieceType.BPawn]  .Should().Be(0x00FF000000000000);
-        bitBoard[Colour.White, PieceType.Knight].Should().Be(0x0000000000000042);
-        bitBoard[Colour.Black, PieceType.Knight].Should().Be(0x4200000000000000);
-        bitBoard[Colour.White, PieceType.Bishop].Should().Be(0x0000000000000024);
-        bitBoard[Colour.Black, PieceType.Bishop].Should().Be(0x2400000000000000);
-        bitBoard[Colour.White, PieceType.Rook]  .Should().Be(0x0000000000000081);
-        bitBoard[Colour.Black, PieceType.Rook]  .Should().Be(0x8100000000000000);
-        bitBoard[Colour.White, PieceType.Queen] .Should().Be(0x0000000000000008);
-        bitBoard[Colour.Black, PieceType.Queen] .Should().Be(0x0800000000000000);
-        bitBoard[Colour.White, PieceType.King]  .Should().Be(0x0000000000000010);
-        bitBoard[Colour.Black, PieceType.King]  .Should().Be(0x1000000000000000);
+        bitBoard[C.White, PType.WPawn]  .Should().Be(0x000000000000FF00);
+        bitBoard[C.Black, PType.BPawn]  .Should().Be(0x00FF000000000000);
+        bitBoard[C.White, PType.Knight].Should().Be(0x0000000000000042);
+        bitBoard[C.Black, PType.Knight].Should().Be(0x4200000000000000);
+        bitBoard[C.White, PType.Bishop].Should().Be(0x0000000000000024);
+        bitBoard[C.Black, PType.Bishop].Should().Be(0x2400000000000000);
+        bitBoard[C.White, PType.Rook]  .Should().Be(0x0000000000000081);
+        bitBoard[C.Black, PType.Rook]  .Should().Be(0x8100000000000000);
+        bitBoard[C.White, PType.Queen] .Should().Be(0x0000000000000008);
+        bitBoard[C.Black, PType.Queen] .Should().Be(0x0800000000000000);
+        bitBoard[C.White, PType.King]  .Should().Be(0x0000000000000010);
+        bitBoard[C.Black, PType.King]  .Should().Be(0x1000000000000000);
     }
 
     [Fact]
@@ -306,18 +306,18 @@ public class FenParserTests
     {
         var emptyPosition = "8/8/8/8/8/8/8/8";
         var bitBoard = _fenParser.ParseBitBoard(emptyPosition);
-        bitBoard[Colour.White, PieceType.WPawn]  .Should().Be(0x0000000000000000);
-        bitBoard[Colour.Black, PieceType.BPawn]  .Should().Be(0x0000000000000000);
-        bitBoard[Colour.White, PieceType.Knight].Should().Be(0x0000000000000000);
-        bitBoard[Colour.Black, PieceType.Knight].Should().Be(0x0000000000000000);
-        bitBoard[Colour.White, PieceType.Bishop].Should().Be(0x0000000000000000);
-        bitBoard[Colour.Black, PieceType.Bishop].Should().Be(0x0000000000000000);
-        bitBoard[Colour.White, PieceType.Rook]  .Should().Be(0x0000000000000000);
-        bitBoard[Colour.Black, PieceType.Rook]  .Should().Be(0x0000000000000000);
-        bitBoard[Colour.White, PieceType.Queen] .Should().Be(0x0000000000000000);
-        bitBoard[Colour.Black, PieceType.Queen] .Should().Be(0x0000000000000000);
-        bitBoard[Colour.White, PieceType.King]  .Should().Be(0x0000000000000000);
-        bitBoard[Colour.Black, PieceType.King]  .Should().Be(0x0000000000000000);
+        bitBoard[C.White, PType.WPawn]  .Should().Be(0x0000000000000000);
+        bitBoard[C.Black, PType.BPawn]  .Should().Be(0x0000000000000000);
+        bitBoard[C.White, PType.Knight].Should().Be(0x0000000000000000);
+        bitBoard[C.Black, PType.Knight].Should().Be(0x0000000000000000);
+        bitBoard[C.White, PType.Bishop].Should().Be(0x0000000000000000);
+        bitBoard[C.Black, PType.Bishop].Should().Be(0x0000000000000000);
+        bitBoard[C.White, PType.Rook]  .Should().Be(0x0000000000000000);
+        bitBoard[C.Black, PType.Rook]  .Should().Be(0x0000000000000000);
+        bitBoard[C.White, PType.Queen] .Should().Be(0x0000000000000000);
+        bitBoard[C.Black, PType.Queen] .Should().Be(0x0000000000000000);
+        bitBoard[C.White, PType.King]  .Should().Be(0x0000000000000000);
+        bitBoard[C.Black, PType.King]  .Should().Be(0x0000000000000000);
     }
 
     [Fact]
@@ -325,18 +325,18 @@ public class FenParserTests
     {
         var customPosition = "r3k2r/1pp1qpb1/p1np1np1/3Pp3/2P1P3/2N2N2/PP2BPPP/R1BQK2R";
         var bitBoard = _fenParser.ParseBitBoard(customPosition);
-        bitBoard[Colour.White, PieceType.WPawn]  .Should().Be(0x000000081400E300);  // h8 00000000 00000000 00000000 00001000 00010100 00000000 11100011 00000000 a1
-        bitBoard[Colour.Black, PieceType.BPawn]  .Should().Be(0x0026491000000000);  // h8 00000000 00100110 01001001 00010000 00000000 00000000 00000000 00000000 a1
-        bitBoard[Colour.White, PieceType.Knight].Should().Be(0x0000000000240000);  // h8 00000000 00000000 00000000 00000000 00000000 00100100 00000000 00000000 a1
-        bitBoard[Colour.Black, PieceType.Knight].Should().Be(0x0000240000000000);  // h8 00000000 00000000 00100100 00000000 00000000 00000000 00000000 00000000 a1
-        bitBoard[Colour.White, PieceType.Bishop].Should().Be(0x0000000000001004);  // h8 00000000 00000000 00000000 00000000 00000000 00000000 00010000 00000100 a1
-        bitBoard[Colour.Black, PieceType.Bishop].Should().Be(0x0040000000000000);  // h8 00000000 01000000 00000000 00000000 00000000 00000000 00000000 00000000 a1
-        bitBoard[Colour.White, PieceType.Rook]  .Should().Be(0x0000000000000081);  // h8 00000000 00000000 00000000 00000000 00000000 00000000 00000000 10000001 a1
-        bitBoard[Colour.Black, PieceType.Rook]  .Should().Be(0x8100000000000000);  // h8 10000001 00000000 00000000 00000000 00000000 00000000 00000000 00000000 a1
-        bitBoard[Colour.White, PieceType.Queen] .Should().Be(0x0000000000000008);  // h8 00000000 00000000 00000000 00000000 00000000 00000000 00000000 00001000 a1
-        bitBoard[Colour.Black, PieceType.Queen] .Should().Be(0x0010000000000000);  // h8 00000000 00010000 00000000 00000000 00000000 00000000 00000000 00000000 a1
-        bitBoard[Colour.White, PieceType.King]  .Should().Be(0x0000000000000010);  // h8 00000000 00000000 00000000 00000000 00000000 00000000 00000000 00010000 a1
-        bitBoard[Colour.Black, PieceType.King]  .Should().Be(0x1000000000000000);  // h8 00010000 00000000 00000000 00000000 00000000 00000000 00000000 00000000 a1
+        bitBoard[C.White, PType.WPawn]  .Should().Be(0x000000081400E300);  // h8 00000000 00000000 00000000 00001000 00010100 00000000 11100011 00000000 a1
+        bitBoard[C.Black, PType.BPawn]  .Should().Be(0x0026491000000000);  // h8 00000000 00100110 01001001 00010000 00000000 00000000 00000000 00000000 a1
+        bitBoard[C.White, PType.Knight].Should().Be(0x0000000000240000);  // h8 00000000 00000000 00000000 00000000 00000000 00100100 00000000 00000000 a1
+        bitBoard[C.Black, PType.Knight].Should().Be(0x0000240000000000);  // h8 00000000 00000000 00100100 00000000 00000000 00000000 00000000 00000000 a1
+        bitBoard[C.White, PType.Bishop].Should().Be(0x0000000000001004);  // h8 00000000 00000000 00000000 00000000 00000000 00000000 00010000 00000100 a1
+        bitBoard[C.Black, PType.Bishop].Should().Be(0x0040000000000000);  // h8 00000000 01000000 00000000 00000000 00000000 00000000 00000000 00000000 a1
+        bitBoard[C.White, PType.Rook]  .Should().Be(0x0000000000000081);  // h8 00000000 00000000 00000000 00000000 00000000 00000000 00000000 10000001 a1
+        bitBoard[C.Black, PType.Rook]  .Should().Be(0x8100000000000000);  // h8 10000001 00000000 00000000 00000000 00000000 00000000 00000000 00000000 a1
+        bitBoard[C.White, PType.Queen] .Should().Be(0x0000000000000008);  // h8 00000000 00000000 00000000 00000000 00000000 00000000 00000000 00001000 a1
+        bitBoard[C.Black, PType.Queen] .Should().Be(0x0010000000000000);  // h8 00000000 00010000 00000000 00000000 00000000 00000000 00000000 00000000 a1
+        bitBoard[C.White, PType.King]  .Should().Be(0x0000000000000010);  // h8 00000000 00000000 00000000 00000000 00000000 00000000 00000000 00010000 a1
+        bitBoard[C.Black, PType.King]  .Should().Be(0x1000000000000000);  // h8 00010000 00000000 00000000 00000000 00000000 00000000 00000000 00000000 a1
     }
 
     [Fact]
@@ -350,124 +350,103 @@ public class FenParserTests
     [Fact]
     public void TestParseBitBoardFromPieceArray()
     {
-        var empty = new Piece(Colour.White, PieceType.None);
-        var wPawn = new Piece(Colour.White, PieceType.WPawn);
-        var bPawn = new Piece(Colour.Black, PieceType.BPawn);
+        var empty = new Piece(C.White, PType.None);
+        var wPawn = new Piece(C.White, PType.WPawn);
+        var bPawn = new Piece(C.Black, PType.BPawn);
         var pieceArray = new[]
         {
-            new Piece(Colour.White, PieceType.Rook),   // a1
-            new Piece(Colour.White, PieceType.Knight), // b1
-            new Piece(Colour.White, PieceType.Bishop), // c1
-            new Piece(Colour.White, PieceType.Queen),  // d1
-            new Piece(Colour.White, PieceType.King),   // e1
-            new Piece(Colour.White, PieceType.Bishop), // f1
-            new Piece(Colour.White, PieceType.Knight), // g1
-            new Piece(Colour.White, PieceType.Rook),   // h1
+            new Piece(C.White, PType.Rook),   // a1
+            new Piece(C.White, PType.Knight), // b1
+            new Piece(C.White, PType.Bishop), // c1
+            new Piece(C.White, PType.Queen),  // d1
+            new Piece(C.White, PType.King),   // e1
+            new Piece(C.White, PType.Bishop), // f1
+            new Piece(C.White, PType.Knight), // g1
+            new Piece(C.White, PType.Rook),   // h1
             wPawn, wPawn, wPawn, empty, empty, wPawn, wPawn, wPawn, // a2 - h2
             empty, empty, empty, empty, wPawn, empty, empty, empty, // a3 - h3
             empty, empty, empty, wPawn, empty, empty, empty, empty, // a4 - h4
             empty, empty, empty, empty, empty, empty, empty, bPawn, // a5 - h5
             empty, empty, empty, empty, empty, empty, empty, empty, // a6 - h6
             bPawn, bPawn, bPawn, bPawn, bPawn, bPawn, bPawn, empty, // a7 - h7
-            new Piece(Colour.Black, PieceType.Rook),   // a8
-            new Piece(Colour.Black, PieceType.Knight), // b8
-            new Piece(Colour.Black, PieceType.Bishop), // c8
-            new Piece(Colour.Black, PieceType.Queen),  // d8
-            new Piece(Colour.Black, PieceType.King),   // e8
-            new Piece(Colour.Black, PieceType.Bishop), // f8
-            new Piece(Colour.Black, PieceType.Knight), // g8
-            new Piece(Colour.Black, PieceType.Rook),   // h8
+            new Piece(C.Black, PType.Rook),   // a8
+            new Piece(C.Black, PType.Knight), // b8
+            new Piece(C.Black, PType.Bishop), // c8
+            new Piece(C.Black, PType.Queen),  // d8
+            new Piece(C.Black, PType.King),   // e8
+            new Piece(C.Black, PType.Bishop), // f8
+            new Piece(C.Black, PType.Knight), // g8
+            new Piece(C.Black, PType.Rook),   // h8
         };
 
         var bitBoard = _fenParser.ParseBitBoard(pieceArray);
-        bitBoard[Colour.White, PieceType.WPawn]  .Should().Be(0x000000000810E700); // h8 00000000 00000000 00000000 00000000 00001000 00010000 11100111 00000000 a1
-        bitBoard[Colour.Black, PieceType.BPawn]  .Should().Be(0x007F008000000000); // h8 00000000 01111111 00000000 10000000 00000000 00000000 00000000 00000000 a1
-        bitBoard[Colour.White, PieceType.Knight].Should().Be(0x0000000000000042);
-        bitBoard[Colour.Black, PieceType.Knight].Should().Be(0x4200000000000000);
-        bitBoard[Colour.White, PieceType.Bishop].Should().Be(0x0000000000000024);
-        bitBoard[Colour.Black, PieceType.Bishop].Should().Be(0x2400000000000000);
-        bitBoard[Colour.White, PieceType.Rook]  .Should().Be(0x0000000000000081);
-        bitBoard[Colour.Black, PieceType.Rook]  .Should().Be(0x8100000000000000);
-        bitBoard[Colour.White, PieceType.Queen] .Should().Be(0x0000000000000008);
-        bitBoard[Colour.Black, PieceType.Queen] .Should().Be(0x0800000000000000);
-        bitBoard[Colour.White, PieceType.King]  .Should().Be(0x0000000000000010);
-        bitBoard[Colour.Black, PieceType.King]  .Should().Be(0x1000000000000000);
+        bitBoard[C.White, PType.WPawn]  .Should().Be(0x000000000810E700); // h8 00000000 00000000 00000000 00000000 00001000 00010000 11100111 00000000 a1
+        bitBoard[C.Black, PType.BPawn]  .Should().Be(0x007F008000000000); // h8 00000000 01111111 00000000 10000000 00000000 00000000 00000000 00000000 a1
+        bitBoard[C.White, PType.Knight].Should().Be(0x0000000000000042);
+        bitBoard[C.Black, PType.Knight].Should().Be(0x4200000000000000);
+        bitBoard[C.White, PType.Bishop].Should().Be(0x0000000000000024);
+        bitBoard[C.Black, PType.Bishop].Should().Be(0x2400000000000000);
+        bitBoard[C.White, PType.Rook]  .Should().Be(0x0000000000000081);
+        bitBoard[C.Black, PType.Rook]  .Should().Be(0x8100000000000000);
+        bitBoard[C.White, PType.Queen] .Should().Be(0x0000000000000008);
+        bitBoard[C.Black, PType.Queen] .Should().Be(0x0800000000000000);
+        bitBoard[C.White, PType.King]  .Should().Be(0x0000000000000010);
+        bitBoard[C.Black, PType.King]  .Should().Be(0x1000000000000000);
     }
 
     private static Piece[] CreateStartPositionPieceArray()
     {
-        var empty = new Piece(Colour.White, PieceType.None);
-        var wPawn = new Piece(Colour.White, PieceType.WPawn);
-        var bPawn = new Piece(Colour.Black, PieceType.BPawn);
+        var empty = new Piece(C.White, PType.None);
+        var wPawn = new Piece(C.White, PType.WPawn);
+        var bPawn = new Piece(C.Black, PType.BPawn);
 
         return new[]
         {
-            new Piece(Colour.White, PieceType.Rook),   // a1
-            new Piece(Colour.White, PieceType.Knight), // b1
-            new Piece(Colour.White, PieceType.Bishop), // c1
-            new Piece(Colour.White, PieceType.Queen),  // d1
-            new Piece(Colour.White, PieceType.King),   // e1
-            new Piece(Colour.White, PieceType.Bishop), // f1
-            new Piece(Colour.White, PieceType.Knight), // g1
-            new Piece(Colour.White, PieceType.Rook),   // h1
+            new Piece(C.White, PType.Rook),   // a1
+            new Piece(C.White, PType.Knight), // b1
+            new Piece(C.White, PType.Bishop), // c1
+            new Piece(C.White, PType.Queen),  // d1
+            new Piece(C.White, PType.King),   // e1
+            new Piece(C.White, PType.Bishop), // f1
+            new Piece(C.White, PType.Knight), // g1
+            new Piece(C.White, PType.Rook),   // h1
             wPawn, wPawn, wPawn, wPawn, wPawn, wPawn, wPawn, wPawn, // a2 - h2
             empty, empty, empty, empty, empty, empty, empty, empty, // a3 - h3
             empty, empty, empty, empty, empty, empty, empty, empty, // a4 - h4
             empty, empty, empty, empty, empty, empty, empty, empty, // a5 - h5
             empty, empty, empty, empty, empty, empty, empty, empty, // a6 - h6
             bPawn, bPawn, bPawn, bPawn, bPawn, bPawn, bPawn, bPawn, // a7 - h7
-            new Piece(Colour.Black, PieceType.Rook),   // a8
-            new Piece(Colour.Black, PieceType.Knight), // b8
-            new Piece(Colour.Black, PieceType.Bishop), // c8
-            new Piece(Colour.Black, PieceType.Queen),  // d8
-            new Piece(Colour.Black, PieceType.King),   // e8
-            new Piece(Colour.Black, PieceType.Bishop), // f8
-            new Piece(Colour.Black, PieceType.Knight), // g8
-            new Piece(Colour.Black, PieceType.Rook)    // h8
+            new Piece(C.Black, PType.Rook),   // a8
+            new Piece(C.Black, PType.Knight), // b8
+            new Piece(C.Black, PType.Bishop), // c8
+            new Piece(C.Black, PType.Queen),  // d8
+            new Piece(C.Black, PType.King),   // e8
+            new Piece(C.Black, PType.Bishop), // f8
+            new Piece(C.Black, PType.Knight), // g8
+            new Piece(C.Black, PType.Rook)    // h8
         };
     }
 
     private static BitBoard CreateStartPositionBitBoard()
     {
-        var white = (byte)Colour.White << 3;
-        var black = (byte)Colour.Black << 3;
+        var white = (byte)C.White << 3;
+        var black = (byte)C.Black << 3;
         var pieceBitBoards = new Dictionary<int, ulong>
         {
-            { white | (byte)PieceType.WPawn,  0x000000000000FF00 },
-            { white | (byte)PieceType.Knight, 0x0000000000000042 },
-            { white | (byte)PieceType.Bishop, 0x0000000000000024 },
-            { white | (byte)PieceType.Rook,   0x0000000000000081 },
-            { white | (byte)PieceType.Queen,  0x0000000000000008 },
-            { white | (byte)PieceType.King,   0x0000000000000010 },
-            { black | (byte)PieceType.BPawn,  0x00FF000000000000 },
-            { black | (byte)PieceType.Knight, 0x4200000000000000 },
-            { black | (byte)PieceType.Bishop, 0x2400000000000000 },
-            { black | (byte)PieceType.Rook,   0x8100000000000000 },
-            { black | (byte)PieceType.Queen,  0x0800000000000000 },
-            { black | (byte)PieceType.King,   0x1000000000000000 },
+            { white | (byte)PType.WPawn,  0x000000000000FF00 },
+            { white | (byte)PType.Knight, 0x0000000000000042 },
+            { white | (byte)PType.Bishop, 0x0000000000000024 },
+            { white | (byte)PType.Rook,   0x0000000000000081 },
+            { white | (byte)PType.Queen,  0x0000000000000008 },
+            { white | (byte)PType.King,   0x0000000000000010 },
+            { black | (byte)PType.BPawn,  0x00FF000000000000 },
+            { black | (byte)PType.Knight, 0x4200000000000000 },
+            { black | (byte)PType.Bishop, 0x2400000000000000 },
+            { black | (byte)PType.Rook,   0x8100000000000000 },
+            { black | (byte)PType.Queen,  0x0800000000000000 },
+            { black | (byte)PType.King,   0x1000000000000000 },
         };
 
         return BitBoard.FromDictionary(pieceBitBoards);
-
-        // return new BitBoard(
-        //     white: new ColourBitBoard()
-        //     {
-        //         Pawn    = 0x000000000000FF00,
-        //         Knight  = 0x0000000000000042,
-        //         Bishop  = 0x0000000000000024,
-        //         Rook    = 0x0000000000000081,
-        //         Queen   = 0x0000000000000008,
-        //         King    = 0x0000000000000010,
-        //     },
-        //     black: new ColourBitBoard()
-        //     {
-        //         Pawn    = 0x00FF000000000000,
-        //         Knight  = 0x4200000000000000,
-        //         Bishop  = 0x2400000000000000,
-        //         Rook    = 0x8100000000000000,
-        //         Queen   = 0x0800000000000000,
-        //         King    = 0x1000000000000000,
-        //     }
-        // );
     }
 }

@@ -1,14 +1,14 @@
 namespace Chess.Generics;
 
 [Flags]
-public enum Colour : byte
+public enum C : byte
 {
     White = 0,
     Black = 1
 }
 
 [Flags]
-public enum PieceType : byte
+public enum PType : byte
 {
     None   = 0,
     WPawn  = 1,

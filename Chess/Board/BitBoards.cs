@@ -12,7 +12,7 @@ public class BitBoard
 {
     private Dictionary<int, ulong> _bitBoards { get; set; } = new Dictionary<int, ulong>();
 
-    public ulong Occupied => this[Colour.White] | this[Colour.Black];
+    public ulong Occupied => this[C.White] | this[C.Black];
     public ulong Empty => ~Occupied;
 
     public static BitBoard FromDictionary(Dictionary<int, ulong> bitBoards)
@@ -22,35 +22,35 @@ public class BitBoard
         return bitBoard;
     }
 
-    public ulong this[Colour colour, PieceType pieceType]
+    public ulong this[C colour, PType pieceType]
     {
         get => _bitBoards[(byte)colour << 3 | (byte)pieceType];
         set => _bitBoards[(byte)colour << 3 | (byte)pieceType] = value;
     }
 
-    public ulong this[Colour colour]
+    public ulong this[C colour]
     {
         get
         {
-            var pawn  = colour == Colour.White ? PieceType.WPawn  : PieceType.BPawn;
+            var pawn  = colour == C.White ? PType.WPawn  : PType.BPawn;
             return this[colour, pawn]
-                |  this[colour, PieceType.Knight]
-                |  this[colour, PieceType.Bishop]
-                |  this[colour, PieceType.Rook]
-                |  this[colour, PieceType.Queen]
-                |  this[colour, PieceType.King];
+                |  this[colour, PType.Knight]
+                |  this[colour, PType.Bishop]
+                |  this[colour, PType.Rook]
+                |  this[colour, PType.Queen]
+                |  this[colour, PType.King];
         }
     }
 
-    public ulong this[PieceType pieceType]
+    public ulong this[PType pieceType]
     {
         get
         {
-            if (pieceType == PieceType.WPawn || pieceType == PieceType.BPawn)
+            if (pieceType == PType.WPawn || pieceType == PType.BPawn)
             {
-                return this[Colour.White, PieceType.WPawn] | this[Colour.Black, PieceType.BPawn];
+                return this[C.White, PType.WPawn] | this[C.Black, PType.BPawn];
             }
-            return this[Colour.White, pieceType] | this[Colour.Black, pieceType];
+            return this[C.White, pieceType] | this[C.Black, pieceType];
         }
     }
 
@@ -71,39 +71,61 @@ public class BitBoard
     private ulong soWeOne(ulong bitBoard) => (bitBoard & ~(ulong)Files.A) >> 9; // A file can't move west
     private ulong noWeOne(ulong bitBoard) => (bitBoard & ~(ulong)Files.A) << 7; // A file can't move west
 
-    private ulong wPawnSinglePushTargets() => nortOne(this[Colour.White, PieceType.WPawn]) & Empty;
+    private ulong noNoEa(ulong bitBoard) => (bitBoard & ~(ulong)Files.H) << 17;
+    private ulong noEaEa(ulong bitBoard) => (bitBoard & ~(ulong)Files.G & ~(ulong)Files.H) << 10;
+    private ulong soEaEa(ulong bitBoard) => (bitBoard & ~(ulong)Files.G & ~(ulong)Files.H) >> 6;
+    private ulong soSoEa(ulong bitBoard) => (bitBoard & ~(ulong)Files.H) >> 15;
+    private ulong soSoWe(ulong bitBoard) => (bitBoard & ~(ulong)Files.A) >> 17;
+    private ulong soWeWe(ulong bitBoard) => (bitBoard & ~(ulong)Files.A & ~(ulong)Files.B) >> 10;
+    private ulong noWeWe(ulong bitBoard) => (bitBoard & ~(ulong)Files.A & ~(ulong)Files.B) << 6;
+    private ulong noNoWe(ulong bitBoard) => (bitBoard & ~(ulong)Files.A) << 15;
+
+    private ulong wPawnSinglePushTargets() => nortOne(this[C.White, PType.WPawn]) & Empty;
     private ulong wPawnDoublePushTargets() => nortOne(wPawnSinglePushTargets()) & Empty & (ulong)Ranks.R4;
-    private ulong wPawnsAbleToSinglePush() => soutOne(Empty) & this[Colour.White, PieceType.WPawn];
+    private ulong wPawnsAbleToSinglePush() => soutOne(Empty) & this[C.White, PType.WPawn];
     private ulong wPawnsAbleToDoublePush()
     {
         var emptyR3SquaresWithEmptyR4SquaresAhead = soutOne(Empty & (ulong)Ranks.R4) & Empty;
-        return soutOne(emptyR3SquaresWithEmptyR4SquaresAhead) & this[Colour.White, PieceType.WPawn];
+        return soutOne(emptyR3SquaresWithEmptyR4SquaresAhead) & this[C.White, PType.WPawn];
     }
-    private ulong wPawnAttacks() => noEaOne(this[Colour.White, PieceType.WPawn]) | noWeOne(this[Colour.White, PieceType.WPawn]);
+    private ulong wPawnAttacks() => noEaOne(this[C.White, PType.WPawn]) | noWeOne(this[C.White, PType.WPawn]);
 
-    private ulong bPawnSinglePushTargets() => soutOne(this[Colour.Black, PieceType.BPawn]) & Empty;
+    private ulong bPawnSinglePushTargets() => soutOne(this[C.Black, PType.BPawn]) & Empty;
     private ulong bPawnDoublePushTargets() => soutOne(bPawnSinglePushTargets()) & Empty & (ulong)Ranks.R5;
-    private ulong bPawnsAbleToSinglePush() => nortOne(Empty) & this[Colour.Black, PieceType.BPawn];
+    private ulong bPawnsAbleToSinglePush() => nortOne(Empty) & this[C.Black, PType.BPawn];
     private ulong bPawnsAbleToDoublePush()
     {
         var emptyR6SquaresWithEmptyR5SquaresAhead = nortOne(Empty & (ulong)Ranks.R5) & Empty;
-        return nortOne(emptyR6SquaresWithEmptyR5SquaresAhead) & this[Colour.Black, PieceType.BPawn];
+        return nortOne(emptyR6SquaresWithEmptyR5SquaresAhead) & this[C.Black, PType.BPawn];
     }
-    private ulong bPawnAttacks() => soEaOne(this[Colour.Black, PieceType.BPawn]) | soWeOne(this[Colour.Black, PieceType.BPawn]);
+    private ulong bPawnAttacks() => soEaOne(this[C.Black, PType.BPawn]) | soWeOne(this[C.Black, PType.BPawn]);
+
+    private ulong knightAttacks(C colour) =>
+        noNoEa(this[colour, PType.Knight]) | noEaEa(this[colour, PType.Knight]) |
+        soEaEa(this[colour, PType.Knight]) | soSoEa(this[colour, PType.Knight]) |
+        soSoWe(this[colour, PType.Knight]) | soWeWe(this[colour, PType.Knight]) |
+        noWeWe(this[colour, PType.Knight]) | noNoWe(this[colour, PType.Knight]);
+
+    public ulong kingAttacks(C colour)
+    {
+        var laterals = eastOne(this[colour, PType.King]) | westOne(this[colour, PType.King]);
+        var threeSqMask = laterals | this[colour, PType.King];
+        return nortOne(threeSqMask) | soutOne(threeSqMask) | laterals;
+    }
 
     public override bool Equals(object obj) => obj is BitBoard other &&
-        this[Colour.White, PieceType.WPawn]  == other[Colour.White, PieceType.WPawn]  &&
-        this[Colour.White, PieceType.Knight] == other[Colour.White, PieceType.Knight] &&
-        this[Colour.White, PieceType.Bishop] == other[Colour.White, PieceType.Bishop] &&
-        this[Colour.White, PieceType.Rook]   == other[Colour.White, PieceType.Rook]   &&
-        this[Colour.White, PieceType.Queen]  == other[Colour.White, PieceType.Queen]  &&
-        this[Colour.White, PieceType.King]   == other[Colour.White, PieceType.King]   &&
-        this[Colour.Black, PieceType.BPawn]  == other[Colour.Black, PieceType.BPawn]  &&
-        this[Colour.Black, PieceType.Knight] == other[Colour.Black, PieceType.Knight] &&
-        this[Colour.Black, PieceType.Bishop] == other[Colour.Black, PieceType.Bishop] &&
-        this[Colour.Black, PieceType.Rook]   == other[Colour.Black, PieceType.Rook]   &&
-        this[Colour.Black, PieceType.Queen]  == other[Colour.Black, PieceType.Queen]  &&
-        this[Colour.Black, PieceType.King]   == other[Colour.Black, PieceType.King];
+        this[C.White, PType.WPawn]  == other[C.White, PType.WPawn]  &&
+        this[C.White, PType.Knight] == other[C.White, PType.Knight] &&
+        this[C.White, PType.Bishop] == other[C.White, PType.Bishop] &&
+        this[C.White, PType.Rook]   == other[C.White, PType.Rook]   &&
+        this[C.White, PType.Queen]  == other[C.White, PType.Queen]  &&
+        this[C.White, PType.King]   == other[C.White, PType.King]   &&
+        this[C.Black, PType.BPawn]  == other[C.Black, PType.BPawn]  &&
+        this[C.Black, PType.Knight] == other[C.Black, PType.Knight] &&
+        this[C.Black, PType.Bishop] == other[C.Black, PType.Bishop] &&
+        this[C.Black, PType.Rook]   == other[C.Black, PType.Rook]   &&
+        this[C.Black, PType.Queen]  == other[C.Black, PType.Queen]  &&
+        this[C.Black, PType.King]   == other[C.Black, PType.King];
 
-    public override int GetHashCode() => HashCode.Combine( _bitBoards);
+    public override int GetHashCode() => _bitBoards.GetHashCode();
 }
