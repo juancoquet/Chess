@@ -106,6 +106,13 @@ public class BitBoard
         soSoWe(this[colour, PType.Knight]) | soWeWe(this[colour, PType.Knight]) |
         noWeWe(this[colour, PType.Knight]) | noNoWe(this[colour, PType.Knight]);
 
+    public ulong kingAttacks(C colour)
+    {
+        var laterals = eastOne(this[colour, PType.King]) | westOne(this[colour, PType.King]);
+        var threeSqMask = laterals | this[colour, PType.King];
+        return nortOne(threeSqMask) | soutOne(threeSqMask) | laterals;
+    }
+
     public override bool Equals(object obj) => obj is BitBoard other &&
         this[C.White, PType.WPawn]  == other[C.White, PType.WPawn]  &&
         this[C.White, PType.Knight] == other[C.White, PType.Knight] &&
