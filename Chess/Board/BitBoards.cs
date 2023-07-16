@@ -74,22 +74,43 @@ public class BitBoard
     }
     private ulong bPawnAttacks() => soEaOne(this[C.Black, PType.BPawn]) | soWeOne(this[C.Black, PType.BPawn]);
 
-    private ulong knightAttacks(C colour) =>
-        noNoEa(this[colour, PType.Knight]) | noEaEa(this[colour, PType.Knight]) |
-        soEaEa(this[colour, PType.Knight]) | soSoEa(this[colour, PType.Knight]) |
-        soSoWe(this[colour, PType.Knight]) | soWeWe(this[colour, PType.Knight]) |
-        noWeWe(this[colour, PType.Knight]) | noNoWe(this[colour, PType.Knight]);
+    private ulong knightAttacks(C colour)
+    {
+        var knight = this[colour, PType.Knight];
+        return noNoEa(knight) | noEaEa(knight) | soEaEa(knight) | soSoEa(knight) |
+            soSoWe(knight) | soWeWe(knight) | noWeWe(knight) | noNoWe(knight);
+    }
 
     private ulong kingAttacks(C colour)
     {
-        var laterals = eastOne(this[colour, PType.King]) | westOne(this[colour, PType.King]);
-        var threeSqMask = laterals | this[colour, PType.King];
+        var king = this[colour, PType.King];
+        var laterals = eastOne(king) | westOne(king);
+        var threeSqMask = laterals | king;
         return nortOne(threeSqMask) | soutOne(threeSqMask) | laterals;
     }
 
-    private ulong rookAttacks(C colour) =>
-        rayAttacks(this[colour, PType.Rook], nortOne) | rayAttacks(this[colour, PType.Rook], soutOne) |
-        rayAttacks(this[colour, PType.Rook], eastOne) | rayAttacks(this[colour, PType.Rook], westOne);
+    private ulong rookAttacks(C colour)
+    {
+        var rook = this[colour, PType.Rook];
+        return rayAttacks(rook, nortOne) | rayAttacks(rook, soutOne) |
+            rayAttacks(rook, eastOne) | rayAttacks(rook, westOne);
+    }
+
+    private ulong bishopAttacks(C colour)
+    {
+        var bishop = this[colour, PType.Bishop];
+        return rayAttacks(bishop, noEaOne) | rayAttacks(bishop, soEaOne) |
+            rayAttacks(bishop, soWeOne) | rayAttacks(bishop, noWeOne);
+    }
+
+    private ulong queenAttacks(C colour)
+    {
+        var queen = this[colour, PType.Queen];
+        return rayAttacks(queen, nortOne) | rayAttacks(queen, soutOne) |
+            rayAttacks(queen, eastOne) | rayAttacks(queen, westOne) |
+            rayAttacks(queen, noEaOne) | rayAttacks(queen, soEaOne) |
+            rayAttacks(queen, soWeOne) | rayAttacks(queen, noWeOne);
+    }
 
     private ulong rayAttacks(ulong bitBoard, Func<ulong, ulong> directionOneStep) =>
         directionOneStep(dumb7Fill(bitBoard, directionOneStep));
