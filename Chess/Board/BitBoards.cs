@@ -54,68 +54,68 @@ public class BitBoard
         }
     }
 
-    private ulong wPawnSinglePushTargets() => nortOne(this[C.White, PType.WPawn]) & Empty;
-    private ulong wPawnDoublePushTargets() => nortOne(wPawnSinglePushTargets()) & Empty & (ulong)Ranks.R4;
-    private ulong wPawnsAbleToSinglePush() => soutOne(Empty) & this[C.White, PType.WPawn];
-    private ulong wPawnsAbleToDoublePush()
+    private ulong WPawnSinglePushTargets() => NortOne(this[C.White, PType.WPawn]) & Empty;
+    private ulong WPawnDoublePushTargets() => NortOne(WPawnSinglePushTargets()) & Empty & (ulong)Ranks.R4;
+    private ulong WPawnsAbleToSinglePush() => SoutOne(Empty) & this[C.White, PType.WPawn];
+    private ulong WPawnsAbleToDoublePush()
     {
-        var emptyR3SquaresWithEmptyR4SquaresAhead = soutOne(Empty & (ulong)Ranks.R4) & Empty;
-        return soutOne(emptyR3SquaresWithEmptyR4SquaresAhead) & this[C.White, PType.WPawn];
+        var emptyR3SquaresWithEmptyR4SquaresAhead = SoutOne(Empty & (ulong)Ranks.R4) & Empty;
+        return SoutOne(emptyR3SquaresWithEmptyR4SquaresAhead) & this[C.White, PType.WPawn];
     }
-    private ulong wPawnAttacks() => noEaOne(this[C.White, PType.WPawn]) | noWeOne(this[C.White, PType.WPawn]);
+    private ulong WPawnAttacks() => NoEaOne(this[C.White, PType.WPawn]) | noWeOne(this[C.White, PType.WPawn]);
 
-    private ulong bPawnSinglePushTargets() => soutOne(this[C.Black, PType.BPawn]) & Empty;
-    private ulong bPawnDoublePushTargets() => soutOne(bPawnSinglePushTargets()) & Empty & (ulong)Ranks.R5;
-    private ulong bPawnsAbleToSinglePush() => nortOne(Empty) & this[C.Black, PType.BPawn];
-    private ulong bPawnsAbleToDoublePush()
+    private ulong BPawnSinglePushTargets() => SoutOne(this[C.Black, PType.BPawn]) & Empty;
+    private ulong BPawnDoublePushTargets() => SoutOne(BPawnSinglePushTargets()) & Empty & (ulong)Ranks.R5;
+    private ulong BPawnsAbleToSinglePush() => NortOne(Empty) & this[C.Black, PType.BPawn];
+    private ulong BPawnsAbleToDoublePush()
     {
-        var emptyR6SquaresWithEmptyR5SquaresAhead = nortOne(Empty & (ulong)Ranks.R5) & Empty;
-        return nortOne(emptyR6SquaresWithEmptyR5SquaresAhead) & this[C.Black, PType.BPawn];
+        var emptyR6SquaresWithEmptyR5SquaresAhead = NortOne(Empty & (ulong)Ranks.R5) & Empty;
+        return NortOne(emptyR6SquaresWithEmptyR5SquaresAhead) & this[C.Black, PType.BPawn];
     }
-    private ulong bPawnAttacks() => soEaOne(this[C.Black, PType.BPawn]) | soWeOne(this[C.Black, PType.BPawn]);
+    private ulong BPawnAttacks() => SoEaOne(this[C.Black, PType.BPawn]) | SoWeOne(this[C.Black, PType.BPawn]);
 
-    private ulong knightAttacks(C colour)
+    private ulong KnightAttacks(C colour)
     {
         var knight = this[colour, PType.Knight];
-        return noNoEa(knight) | noEaEa(knight) | soEaEa(knight) | soSoEa(knight) |
-            soSoWe(knight) | soWeWe(knight) | noWeWe(knight) | noNoWe(knight);
+        return NoNoEa(knight) | NoEaEa(knight) | SoEaEa(knight) | SoSoEa(knight) |
+            SoSoWe(knight) | SoWeWe(knight) | NoWeWe(knight) | NoNoWe(knight);
     }
 
-    private ulong kingAttacks(C colour)
+    private ulong KingAttacks(C colour)
     {
         var king = this[colour, PType.King];
-        var laterals = eastOne(king) | westOne(king);
+        var laterals = EastOne(king) | WestOne(king);
         var threeSqMask = laterals | king;
-        return nortOne(threeSqMask) | soutOne(threeSqMask) | laterals;
+        return NortOne(threeSqMask) | SoutOne(threeSqMask) | laterals;
     }
 
-    private ulong rookAttacks(C colour)
+    private ulong RookAttacks(C colour)
     {
         var rook = this[colour, PType.Rook];
-        return rayAttacks(rook, nortOne) | rayAttacks(rook, soutOne) |
-            rayAttacks(rook, eastOne) | rayAttacks(rook, westOne);
+        return RayAttacks(rook, NortOne) | RayAttacks(rook, SoutOne) |
+            RayAttacks(rook, EastOne) | RayAttacks(rook, WestOne);
     }
 
-    private ulong bishopAttacks(C colour)
+    private ulong BishopAttacks(C colour)
     {
         var bishop = this[colour, PType.Bishop];
-        return rayAttacks(bishop, noEaOne) | rayAttacks(bishop, soEaOne) |
-            rayAttacks(bishop, soWeOne) | rayAttacks(bishop, noWeOne);
+        return RayAttacks(bishop, NoEaOne) | RayAttacks(bishop, SoEaOne) |
+            RayAttacks(bishop, SoWeOne) | RayAttacks(bishop, noWeOne);
     }
 
-    private ulong queenAttacks(C colour)
+    private ulong QueenAttacks(C colour)
     {
         var queen = this[colour, PType.Queen];
-        return rayAttacks(queen, nortOne) | rayAttacks(queen, soutOne) |
-            rayAttacks(queen, eastOne) | rayAttacks(queen, westOne) |
-            rayAttacks(queen, noEaOne) | rayAttacks(queen, soEaOne) |
-            rayAttacks(queen, soWeOne) | rayAttacks(queen, noWeOne);
+        return RayAttacks(queen, NortOne) | RayAttacks(queen, SoutOne) |
+            RayAttacks(queen, EastOne) | RayAttacks(queen, WestOne) |
+            RayAttacks(queen, NoEaOne) | RayAttacks(queen, SoEaOne) |
+            RayAttacks(queen, SoWeOne) | RayAttacks(queen, noWeOne);
     }
 
-    private ulong rayAttacks(ulong bitBoard, Func<ulong, ulong> directionOneStep) =>
-        directionOneStep(dumb7Fill(bitBoard, directionOneStep));
+    private ulong RayAttacks(ulong bitBoard, Func<ulong, ulong> DirectionOneStep) =>
+        DirectionOneStep(Dumb7Fill(bitBoard, DirectionOneStep));
 
-    private ulong dumb7Fill(ulong bitBoard, Func<ulong, ulong> directionOneStep) =>
+    private ulong Dumb7Fill(ulong bitBoard, Func<ulong, ulong> directionOneStep) =>
         // TODO: test this
         // i don't think i actually need to include wrap exclusions; the direction funcs should handle
         // var inclusionSet = Empty & ~(ulong)boundaryWrapExclusion;
@@ -132,23 +132,23 @@ public class BitBoard
     //          -9   -8   -7
     // soWe         sout         soEa
 
-    private ulong nortOne(ulong bitBoard) => bitBoard << 8;
-    private ulong soutOne(ulong bitBoard) => bitBoard >> 8;
-    private ulong eastOne(ulong bitBoard) => (bitBoard & ~(ulong)Files.H) << 1; // H file can't move east
-    private ulong noEaOne(ulong bitBoard) => (bitBoard & ~(ulong)Files.H) << 9; // H file can't move east
-    private ulong soEaOne(ulong bitBoard) => (bitBoard & ~(ulong)Files.H) >> 7; // H file can't move east
-    private ulong westOne(ulong bitBoard) => (bitBoard & ~(ulong)Files.A) >> 1; // A file can't move west
-    private ulong soWeOne(ulong bitBoard) => (bitBoard & ~(ulong)Files.A) >> 9; // A file can't move west
+    private ulong NortOne(ulong bitBoard) => bitBoard << 8;
+    private ulong SoutOne(ulong bitBoard) => bitBoard >> 8;
+    private ulong EastOne(ulong bitBoard) => (bitBoard & ~(ulong)Files.H) << 1; // H file can't move east
+    private ulong NoEaOne(ulong bitBoard) => (bitBoard & ~(ulong)Files.H) << 9; // H file can't move east
+    private ulong SoEaOne(ulong bitBoard) => (bitBoard & ~(ulong)Files.H) >> 7; // H file can't move east
+    private ulong WestOne(ulong bitBoard) => (bitBoard & ~(ulong)Files.A) >> 1; // A file can't move west
+    private ulong SoWeOne(ulong bitBoard) => (bitBoard & ~(ulong)Files.A) >> 9; // A file can't move west
     private ulong noWeOne(ulong bitBoard) => (bitBoard & ~(ulong)Files.A) << 7; // A file can't move west
 
-    private ulong noNoEa(ulong bitBoard) => (bitBoard & ~(ulong)Files.H) << 17;
-    private ulong noEaEa(ulong bitBoard) => (bitBoard & ~(ulong)Files.G & ~(ulong)Files.H) << 10;
-    private ulong soEaEa(ulong bitBoard) => (bitBoard & ~(ulong)Files.G & ~(ulong)Files.H) >> 6;
-    private ulong soSoEa(ulong bitBoard) => (bitBoard & ~(ulong)Files.H) >> 15;
-    private ulong soSoWe(ulong bitBoard) => (bitBoard & ~(ulong)Files.A) >> 17;
-    private ulong soWeWe(ulong bitBoard) => (bitBoard & ~(ulong)Files.A & ~(ulong)Files.B) >> 10;
-    private ulong noWeWe(ulong bitBoard) => (bitBoard & ~(ulong)Files.A & ~(ulong)Files.B) << 6;
-    private ulong noNoWe(ulong bitBoard) => (bitBoard & ~(ulong)Files.A) << 15;
+    private ulong NoNoEa(ulong bitBoard) => (bitBoard & ~(ulong)Files.H) << 17;
+    private ulong NoEaEa(ulong bitBoard) => (bitBoard & ~(ulong)Files.G & ~(ulong)Files.H) << 10;
+    private ulong SoEaEa(ulong bitBoard) => (bitBoard & ~(ulong)Files.G & ~(ulong)Files.H) >> 6;
+    private ulong SoSoEa(ulong bitBoard) => (bitBoard & ~(ulong)Files.H) >> 15;
+    private ulong SoSoWe(ulong bitBoard) => (bitBoard & ~(ulong)Files.A) >> 17;
+    private ulong SoWeWe(ulong bitBoard) => (bitBoard & ~(ulong)Files.A & ~(ulong)Files.B) >> 10;
+    private ulong NoWeWe(ulong bitBoard) => (bitBoard & ~(ulong)Files.A & ~(ulong)Files.B) << 6;
+    private ulong NoNoWe(ulong bitBoard) => (bitBoard & ~(ulong)Files.A) << 15;
 
     public override bool Equals(object obj) => obj is BitBoard other &&
         this[C.White, PType.WPawn]  == other[C.White, PType.WPawn]  &&
