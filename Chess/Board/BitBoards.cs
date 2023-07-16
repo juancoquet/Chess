@@ -90,10 +90,10 @@ public class BitBoard
     private ulong rayAttacks(ulong bitBoard, Func<ulong, ulong> directionOneStep, Files[] boundaryWrapExclusion)
     {
         var occludedFill = dumb7Fill(bitBoard, directionOneStep, boundaryWrapExclusion);
-        var empty = Empty & ~(ulong)boundaryWrapExclusion
+        var exclusionSet = ~(ulong)boundaryWrapExclusion
             .Aggregate((ulong)0, (firstBoundaryFile, potentialSecond) =>
                 (ulong)firstBoundaryFile | (ulong)potentialSecond);
-        return directionOneStep(empty & occludedFill);
+        return directionOneStep(exclusionSet & occludedFill);
     }
 
     private ulong dumb7Fill(ulong bitBoard, Func<ulong, ulong> directionOneStep, Files[] boundaryWrapExclusion)
