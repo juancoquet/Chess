@@ -74,36 +74,55 @@ public class BitBoard
     }
     private ulong bPawnAttacks() => soEaOne(this[C.Black, PType.BPawn]) | soWeOne(this[C.Black, PType.BPawn]);
 
-    private ulong knightAttacks(C colour) =>
-        noNoEa(this[colour, PType.Knight]) | noEaEa(this[colour, PType.Knight]) |
-        soEaEa(this[colour, PType.Knight]) | soSoEa(this[colour, PType.Knight]) |
-        soSoWe(this[colour, PType.Knight]) | soWeWe(this[colour, PType.Knight]) |
-        noWeWe(this[colour, PType.Knight]) | noNoWe(this[colour, PType.Knight]);
+    private ulong knightAttacks(C colour)
+    {
+        var knight = this[colour, PType.Knight];
+        return noNoEa(knight) | noEaEa(knight) | soEaEa(knight) | soSoEa(knight) |
+            soSoWe(knight) | soWeWe(knight) | noWeWe(knight) | noNoWe(knight);
+    }
 
     private ulong kingAttacks(C colour)
     {
-        var laterals = eastOne(this[colour, PType.King]) | westOne(this[colour, PType.King]);
-        var threeSqMask = laterals | this[colour, PType.King];
+        var king = this[colour, PType.King];
+        var laterals = eastOne(king) | westOne(king);
+        var threeSqMask = laterals | king;
         return nortOne(threeSqMask) | soutOne(threeSqMask) | laterals;
     }
 
-    private ulong rayAttacks(ulong bitBoard, Func<ulong, ulong> directionOneStep, Files[] boundaryWrapExclusion)
+    private ulong rookAttacks(C colour)
     {
-        var occludedFill = dumb7Fill(bitBoard, directionOneStep, boundaryWrapExclusion);
-        var empty = Empty & ~(ulong)boundaryWrapExclusion
-            .Aggregate((ulong)0, (firstBoundaryFile, potentialSecond) =>
-                (ulong)firstBoundaryFile | (ulong)potentialSecond);
-        return directionOneStep(empty & occludedFill);
+        var rook = this[colour, PType.Rook];
+        return rayAttacks(rook, nortOne) | rayAttacks(rook, soutOne) |
+            rayAttacks(rook, eastOne) | rayAttacks(rook, westOne);
     }
 
-    private ulong dumb7Fill(ulong bitBoard, Func<ulong, ulong> directionOneStep, Files[] boundaryWrapExclusion)
+    private ulong bishopAttacks(C colour)
     {
-        var empty = Empty & ~(ulong)boundaryWrapExclusion
-            .Aggregate((ulong)0, (firstBoundaryFile, potentialSecond) =>
-                (ulong)firstBoundaryFile | (ulong)potentialSecond);
-        return Enumerable.Range(0, 7)
-            .Aggregate(bitBoard, (current, _) => (empty & directionOneStep(current)) | current);
+        var bishop = this[colour, PType.Bishop];
+        return rayAttacks(bishop, noEaOne) | rayAttacks(bishop, soEaOne) |
+            rayAttacks(bishop, soWeOne) | rayAttacks(bishop, noWeOne);
     }
+
+    private ulong queenAttacks(C colour)
+    {
+        var queen = this[colour, PType.Queen];
+        return rayAttacks(queen, nortOne) | rayAttacks(queen, soutOne) |
+            rayAttacks(queen, eastOne) | rayAttacks(queen, westOne) |
+            rayAttacks(queen, noEaOne) | rayAttacks(queen, soEaOne) |
+            rayAttacks(queen, soWeOne) | rayAttacks(queen, noWeOne);
+    }
+
+    private ulong rayAttacks(ulong bitBoard, Func<ulong, ulong> directionOneStep) =>
+        directionOneStep(dumb7Fill(bitBoard, directionOneStep));
+
+    private ulong dumb7Fill(ulong bitBoard, Func<ulong, ulong> directionOneStep) =>
+        // TODO: test this
+        // i don't think i actually need to include wrap exclusions; the direction funcs should handle
+        // var inclusionSet = Empty & ~(ulong)boundaryWrapExclusion;
+        // return Enumerable.Range(0, 7)
+        //     .Aggregate(bitBoard, (current, _) => (inclusionSet & directionOneStep(current)) | current);
+        Enumerable.Range(0, 7)
+            .Aggregate(bitBoard, (current, _) => (Empty & directionOneStep(current)) | current);
 
     // noWe         nort         noEa
     //          +7   +8   +9
