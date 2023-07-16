@@ -87,23 +87,21 @@ public class BitBoard
         return nortOne(threeSqMask) | soutOne(threeSqMask) | laterals;
     }
 
-    private ulong rayAttacks(ulong bitBoard, Func<ulong, ulong> directionOneStep, Files[] boundaryWrapExclusion)
-    {
-        var occludedFill = dumb7Fill(bitBoard, directionOneStep, boundaryWrapExclusion);
-        var exclusionSet = ~(ulong)boundaryWrapExclusion
-            .Aggregate((ulong)0, (firstBoundaryFile, potentialSecond) =>
-                (ulong)firstBoundaryFile | (ulong)potentialSecond);
-        return directionOneStep(exclusionSet & occludedFill);
-    }
+    private ulong rookAttacks(C colour) =>
+        rayAttacks(this[colour, PType.Rook], nortOne) | rayAttacks(this[colour, PType.Rook], soutOne) |
+        rayAttacks(this[colour, PType.Rook], eastOne) | rayAttacks(this[colour, PType.Rook], westOne);
 
-    private ulong dumb7Fill(ulong bitBoard, Func<ulong, ulong> directionOneStep, Files[] boundaryWrapExclusion)
-    {
-        var empty = Empty & ~(ulong)boundaryWrapExclusion
-            .Aggregate((ulong)0, (firstBoundaryFile, potentialSecond) =>
-                (ulong)firstBoundaryFile | (ulong)potentialSecond);
-        return Enumerable.Range(0, 7)
-            .Aggregate(bitBoard, (current, _) => (empty & directionOneStep(current)) | current);
-    }
+    private ulong rayAttacks(ulong bitBoard, Func<ulong, ulong> directionOneStep) =>
+        directionOneStep(dumb7Fill(bitBoard, directionOneStep));
+
+    private ulong dumb7Fill(ulong bitBoard, Func<ulong, ulong> directionOneStep) =>
+        // TODO: test this
+        // i don't think i actually need to include wrap exclusions; the direction funcs should handle
+        // var inclusionSet = Empty & ~(ulong)boundaryWrapExclusion;
+        // return Enumerable.Range(0, 7)
+        //     .Aggregate(bitBoard, (current, _) => (inclusionSet & directionOneStep(current)) | current);
+        Enumerable.Range(0, 7)
+            .Aggregate(bitBoard, (current, _) => (Empty & directionOneStep(current)) | current);
 
     // noWe         nort         noEa
     //          +7   +8   +9
