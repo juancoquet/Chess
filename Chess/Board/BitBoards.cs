@@ -100,6 +100,12 @@ public class BitBoard
     }
     private ulong bPawnAttacks() => soEaOne(this[C.Black, PType.BPawn]) | soWeOne(this[C.Black, PType.BPawn]);
 
+    private ulong knightAttacks(C colour) =>
+        noNoEa(this[colour, PType.Knight]) | noEaEa(this[colour, PType.Knight]) |
+        soEaEa(this[colour, PType.Knight]) | soSoEa(this[colour, PType.Knight]) |
+        soSoWe(this[colour, PType.Knight]) | soWeWe(this[colour, PType.Knight]) |
+        noWeWe(this[colour, PType.Knight]) | noNoWe(this[colour, PType.Knight]);
+
     public override bool Equals(object obj) => obj is BitBoard other &&
         this[C.White, PType.WPawn]  == other[C.White, PType.WPawn]  &&
         this[C.White, PType.Knight] == other[C.White, PType.Knight] &&
