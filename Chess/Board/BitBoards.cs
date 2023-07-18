@@ -54,7 +54,7 @@ public class BitBoard
         }
     }
 
-    private bool SquareIsAttackedBy(Square square, C colour) => (Attacks(colour) & square.BitMask()) != 0;
+    internal bool SquareIsAttackedBy(Square square, C colour) => (Attacks(colour) & square.BitMask()) != 0;
 
     private ulong Attacks(C colour)
     {
