@@ -3,6 +3,25 @@ using Chess.Generics;
 
 public class BitBoardTests
 {
+    [Fact]
+    public void TestSquareAttackedBy()
+    {
+        var board = CreateOtherwiseEmptyBoard(P: new[] {Square.A1});
+        board.SquareIsAttackedBy(Square.B2, C.White).Should().BeTrue();
+
+        board = CreateOtherwiseEmptyBoard(p: new[] {Square.E4});
+        board.SquareIsAttackedBy(Square.D3, C.Black).Should().BeTrue();
+        board.SquareIsAttackedBy(Square.F3, C.Black).Should().BeTrue();
+
+        board = CreateOtherwiseEmptyBoard(r: new[] {Square.F2}, Q: new[] {Square.D2}, K: new[] {Square.F7});
+        board.SquareIsAttackedBy(Square.D2, C.Black).Should().BeTrue();
+        board.SquareIsAttackedBy(Square.C2, C.Black).Should().BeFalse();
+        board.SquareIsAttackedBy(Square.F7, C.Black).Should().BeTrue();
+        board.SquareIsAttackedBy(Square.F6, C.Black).Should().BeTrue();
+        board.SquareIsAttackedBy(Square.F8, C.Black).Should().BeFalse();
+        board.SquareIsAttackedBy(Square.F2, C.White).Should().BeTrue();
+    }
+
     private static BitBoard CreateOtherwiseEmptyBoard(
         Square[] p = null,
         Square[] P = null,
@@ -81,8 +100,8 @@ public class BitBoardTests
 
         return BitBoard.FromDictionary(new Dictionary<int, ulong>
             {
-                { PieceCode(C.White, PType.BPawn),  bPawn   },
-                { PieceCode(C.Black, PType.WPawn),  wPawn   },
+                { PieceCode(C.White, PType.WPawn),  wPawn   },
+                { PieceCode(C.Black, PType.BPawn),  bPawn   },
                 { PieceCode(C.White, PType.Knight), wKnight },
                 { PieceCode(C.Black, PType.Knight), bKnight },
                 { PieceCode(C.White, PType.Bishop), wBishop },
