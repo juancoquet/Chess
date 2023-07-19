@@ -110,6 +110,49 @@ public class BitBoardTests
         board.SquareIsAttackedBy(Square.F2, C.Black).Should().BeFalse();
     }
 
+    [Fact]
+    public void TestRookAttacks()
+    {
+        var board = CreateOtherwiseEmptyBoard(R: new[] {Square.D5}, r: new[] {Square.G2}, p: new[] {Square.G7});
+        // Rook on D5
+        board.SquareIsAttackedBy(Square.D5, C.White).Should().BeFalse();
+        board.SquareIsAttackedBy(Square.E5, C.White).Should().BeTrue();
+        board.SquareIsAttackedBy(Square.F5, C.White).Should().BeTrue();
+        board.SquareIsAttackedBy(Square.G5, C.White).Should().BeTrue();
+        board.SquareIsAttackedBy(Square.H5, C.White).Should().BeTrue();
+        board.SquareIsAttackedBy(Square.A7, C.White).Should().BeFalse();
+
+        board.SquareIsAttackedBy(Square.D6, C.White).Should().BeTrue();
+        board.SquareIsAttackedBy(Square.D7, C.White).Should().BeTrue();
+        board.SquareIsAttackedBy(Square.D8, C.White).Should().BeTrue();
+
+        board.SquareIsAttackedBy(Square.D4, C.White).Should().BeTrue();
+        board.SquareIsAttackedBy(Square.D3, C.White).Should().BeTrue();
+        board.SquareIsAttackedBy(Square.D2, C.White).Should().BeTrue();
+        board.SquareIsAttackedBy(Square.D1, C.White).Should().BeTrue();
+
+        board.SquareIsAttackedBy(Square.C5, C.White).Should().BeTrue();
+        board.SquareIsAttackedBy(Square.B5, C.White).Should().BeTrue();
+        board.SquareIsAttackedBy(Square.A5, C.White).Should().BeTrue();
+        board.SquareIsAttackedBy(Square.H4, C.White).Should().BeFalse();
+
+        // Rook on G2
+        board.SquareIsAttackedBy(Square.G2, C.Black).Should().BeFalse();
+        board.SquareIsAttackedBy(Square.G3, C.Black).Should().BeTrue();
+        board.SquareIsAttackedBy(Square.G4, C.Black).Should().BeTrue();
+        board.SquareIsAttackedBy(Square.G5, C.Black).Should().BeTrue();
+        board.SquareIsAttackedBy(Square.G6, C.Black).Should().BeTrue();
+        board.SquareIsAttackedBy(Square.G7, C.Black).Should().BeTrue();
+        board.SquareIsAttackedBy(Square.G8, C.Black).Should().BeFalse();
+
+        board.SquareIsAttackedBy(Square.H2, C.Black).Should().BeTrue();
+        board.SquareIsAttackedBy(Square.A3, C.Black).Should().BeFalse();
+
+        board.SquareIsAttackedBy(Square.G1, C.Black).Should().BeTrue();
+
+        board.SquareIsAttackedBy(Square.F3, C.Black).Should().BeFalse();
+    }
+
     private static BitBoard CreateOtherwiseEmptyBoard(
         Square[] p = null,
         Square[] P = null,
