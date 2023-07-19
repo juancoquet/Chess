@@ -22,6 +22,230 @@ public class BitBoardTests
         board.SquareIsAttackedBy(Square.F2, C.White).Should().BeTrue();
     }
 
+    [Fact]
+    public void TestWPawnAttacks()
+    {
+        var board = CreateOtherwiseEmptyBoard(P: new[] {Square.D5, Square.H2});
+        board.SquareIsAttackedBy(Square.C6, C.White).Should().BeTrue();
+        board.SquareIsAttackedBy(Square.D6, C.White).Should().BeFalse();
+        board.SquareIsAttackedBy(Square.E6, C.White).Should().BeTrue();
+        board.SquareIsAttackedBy(Square.G3, C.White).Should().BeTrue();
+        board.SquareIsAttackedBy(Square.A3, C.White).Should().BeFalse();
+        board.SquareIsAttackedBy(Square.A3, C.White).Should().BeFalse();
+    }
+
+    [Fact]
+    public void TestBPawnAttacks()
+    {
+        var board = CreateOtherwiseEmptyBoard(p: new[] {Square.D5, Square.H2});
+        board.SquareIsAttackedBy(Square.C4, C.Black).Should().BeTrue();
+        board.SquareIsAttackedBy(Square.D4, C.Black).Should().BeFalse();
+        board.SquareIsAttackedBy(Square.E4, C.Black).Should().BeTrue();
+        board.SquareIsAttackedBy(Square.G1, C.Black).Should().BeTrue();
+        board.SquareIsAttackedBy(Square.H1, C.Black).Should().BeFalse();
+        board.SquareIsAttackedBy(Square.A1, C.Black).Should().BeFalse();
+        board.SquareIsAttackedBy(Square.A3, C.Black).Should().BeFalse();
+    }
+
+    [Fact]
+    public void TestKnightAttacks()
+    {
+        var board = CreateOtherwiseEmptyBoard(N: new[] {Square.D5, Square.G6}, p: new[] {Square.E4});
+        // Knight on D5
+        board.SquareIsAttackedBy(Square.C7, C.White).Should().BeTrue();
+        board.SquareIsAttackedBy(Square.E7, C.White).Should().BeTrue();
+        board.SquareIsAttackedBy(Square.F6, C.White).Should().BeTrue();
+        board.SquareIsAttackedBy(Square.F4, C.White).Should().BeTrue();
+        board.SquareIsAttackedBy(Square.E3, C.White).Should().BeTrue();
+        board.SquareIsAttackedBy(Square.C3, C.White).Should().BeTrue();
+        board.SquareIsAttackedBy(Square.B4, C.White).Should().BeTrue();
+        board.SquareIsAttackedBy(Square.B6, C.White).Should().BeTrue();
+        // Knight on G6
+        board.SquareIsAttackedBy(Square.F8, C.White).Should().BeTrue();
+        board.SquareIsAttackedBy(Square.H8, C.White).Should().BeTrue();
+        board.SquareIsAttackedBy(Square.H4, C.White).Should().BeTrue();
+        board.SquareIsAttackedBy(Square.F4, C.White).Should().BeTrue();
+        board.SquareIsAttackedBy(Square.E5, C.White).Should().BeTrue();
+
+        board.SquareIsAttackedBy(Square.A6, C.White).Should().BeFalse();
+        board.SquareIsAttackedBy(Square.A8, C.White).Should().BeFalse();
+    }
+
+    [Fact]
+    public void TestBishopAttacks()
+    {
+        var board = CreateOtherwiseEmptyBoard(B: new[] {Square.D5}, b: new[] {Square.G2}, p: new[] {Square.F7});
+        // Bishop on D5
+        board.SquareIsAttackedBy(Square.C6, C.White).Should().BeTrue();
+        board.SquareIsAttackedBy(Square.B7, C.White).Should().BeTrue();
+        board.SquareIsAttackedBy(Square.A8, C.White).Should().BeTrue();
+
+        board.SquareIsAttackedBy(Square.E6, C.White).Should().BeTrue();
+        board.SquareIsAttackedBy(Square.F7, C.White).Should().BeTrue();
+        board.SquareIsAttackedBy(Square.G8, C.White).Should().BeFalse();
+
+        board.SquareIsAttackedBy(Square.E4, C.White).Should().BeTrue();
+        board.SquareIsAttackedBy(Square.F3, C.White).Should().BeTrue();
+        board.SquareIsAttackedBy(Square.G2, C.White).Should().BeTrue();
+        board.SquareIsAttackedBy(Square.H1, C.White).Should().BeFalse();
+
+        board.SquareIsAttackedBy(Square.C4, C.White).Should().BeTrue();
+        board.SquareIsAttackedBy(Square.B3, C.White).Should().BeTrue();
+        board.SquareIsAttackedBy(Square.A2, C.White).Should().BeTrue();
+        board.SquareIsAttackedBy(Square.H8, C.White).Should().BeFalse();
+
+        // Bishop on G2
+        board.SquareIsAttackedBy(Square.F3, C.Black).Should().BeTrue();
+        board.SquareIsAttackedBy(Square.E4, C.Black).Should().BeTrue();
+        board.SquareIsAttackedBy(Square.D5, C.Black).Should().BeTrue();
+        board.SquareIsAttackedBy(Square.C6, C.Black).Should().BeFalse();
+
+        board.SquareIsAttackedBy(Square.H3, C.Black).Should().BeTrue();
+        board.SquareIsAttackedBy(Square.A4, C.Black).Should().BeFalse();
+
+        board.SquareIsAttackedBy(Square.H1, C.Black).Should().BeTrue();
+        board.SquareIsAttackedBy(Square.H2, C.Black).Should().BeFalse();
+
+        board.SquareIsAttackedBy(Square.F1, C.Black).Should().BeTrue();
+        board.SquareIsAttackedBy(Square.F2, C.Black).Should().BeFalse();
+    }
+
+    [Fact]
+    public void TestRookAttacks()
+    {
+        var board = CreateOtherwiseEmptyBoard(R: new[] {Square.D5}, r: new[] {Square.G2}, p: new[] {Square.G7});
+        // Rook on D5
+        board.SquareIsAttackedBy(Square.D5, C.White).Should().BeFalse();
+        board.SquareIsAttackedBy(Square.E5, C.White).Should().BeTrue();
+        board.SquareIsAttackedBy(Square.F5, C.White).Should().BeTrue();
+        board.SquareIsAttackedBy(Square.G5, C.White).Should().BeTrue();
+        board.SquareIsAttackedBy(Square.H5, C.White).Should().BeTrue();
+        board.SquareIsAttackedBy(Square.A7, C.White).Should().BeFalse();
+
+        board.SquareIsAttackedBy(Square.D6, C.White).Should().BeTrue();
+        board.SquareIsAttackedBy(Square.D7, C.White).Should().BeTrue();
+        board.SquareIsAttackedBy(Square.D8, C.White).Should().BeTrue();
+
+        board.SquareIsAttackedBy(Square.D4, C.White).Should().BeTrue();
+        board.SquareIsAttackedBy(Square.D3, C.White).Should().BeTrue();
+        board.SquareIsAttackedBy(Square.D2, C.White).Should().BeTrue();
+        board.SquareIsAttackedBy(Square.D1, C.White).Should().BeTrue();
+
+        board.SquareIsAttackedBy(Square.C5, C.White).Should().BeTrue();
+        board.SquareIsAttackedBy(Square.B5, C.White).Should().BeTrue();
+        board.SquareIsAttackedBy(Square.A5, C.White).Should().BeTrue();
+        board.SquareIsAttackedBy(Square.H4, C.White).Should().BeFalse();
+
+        // Rook on G2
+        board.SquareIsAttackedBy(Square.G2, C.Black).Should().BeFalse();
+        board.SquareIsAttackedBy(Square.G3, C.Black).Should().BeTrue();
+        board.SquareIsAttackedBy(Square.G4, C.Black).Should().BeTrue();
+        board.SquareIsAttackedBy(Square.G5, C.Black).Should().BeTrue();
+        board.SquareIsAttackedBy(Square.G6, C.Black).Should().BeTrue();
+        board.SquareIsAttackedBy(Square.G7, C.Black).Should().BeTrue();
+        board.SquareIsAttackedBy(Square.G8, C.Black).Should().BeFalse();
+
+        board.SquareIsAttackedBy(Square.H2, C.Black).Should().BeTrue();
+        board.SquareIsAttackedBy(Square.A3, C.Black).Should().BeFalse();
+
+        board.SquareIsAttackedBy(Square.G1, C.Black).Should().BeTrue();
+
+        board.SquareIsAttackedBy(Square.F3, C.Black).Should().BeFalse();
+    }
+
+    [Fact]
+    public void TestQueenAttacks()
+    {
+        var board = CreateOtherwiseEmptyBoard(Q: new[] {Square.D5}, q: new[] {Square.A1}, p: new[] {Square.G7});
+        // Queen on D5
+        board.SquareIsAttackedBy(Square.D5, C.White).Should().BeFalse();
+        board.SquareIsAttackedBy(Square.E5, C.White).Should().BeTrue();
+        board.SquareIsAttackedBy(Square.F5, C.White).Should().BeTrue();
+        board.SquareIsAttackedBy(Square.G5, C.White).Should().BeTrue();
+        board.SquareIsAttackedBy(Square.H5, C.White).Should().BeTrue();
+        board.SquareIsAttackedBy(Square.A6, C.White).Should().BeFalse();
+
+        board.SquareIsAttackedBy(Square.D6, C.White).Should().BeTrue();
+        board.SquareIsAttackedBy(Square.D7, C.White).Should().BeTrue();
+        board.SquareIsAttackedBy(Square.D8, C.White).Should().BeTrue();
+
+        board.SquareIsAttackedBy(Square.D4, C.White).Should().BeTrue();
+        board.SquareIsAttackedBy(Square.D3, C.White).Should().BeTrue();
+        board.SquareIsAttackedBy(Square.D2, C.White).Should().BeTrue();
+        board.SquareIsAttackedBy(Square.D1, C.White).Should().BeTrue();
+
+        board.SquareIsAttackedBy(Square.C5, C.White).Should().BeTrue();
+        board.SquareIsAttackedBy(Square.B5, C.White).Should().BeTrue();
+        board.SquareIsAttackedBy(Square.A5, C.White).Should().BeTrue();
+        board.SquareIsAttackedBy(Square.H4, C.White).Should().BeFalse();
+
+        board.SquareIsAttackedBy(Square.E6, C.White).Should().BeTrue();
+        board.SquareIsAttackedBy(Square.F7, C.White).Should().BeTrue();
+        board.SquareIsAttackedBy(Square.G8, C.White).Should().BeTrue();
+
+        board.SquareIsAttackedBy(Square.C6, C.White).Should().BeTrue();
+        board.SquareIsAttackedBy(Square.B7, C.White).Should().BeTrue();
+        board.SquareIsAttackedBy(Square.A8, C.White).Should().BeTrue();
+
+        board.SquareIsAttackedBy(Square.C4, C.White).Should().BeTrue();
+        board.SquareIsAttackedBy(Square.B3, C.White).Should().BeTrue();
+        board.SquareIsAttackedBy(Square.A2, C.White).Should().BeTrue();
+        board.SquareIsAttackedBy(Square.H8, C.White).Should().BeFalse();
+
+        // Queen on A1
+        board.SquareIsAttackedBy(Square.A1, C.Black).Should().BeFalse();
+        board.SquareIsAttackedBy(Square.B1, C.Black).Should().BeTrue();
+        board.SquareIsAttackedBy(Square.C1, C.Black).Should().BeTrue();
+        board.SquareIsAttackedBy(Square.D1, C.Black).Should().BeTrue();
+        board.SquareIsAttackedBy(Square.E1, C.Black).Should().BeTrue();
+        board.SquareIsAttackedBy(Square.F1, C.Black).Should().BeTrue();
+        board.SquareIsAttackedBy(Square.G1, C.Black).Should().BeTrue();
+        board.SquareIsAttackedBy(Square.H1, C.Black).Should().BeTrue();
+
+        board.SquareIsAttackedBy(Square.A2, C.Black).Should().BeTrue();
+        board.SquareIsAttackedBy(Square.A3, C.Black).Should().BeTrue();
+        board.SquareIsAttackedBy(Square.A4, C.Black).Should().BeTrue();
+        board.SquareIsAttackedBy(Square.A5, C.Black).Should().BeTrue();
+        board.SquareIsAttackedBy(Square.A6, C.Black).Should().BeTrue();
+        board.SquareIsAttackedBy(Square.A7, C.Black).Should().BeTrue();
+        board.SquareIsAttackedBy(Square.A8, C.Black).Should().BeTrue();
+
+        board.SquareIsAttackedBy(Square.B2, C.Black).Should().BeTrue();
+        board.SquareIsAttackedBy(Square.C3, C.Black).Should().BeTrue();
+        board.SquareIsAttackedBy(Square.D4, C.Black).Should().BeTrue();
+        board.SquareIsAttackedBy(Square.E5, C.Black).Should().BeTrue();
+        board.SquareIsAttackedBy(Square.F6, C.Black).Should().BeTrue();
+        board.SquareIsAttackedBy(Square.G7, C.Black).Should().BeTrue();
+        board.SquareIsAttackedBy(Square.H8, C.Black).Should().BeFalse();
+    }
+    
+    [Fact]
+    public void TestKingAttacks()
+    {
+        var board = CreateOtherwiseEmptyBoard(K: new[] {Square.D5}, k: new[] {Square.F3});
+        // King on D5
+        board.SquareIsAttackedBy(Square.D5, C.White).Should().BeFalse();
+        board.SquareIsAttackedBy(Square.E5, C.White).Should().BeTrue();
+        board.SquareIsAttackedBy(Square.D6, C.White).Should().BeTrue();
+        board.SquareIsAttackedBy(Square.D4, C.White).Should().BeTrue();
+        board.SquareIsAttackedBy(Square.C5, C.White).Should().BeTrue();
+        board.SquareIsAttackedBy(Square.E6, C.White).Should().BeTrue();
+        board.SquareIsAttackedBy(Square.C6, C.White).Should().BeTrue();
+        board.SquareIsAttackedBy(Square.C4, C.White).Should().BeTrue();
+        board.SquareIsAttackedBy(Square.E4, C.White).Should().BeTrue();
+
+        // King on F3
+        board.SquareIsAttackedBy(Square.F3, C.Black).Should().BeFalse();
+        board.SquareIsAttackedBy(Square.G3, C.Black).Should().BeTrue();
+        board.SquareIsAttackedBy(Square.F4, C.Black).Should().BeTrue();
+        board.SquareIsAttackedBy(Square.F2, C.Black).Should().BeTrue();
+        board.SquareIsAttackedBy(Square.E3, C.Black).Should().BeTrue();
+        board.SquareIsAttackedBy(Square.G4, C.Black).Should().BeTrue();
+        board.SquareIsAttackedBy(Square.E4, C.Black).Should().BeTrue();
+        board.SquareIsAttackedBy(Square.E2, C.Black).Should().BeTrue();
+        board.SquareIsAttackedBy(Square.G2, C.Black).Should().BeTrue();
+    }
+
     private static BitBoard CreateOtherwiseEmptyBoard(
         Square[] p = null,
         Square[] P = null,
