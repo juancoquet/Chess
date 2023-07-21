@@ -36,7 +36,6 @@ public enum Ranks : ulong
 [Flags]
 public enum Files : ulong
 {
-    None = 0x0000000000000000,
     A    = 0x0101010101010101, // 00000001 x8
     B    = 0x0202020202020202, // 00000010 x8
     C    = 0x0404040404040404, // 00000100 x8
