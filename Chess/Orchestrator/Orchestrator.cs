@@ -1,14 +1,14 @@
 using Chess.Board;
 using ConsoleExtensions;
 
-namespace Chess.Engine;
+namespace Chess.Orchestration;
 
-class ChessEngine
+class Orchestrator
 {
     private InputProcessor _inputProcessor = new InputProcessor();
     private ChessBoard _board = new ChessBoard();
 
-    public ChessEngine() { }
+    public Orchestrator() { }
 
     public void Run()
     {
