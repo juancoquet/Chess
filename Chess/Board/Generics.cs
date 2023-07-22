@@ -62,6 +62,12 @@ public enum Square
 public static class SquareExtensions
 {
     public static ulong BitMask(this Square square) => 1UL << (int)square;
+    public static Ranks Rank(this Square square)
+    {
+        var r = (int)square / 8;
+        // 0xFFUL = 00000000 00000000 00000000 00000000 00000000 00000000 00000000 11111111
+        return (Ranks)(0xFFUL << (r * 8));
+    }
 }
 
 public enum ECastleRights
