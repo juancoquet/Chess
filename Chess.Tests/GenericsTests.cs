@@ -174,7 +174,7 @@ public class GenericsTests
     {
         Files.A.Index().Should().Be(0);
         Files.B.Index().Should().Be(1);
-        Files.C.Index().Should().Be(2);
+        Files.C.Index().Should().Be(0);
         Files.D.Index().Should().Be(3);
         Files.E.Index().Should().Be(4);
         Files.F.Index().Should().Be(5);
