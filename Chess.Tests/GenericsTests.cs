@@ -155,4 +155,30 @@ public class GenericsTests
         Square.H7.File().Should().Be(Files.H);
         Square.H8.File().Should().Be(Files.H);
     }
+
+    [Fact]
+    public void TestRanksIndex()
+    {
+        Ranks.R1.Index().Should().Be(0);
+        Ranks.R2.Index().Should().Be(1);
+        Ranks.R3.Index().Should().Be(2);
+        Ranks.R4.Index().Should().Be(3);
+        Ranks.R5.Index().Should().Be(4);
+        Ranks.R6.Index().Should().Be(5);
+        Ranks.R7.Index().Should().Be(6);
+        Ranks.R8.Index().Should().Be(7);
+    }
+
+    [Fact]
+    public void TestFilesIndex()
+    {
+        Files.A.Index().Should().Be(0);
+        Files.B.Index().Should().Be(1);
+        Files.C.Index().Should().Be(2);
+        Files.D.Index().Should().Be(3);
+        Files.E.Index().Should().Be(4);
+        Files.F.Index().Should().Be(5);
+        Files.G.Index().Should().Be(6);
+        Files.H.Index().Should().Be(7);
+    }
 }

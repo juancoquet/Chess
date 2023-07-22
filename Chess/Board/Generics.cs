@@ -33,6 +33,21 @@ public enum Ranks : ulong
     R8 = 0xFF00000000000000
 }
 
+public static class RanksExtensions
+{
+    public static int Index(this Ranks rank)
+    {
+        var r = (ulong)rank;
+        var i = 0;
+        while ((r & 1) == 0)
+        {
+            r >>= 1;
+            i++;
+        }
+        return i / 8;
+    }
+}
+
 [Flags]
 public enum Files : ulong
 {
@@ -44,6 +59,21 @@ public enum Files : ulong
     F    = 0x2020202020202020, // 00100000 x8
     G    = 0x4040404040404040, // 01000000 x8
     H    = 0x8080808080808080  // 10000000 x8
+}
+
+public static class FilesExtensions
+{
+    public static int Index(this Files file)
+    {
+        var f = (ulong)file;
+        var i = 0;
+        while ((f & 1) == 0)
+        {
+            f >>= 1;
+            i++;
+        }
+        return i;
+    }
 }
 
 public enum Square
