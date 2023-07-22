@@ -63,6 +63,7 @@ public class Piece
 {
     public C Colour { get; set; }
     public PType Type { get; set; }
+    public int PieceCode => (int)Colour << 3 | (int)Type;
 
     public Piece(C colour, PType pieceType)
     {
@@ -71,6 +72,7 @@ public class Piece
     }
 
     public static Piece None() => new Piece(C.White, PType.None);
+
 
     public bool Is(C colour, PType pieceType) => Colour == colour && Type == pieceType;
 
