@@ -88,7 +88,7 @@ class GameUI
                     pieceTypes.Select(pieceType =>
                     {
                         var pieceCode = new Piece(colour, pieceType).PieceCode;
-                        var texture = Raylib.LoadTexture($"Gui/Graphics/{colour}{pieceType}.png");
+                        var texture = Raylib.LoadTexture($"Gui/Sprites/{colour}{pieceType}.png");
                         return (pieceCode, texture);
                     })
             )
