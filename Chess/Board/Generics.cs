@@ -65,8 +65,12 @@ public static class SquareExtensions
     public static Ranks Rank(this Square square)
     {
         var r = (int)square / 8;
-        // 0xFFUL = 00000000 00000000 00000000 00000000 00000000 00000000 00000000 11111111
         return (Ranks)(0xFFUL << (r * 8));
+    }
+    public static Files File(this Square square)
+    {
+        var f = (int)square % 8;
+        return (Files)(0x0101010101010101UL << f);
     }
 }
 

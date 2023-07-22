@@ -79,4 +79,80 @@ public class GenericsTests
         Square.H7.Rank().Should().Be(Ranks.R7);
         Square.H8.Rank().Should().Be(Ranks.R8);
     }
+
+    [Fact]
+    public void TestSquareToFile()
+    {
+        Square.A1.File().Should().Be(Files.A);
+        Square.A2.File().Should().Be(Files.A);
+        Square.A3.File().Should().Be(Files.A);
+        Square.A4.File().Should().Be(Files.A);
+        Square.A5.File().Should().Be(Files.A);
+        Square.A6.File().Should().Be(Files.A);
+        Square.A7.File().Should().Be(Files.A);
+        Square.A8.File().Should().Be(Files.A);
+
+        Square.B1.File().Should().Be(Files.B);
+        Square.B2.File().Should().Be(Files.B);
+        Square.B3.File().Should().Be(Files.B);
+        Square.B4.File().Should().Be(Files.B);
+        Square.B5.File().Should().Be(Files.B);
+        Square.B6.File().Should().Be(Files.B);
+        Square.B7.File().Should().Be(Files.B);
+        Square.B8.File().Should().Be(Files.B);
+
+        Square.C1.File().Should().Be(Files.C);
+        Square.C2.File().Should().Be(Files.C);
+        Square.C3.File().Should().Be(Files.C);
+        Square.C4.File().Should().Be(Files.C);
+        Square.C5.File().Should().Be(Files.C);
+        Square.C6.File().Should().Be(Files.C);
+        Square.C7.File().Should().Be(Files.C);
+        Square.C8.File().Should().Be(Files.C);
+
+        Square.D1.File().Should().Be(Files.D);
+        Square.D2.File().Should().Be(Files.D);
+        Square.D3.File().Should().Be(Files.D);
+        Square.D4.File().Should().Be(Files.D);
+        Square.D5.File().Should().Be(Files.D);
+        Square.D6.File().Should().Be(Files.D);
+        Square.D7.File().Should().Be(Files.D);
+        Square.D8.File().Should().Be(Files.D);
+
+        Square.E1.File().Should().Be(Files.E);
+        Square.E2.File().Should().Be(Files.E);
+        Square.E3.File().Should().Be(Files.E);
+        Square.E4.File().Should().Be(Files.E);
+        Square.E5.File().Should().Be(Files.E);
+        Square.E6.File().Should().Be(Files.E);
+        Square.E7.File().Should().Be(Files.E);
+        Square.E8.File().Should().Be(Files.E);
+
+        Square.F1.File().Should().Be(Files.F);
+        Square.F2.File().Should().Be(Files.F);
+        Square.F3.File().Should().Be(Files.F);
+        Square.F4.File().Should().Be(Files.F);
+        Square.F5.File().Should().Be(Files.F);
+        Square.F6.File().Should().Be(Files.F);
+        Square.F7.File().Should().Be(Files.F);
+        Square.F8.File().Should().Be(Files.F);
+
+        Square.G1.File().Should().Be(Files.G);
+        Square.G2.File().Should().Be(Files.G);
+        Square.G3.File().Should().Be(Files.G);
+        Square.G4.File().Should().Be(Files.G);
+        Square.G5.File().Should().Be(Files.G);
+        Square.G6.File().Should().Be(Files.G);
+        Square.G7.File().Should().Be(Files.G);
+        Square.G8.File().Should().Be(Files.G);
+
+        Square.H1.File().Should().Be(Files.H);
+        Square.H2.File().Should().Be(Files.H);
+        Square.H3.File().Should().Be(Files.H);
+        Square.H4.File().Should().Be(Files.H);
+        Square.H5.File().Should().Be(Files.H);
+        Square.H6.File().Should().Be(Files.H);
+        Square.H7.File().Should().Be(Files.H);
+        Square.H8.File().Should().Be(Files.H);
+    }
 }
