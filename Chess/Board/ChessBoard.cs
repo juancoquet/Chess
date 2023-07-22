@@ -49,13 +49,13 @@ public class ChessBoard
 
     internal record BoardState
     {
-        public required BitBoard BitBoard          { get; init; }
-        public required Piece[] Squares            { get; init; }
-        public required C Turn                { get; init; }
-        public required int MoveNumber             { get; init; }
-        public required int HalfMoveClock          { get; init; }
-        public required Square EnPassantTarget     { get; init; }
-        public required ICastleRights CastleRights { get; init; }
+        public BitBoard BitBoard          { get; init; }
+        public Piece[] Squares            { get; init; }
+        public C Turn                { get; init; }
+        public int MoveNumber             { get; init; }
+        public int HalfMoveClock          { get; init; }
+        public Square EnPassantTarget     { get; init; }
+        public ICastleRights CastleRights { get; init; }
     }
 }
 
@@ -63,6 +63,7 @@ public class Piece
 {
     public C Colour { get; set; }
     public PType Type { get; set; }
+    public int PieceCode => (int)Colour << 3 | (int)Type;
 
     public Piece(C colour, PType pieceType)
     {
@@ -71,6 +72,7 @@ public class Piece
     }
 
     public static Piece None() => new Piece(C.White, PType.None);
+
 
     public bool Is(C colour, PType pieceType) => Colour == colour && Type == pieceType;
 
