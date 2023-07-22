@@ -15,7 +15,13 @@ public class ChessBoard
 
     private List<BoardState> _history { get; set; } = new List<BoardState>();
 
-    public ChessBoard FromFen(string fen)
+    public static ChessBoard FromStartPosition()
+    {
+        var fenParser = new FenParser();
+        return fenParser.Parse(FenParser.StartPosition);
+    }
+
+    public static ChessBoard FromFen(string fen)
     {
         var fenParser = new FenParser(); 
         return fenParser.Parse(fen);

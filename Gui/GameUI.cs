@@ -47,6 +47,17 @@ class GameUI
         }
     }
 
+    public void DrawGameState(ChessBoard board)
+    {
+        for (var i = 0; i < 64; i++)
+        {
+            var piece = board.Squares[i];
+            if (piece.Type == PType.None)
+                continue;
+            DrawPiece(piece, (Square)i);
+        }
+    }
+
     public void DrawPiece(Piece piece, Square square)
     {
         var file = (int)square % 8;

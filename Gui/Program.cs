@@ -11,6 +11,7 @@ class Program
 {
     static void Main(string[] args)
     {
+        var board = ChessBoard.FromStartPosition();
         var gui = new GameUI();
         while (!Raylib.WindowShouldClose())
         {
@@ -19,7 +20,7 @@ class Program
 
             gui.DrawBoard();
             var wpawn = new Piece(C.White, PType.WPawn);
-            gui.DrawPiece(wpawn, Square.A2);
+            gui.DrawGameState(board);
 
             Raylib.EndDrawing();
         }
