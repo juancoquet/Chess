@@ -79,6 +79,13 @@ public class Piece
 
     public static Piece None() => new Piece(C.White, PType.None);
 
+    public static Piece FromPieceCode(int pieceCode)
+    {
+        var colour = (C)(pieceCode >> 3);
+        var type = (PType)(pieceCode & 0b111);
+        return new Piece(colour, type);
+    }
+
 
     public bool Is(C colour, PType pieceType) => Colour == colour && Type == pieceType;
 

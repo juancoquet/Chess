@@ -7,7 +7,7 @@ using Chess.Board;
 
 namespace Gui.Game;
 
-class GameUI
+public class GameUI
 {
     private int sqSize;
     private int graphicSize;
@@ -16,6 +16,7 @@ class GameUI
     private Color light;
     private Color dark;
     private Dictionary<int, Texture2D> sprites;
+    private Square fromSquare;
 
     public GameUI()
     {
@@ -96,4 +97,38 @@ class GameUI
 
         return sprites;
     }
+
+    public void Move(ChessBoard board)
+    {
+        var mousePos = Raylib.GetMousePosition();
+
+        if (DragBegins())
+        {
+            fromSquare = GetSquareUnderCursor(mousePos);
+            if (fromSquare == Square.None) return;
+        }
+        if (DragEnds())
+        {
+            var toSquare = GetSquareUnderCursor(mousePos);
+            var pieceCode = board.Squares[(int)fromSquare];
+            var piece = Piece.FromPieceCode(pieceCode);
+            if (piece.Type == PType.None) return;
+
+            Console.Write("\r" + new string(' ', Console.WindowWidth));
+            Console.Write($"\r{piece.Colour} {piece.Type} on {fromSquare} to {toSquare}");
+        }
+    }
+
+    public Square GetSquareUnderCursor(Vector2 mousePos)
+    {
+        if (mousePos.X > sqSize * 8 || mousePos.Y > sqSize * 8) return Square.None;
+
+        var file = (int)mousePos.X / sqSize;
+        var rank = 7 - (int)mousePos.Y / sqSize;
+        var square = (Square)(rank * 8 + file);
+        return square;
+    }
+
+    private static bool DragBegins() => Raylib.IsMouseButtonPressed(MouseButton.MOUSE_BUTTON_LEFT);
+    private static bool DragEnds() => Raylib.IsMouseButtonReleased(MouseButton.MOUSE_BUTTON_LEFT);
 }
