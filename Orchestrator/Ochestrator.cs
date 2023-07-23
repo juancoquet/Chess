@@ -1,20 +1,37 @@
+using Raylib_cs;
+
 using Chess.Board;
+using Chess.Generics;
 using ConsoleExtensions;
+using Gui.Game;
 
-namespace Chess.Orchestration;
+namespace Orchestrator;
 
-class Orchestrator
+class GameOrchestrator
 {
     private InputProcessor _inputProcessor = new InputProcessor();
     private ChessBoard _board = new ChessBoard();
 
-    public Orchestrator() { }
+    public GameOrchestrator() { }
 
     public void Run()
     {
         Terminal.WriteLine("starting chess engine...");
-        while (true)
+        var board = ChessBoard.FromStartPosition();
+        var gui = new GameUI();
+
+        while (!Raylib.WindowShouldClose())
         {
+            Raylib.BeginDrawing();
+            Raylib.ClearBackground(Color.BLACK);
+
+            gui.DrawBoard();
+            var wpawn = new Piece(C.White, PType.WPawn);
+            gui.DrawGameState(board);
+            gui.Move(board.Squares);
+
+            Raylib.EndDrawing();
+
             if (!ProcessInput(50)) { break; }
         }
     }

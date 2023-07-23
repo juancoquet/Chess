@@ -39,11 +39,12 @@ public class FenParser
         var halfMoveClock = int.Parse(fields[4]);
         var moveNumber = int.Parse(fields[5]);
         var bitBoard = ParseBitBoard(pieces);
+        var pieceArr = pieces.Select(p => p.PieceCode).ToArray();
 
         return new ChessBoard()
         {
             BitBoard = bitBoard,
-            Squares = pieces,
+            Squares = pieceArr,
             Turn = turn,
             MoveNumber = moveNumber,
             HalfMoveClock = halfMoveClock,

@@ -15,7 +15,7 @@ public class FenParserTests
     {
         var board = _fenParser.Parse(FenParser.StartPosition);
         board.BitBoard.Should().Be(CreateStartPositionBitBoard());
-        board.Squares.Should().Equal(_startPositionPieceArray);
+        board.Squares.Should().Equal(_startPositionPieceArray.Select(p => p.PieceCode));
         board.Turn.Should().Be(C.White);
         board.MoveNumber.Should().Be(1);
         board.HalfMoveClock.Should().Be(0);
