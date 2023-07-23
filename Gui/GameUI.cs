@@ -16,7 +16,8 @@ public class GameUI
     private Color light;
     private Color dark;
     private Dictionary<int, Texture2D> sprites;
-    private Square fromSquare;
+
+    private Square _fromSquare = Square.None;
 
     public GameUI()
     {
@@ -98,30 +99,35 @@ public class GameUI
         return sprites;
     }
 
-    public void Move(ChessBoard board)
+    public int[] Move(int[] boardSquares)
     {
         var mousePos = Raylib.GetMousePosition();
 
         if (DragBegins())
         {
-            fromSquare = GetSquareUnderCursor(mousePos);
-            if (fromSquare == Square.None) return;
+            _fromSquare = GetSquareUnderCursor(mousePos);
         }
         if (DragEnds())
         {
             var toSquare = GetSquareUnderCursor(mousePos);
-            var pieceCode = board.Squares[(int)fromSquare];
-            var piece = Piece.FromPieceCode(pieceCode);
-            if (piece.Type == PType.None) return;
+            if (toSquare == Square.None) return boardSquares;
+            var pieceCode = boardSquares[(int)_fromSquare];
+            var ptype = PTypeFromPieceCode(pieceCode);
+            var colour = ColourFromPieceCode(pieceCode);
+            if (ptype == PType.None) return boardSquares;
+            boardSquares[(int)_fromSquare] = 0;
+            boardSquares[(int)toSquare] = pieceCode;
 
             Console.Write("\r" + new string(' ', Console.WindowWidth));
-            Console.Write($"\r{piece.Colour} {piece.Type} on {fromSquare} to {toSquare}");
+            Console.WriteLine($"\r{colour} {ptype} on {_fromSquare} to {toSquare}");
         }
+        return boardSquares;
     }
 
     public Square GetSquareUnderCursor(Vector2 mousePos)
     {
-        if (mousePos.X > sqSize * 8 || mousePos.Y > sqSize * 8) return Square.None;
+        if (mousePos.X > sqSize * 8 || mousePos.Y > sqSize * 8 || mousePos.X < 0 || mousePos.Y < 0)
+            return Square.None;
 
         var file = (int)mousePos.X / sqSize;
         var rank = 7 - (int)mousePos.Y / sqSize;
@@ -131,4 +137,6 @@ public class GameUI
 
     private static bool DragBegins() => Raylib.IsMouseButtonPressed(MouseButton.MOUSE_BUTTON_LEFT);
     private static bool DragEnds() => Raylib.IsMouseButtonReleased(MouseButton.MOUSE_BUTTON_LEFT);
+    private static C ColourFromPieceCode(int pieceCode) => (pieceCode & 0b1000) == 0 ? C.White : C.Black;
+    private static PType PTypeFromPieceCode(int pieceCode) => (PType)(pieceCode & 0b111);
 }

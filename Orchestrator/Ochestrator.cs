@@ -28,7 +28,7 @@ class GameOrchestrator
             gui.DrawBoard();
             var wpawn = new Piece(C.White, PType.WPawn);
             gui.DrawGameState(board);
-            gui.Move(board);
+            gui.Move(board.Squares);
 
             Raylib.EndDrawing();
 
