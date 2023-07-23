@@ -6,7 +6,7 @@ namespace Chess.Board;
 public class ChessBoard
 {
     public BitBoard BitBoard          { get; set; }
-    public Piece[] Squares            { get; set; }
+    public int[] Squares            { get; set; }
     public C Turn                { get; set; }
     public int MoveNumber             { get; set; }
     public int HalfMoveClock          { get; set; }
@@ -56,7 +56,7 @@ public class ChessBoard
     internal record BoardState
     {
         public BitBoard BitBoard          { get; init; }
-        public Piece[] Squares            { get; init; }
+        public int[] Squares            { get; init; }
         public C Turn                { get; init; }
         public int MoveNumber             { get; init; }
         public int HalfMoveClock          { get; init; }

@@ -1,9 +1,8 @@
-﻿using Gui.Game;
-
-using Raylib_cs;
+﻿using Raylib_cs;
 
 using Chess.Board;
 using Chess.Generics;
+using Gui.Game;
 
 namespace Gui;
 
