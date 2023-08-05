@@ -26,7 +26,7 @@ class GameOrchestrator
         {
             gui.DrawBoard();
             gui.DrawGameState(board);
-            if (gui.PlayerHasMoved())
+            if (PlayerHasMoved(gui))
             {
                 var proposedMove = new Move()
                 {
