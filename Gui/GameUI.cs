@@ -17,8 +17,6 @@ public class GameUI
     private Color dark;
     private Dictionary<int, Texture2D> sprites;
 
-    private Square _fromSquare = Square.None;
-
     public GameUI()
     {
         sqSize = 100;
@@ -101,29 +99,6 @@ public class GameUI
         return sprites;
     }
 
-    /// <summary>
-    /// Called every frame to check if a player has made a move. Passively checks for a drag event start.
-    /// </summary>
-    public bool PlayerHasMoved()
-    {
-        var mousePos = Raylib.GetMousePosition();
-        if (DragBegins())
-        {
-            _fromSquare = GetSquareUnderCursor(mousePos);
-        }
-        var currentSquare = GetSquareUnderCursor(mousePos);
-        return (DragEnds() && currentSquare != Square.None && currentSquare != _fromSquare);
-    }
-
-    /// <summary>
-    /// Called when it is detected that a player has made a move by PlayerHasMoved(). Assumes that a drag event has just ended.
-    /// </summary>
-    public Move ProposeMove() => new Move()
-    {
-        From = _fromSquare,
-        To = GetSquareUnderCursor(Raylib.GetMousePosition())
-    };
-
     public Square GetSquareUnderCursor(Vector2 mousePos)
     {
         if (mousePos.X > sqSize * 8 || mousePos.Y > sqSize * 8 || mousePos.X < 0 || mousePos.Y < 0)
@@ -135,8 +110,9 @@ public class GameUI
         return square;
     }
 
-    private static bool DragBegins() => Raylib.IsMouseButtonPressed(MouseButton.MOUSE_BUTTON_LEFT);
-    private static bool DragEnds() => Raylib.IsMouseButtonReleased(MouseButton.MOUSE_BUTTON_LEFT);
+    public Vector2 MousePosition() => Raylib.GetMousePosition();
+    public bool DragBegins() => Raylib.IsMouseButtonPressed(MouseButton.MOUSE_BUTTON_LEFT);
+    public bool DragEnds() => Raylib.IsMouseButtonReleased(MouseButton.MOUSE_BUTTON_LEFT);
     private static C ColourFromPieceCode(int pieceCode) => (pieceCode & 0b1000) == 0 ? C.White : C.Black;
     private static PType PTypeFromPieceCode(int pieceCode) => (PType)(pieceCode & 0b111);
     public void EndDraw() => Raylib.EndDrawing();

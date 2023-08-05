@@ -11,6 +11,8 @@ class GameOrchestrator
 {
     private InputProcessor _inputProcessor = new InputProcessor();
     private ChessBoard _board = new ChessBoard();
+    private Square _moveFrom = Square.None;
+    private Square _moveTo = Square.None;
 
     public GameOrchestrator() { }
 
@@ -26,8 +28,12 @@ class GameOrchestrator
             gui.DrawGameState(board);
             if (gui.PlayerHasMoved())
             {
-                var proposedMove = gui.ProposeMove();
-                // var mousePos = Raylib.GetMousePosition();
+                var proposedMove = new Move()
+                {
+                    From = _moveFrom,
+                    To = _moveTo
+                };
+                // move validation to happen in board class
                 // var pieceCode = boardSquares[(int)_fromSquare];
                 // var ptype = PTypeFromPieceCode(pieceCode); // likely move this function to board
                 // var colour = ColourFromPieceCode(pieceCode); // likely move this function to baard
@@ -40,6 +46,24 @@ class GameOrchestrator
             gui.EndDraw();
             if (!ProcessInput(50)) { break; }
         }
+    }
+
+    /// <summary>
+    /// Called every frame to check if a player has made a move. Passively updates the _moveFrom and _moveTo fields.
+    /// </summary>
+    public bool PlayerHasMoved(GameUI gui)
+    {
+        var mousePos = gui.MousePosition();
+        if (gui.DragBegins())
+        {
+            _moveFrom = gui.GetSquareUnderCursor(mousePos);
+        }
+        if (gui.DragEnds())
+        {
+            _moveTo = gui.GetSquareUnderCursor(mousePos);
+            return _moveTo != Square.None && _moveFrom != _moveTo;
+        }
+        return false;
     }
 
     private bool ProcessInput(int waitMs = 50)
