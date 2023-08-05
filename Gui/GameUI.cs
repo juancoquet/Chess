@@ -10,7 +10,7 @@ namespace Gui.Game;
 public class GameUI
 {
     private int sqSize;
-    private int graphicSize;
+    private int spriteSize;
     private int windowWidth;
     private int windowHeight;
     private Color light;
@@ -22,7 +22,7 @@ public class GameUI
     public GameUI()
     {
         sqSize = 100;
-        graphicSize = (int)(sqSize * 0.8);
+        spriteSize = (int)(sqSize * 0.8);
         windowWidth = 800;
         windowHeight = 800;
         light = new Color(124, 133, 147, 255);
@@ -36,6 +36,8 @@ public class GameUI
 
     public void DrawBoard()
     {
+        Raylib.BeginDrawing();
+        Raylib.ClearBackground(Color.BLACK);
         foreach (var square in Enum.GetValues(typeof(Square)))
         {
             if (square is Square.None)
@@ -44,8 +46,8 @@ public class GameUI
             var rank = (int)square / 8;
             var x = file * sqSize;
             var y = (7 - rank) * sqSize;
-            var color = (file + rank) % 2 == 0 ? light : dark;
-            Raylib.DrawRectangle(x, y, sqSize, sqSize, color);
+            var colour = (file + rank) % 2 == 0 ? light : dark;
+            Raylib.DrawRectangle(x, y, sqSize, sqSize, colour);
         }
     }
 
@@ -64,13 +66,13 @@ public class GameUI
     {
         var file = (int)square % 8;
         var rank = (int)square / 8;
-        var x = file * sqSize + (sqSize - graphicSize) / 2;
-        var y = (7 - rank) * sqSize + (sqSize - graphicSize) / 2;
+        var x = file * sqSize + (sqSize - spriteSize) / 2;
+        var y = (7 - rank) * sqSize + (sqSize - spriteSize) / 2;
         var sprite = sprites[piece];
         Raylib.DrawTexturePro(
             sprite,
             new Rectangle(0, 0, sprite.width, sprite.height),
-            new Rectangle(x, y, graphicSize, graphicSize),
+            new Rectangle(x, y, spriteSize, spriteSize),
             new Vector2(0, 0),
             0,
             Color.WHITE
@@ -99,30 +101,28 @@ public class GameUI
         return sprites;
     }
 
-    public int[] Move(int[] boardSquares)
+    /// <summary>
+    /// Called every frame to check if a player has made a move. Passively checks for a drag event start.
+    /// </summary>
+    public bool PlayerHasMoved()
     {
         var mousePos = Raylib.GetMousePosition();
-
         if (DragBegins())
         {
             _fromSquare = GetSquareUnderCursor(mousePos);
         }
-        if (DragEnds())
-        {
-            var toSquare = GetSquareUnderCursor(mousePos);
-            if (toSquare == Square.None) return boardSquares;
-            var pieceCode = boardSquares[(int)_fromSquare];
-            var ptype = PTypeFromPieceCode(pieceCode);
-            var colour = ColourFromPieceCode(pieceCode);
-            if (ptype == PType.None) return boardSquares;
-            boardSquares[(int)_fromSquare] = 0;
-            boardSquares[(int)toSquare] = pieceCode;
-
-            Console.Write("\r" + new string(' ', Console.WindowWidth));
-            Console.WriteLine($"\r{colour} {ptype} on {_fromSquare} to {toSquare}");
-        }
-        return boardSquares;
+        var currentSquare = GetSquareUnderCursor(mousePos);
+        return (DragEnds() && currentSquare != Square.None && currentSquare != _fromSquare);
     }
+
+    /// <summary>
+    /// Called when it is detected that a player has made a move by PlayerHasMoved(). Assumes that a drag event has just ended.
+    /// </summary>
+    public Move ProposeMove() => new Move()
+    {
+        From = _fromSquare,
+        To = GetSquareUnderCursor(Raylib.GetMousePosition())
+    };
 
     public Square GetSquareUnderCursor(Vector2 mousePos)
     {
@@ -139,4 +139,6 @@ public class GameUI
     private static bool DragEnds() => Raylib.IsMouseButtonReleased(MouseButton.MOUSE_BUTTON_LEFT);
     private static C ColourFromPieceCode(int pieceCode) => (pieceCode & 0b1000) == 0 ? C.White : C.Black;
     private static PType PTypeFromPieceCode(int pieceCode) => (PType)(pieceCode & 0b111);
+    public void EndDraw() => Raylib.EndDrawing();
+    public bool Quit() => Raylib.IsKeyDown(KeyboardKey.KEY_Q);
 }

@@ -20,18 +20,24 @@ class GameOrchestrator
         var board = ChessBoard.FromStartPosition();
         var gui = new GameUI();
 
-        while (!Raylib.WindowShouldClose())
+        while (!gui.Quit())
         {
-            Raylib.BeginDrawing();
-            Raylib.ClearBackground(Color.BLACK);
-
             gui.DrawBoard();
-            var wpawn = new Piece(C.White, PType.WPawn);
             gui.DrawGameState(board);
-            gui.Move(board.Squares);
-
-            Raylib.EndDrawing();
-
+            if (gui.PlayerHasMoved())
+            {
+                var proposedMove = gui.ProposeMove();
+                // var mousePos = Raylib.GetMousePosition();
+                // var pieceCode = boardSquares[(int)_fromSquare];
+                // var ptype = PTypeFromPieceCode(pieceCode); // likely move this function to board
+                // var colour = ColourFromPieceCode(pieceCode); // likely move this function to baard
+                // if (ptype == PType.None) return boardSquares;
+                // boardSquares[(int)_fromSquare] = 0;
+                // boardSquares[(int)toSquare] = pieceCode;
+                Console.Write("\r" + new string(' ', Console.WindowWidth));
+                Console.WriteLine($"\r{proposedMove.From} to {proposedMove.To}");
+            }
+            gui.EndDraw();
             if (!ProcessInput(50)) { break; }
         }
     }

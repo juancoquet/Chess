@@ -6,8 +6,8 @@ namespace Chess.Board;
 public class ChessBoard
 {
     public BitBoard BitBoard          { get; set; }
-    public int[] Squares            { get; set; }
-    public C Turn                { get; set; }
+    public int[] Squares              { get; set; }
+    public C Turn                     { get; set; }
     public int MoveNumber             { get; set; }
     public int HalfMoveClock          { get; set; }
     public Square EnPassantTarget     { get; set; }
@@ -56,8 +56,8 @@ public class ChessBoard
     internal record BoardState
     {
         public BitBoard BitBoard          { get; init; }
-        public int[] Squares            { get; init; }
-        public C Turn                { get; init; }
+        public int[] Squares              { get; init; }
+        public C Turn                     { get; init; }
         public int MoveNumber             { get; init; }
         public int HalfMoveClock          { get; init; }
         public Square EnPassantTarget     { get; init; }
@@ -90,4 +90,10 @@ public class Piece
         Type == other.Type;
 
     public override int GetHashCode() => HashCode.Combine(Colour, Type);
+}
+
+public record Move
+{
+    public Square From { get; init; }
+    public Square To { get; init; }
 }
