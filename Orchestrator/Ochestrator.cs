@@ -1,5 +1,3 @@
-using Raylib_cs;
-
 using Chess.Board;
 using Chess.Generics;
 using ConsoleExtensions;
@@ -11,6 +9,7 @@ class GameOrchestrator
 {
     private InputProcessor _inputProcessor = new InputProcessor();
     private ChessBoard _board = new ChessBoard();
+    private GameUI _gui = new GameUI();
     private Square _moveFrom = Square.None;
     private Square _moveTo = Square.None;
 
@@ -20,13 +19,12 @@ class GameOrchestrator
     {
         Terminal.WriteLine("starting chess engine...");
         var board = ChessBoard.FromStartPosition();
-        var gui = new GameUI();
 
-        while (!gui.Quit())
+        while (!_gui.Quit())
         {
-            gui.DrawBoard();
-            gui.DrawGameState(board);
-            if (PlayerHasMoved(gui))
+            _gui.DrawBoard();
+            _gui.DrawGameState(board);
+            if (PlayerHasMoved())
             {
                 var proposedMove = new Move()
                 {
@@ -43,7 +41,7 @@ class GameOrchestrator
                 Console.Write("\r" + new string(' ', Console.WindowWidth));
                 Console.WriteLine($"\r{proposedMove.From} to {proposedMove.To}");
             }
-            gui.EndDraw();
+            _gui.EndDraw();
             if (!ProcessInput(50)) { break; }
         }
     }
@@ -51,16 +49,16 @@ class GameOrchestrator
     /// <summary>
     /// Called every frame to check if a player has made a move. Passively updates the _moveFrom and _moveTo fields.
     /// </summary>
-    public bool PlayerHasMoved(GameUI gui)
+    public bool PlayerHasMoved()
     {
-        var mousePos = gui.MousePosition();
-        if (gui.DragBegins())
+        var mousePos = _gui.MousePosition();
+        if (_gui.DragBegins())
         {
-            _moveFrom = gui.GetSquareUnderCursor(mousePos);
+            _moveFrom = _gui.GetSquareUnderCursor(mousePos);
         }
-        if (gui.DragEnds())
+        if (_gui.DragEnds())
         {
-            _moveTo = gui.GetSquareUnderCursor(mousePos);
+            _moveTo = _gui.GetSquareUnderCursor(mousePos);
             return _moveTo != Square.None && _moveFrom != _moveTo;
         }
         return false;

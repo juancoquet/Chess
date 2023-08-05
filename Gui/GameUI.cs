@@ -116,5 +116,5 @@ public class GameUI
     private static C ColourFromPieceCode(int pieceCode) => (pieceCode & 0b1000) == 0 ? C.White : C.Black;
     private static PType PTypeFromPieceCode(int pieceCode) => (PType)(pieceCode & 0b111);
     public void EndDraw() => Raylib.EndDrawing();
-    public bool Quit() => Raylib.IsKeyDown(KeyboardKey.KEY_Q);
+    public bool Quit() => Raylib.IsKeyDown(KeyboardKey.KEY_Q) || Raylib.WindowShouldClose();
 }
