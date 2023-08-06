@@ -63,6 +63,23 @@ public class ChessBoard
         public Square EnPassantTarget     { get; init; }
         public ICastleRights CastleRights { get; init; }
     }
+
+    public bool IsValidMove(Move move)
+    {
+        var pieceCodeFrom = Squares[(int)move.From];
+        var colourFrom = ColourFromPieceCode(pieceCodeFrom);
+        // TODO: check colour matches turn
+        var pTypeFrom = PTypeFromPieceCode(pieceCodeFrom);
+        if (pTypeFrom == PType.None) return false;
+        var pieceCodeTo = Squares[(int)move.To];
+        var colourTo = ColourFromPieceCode(pieceCodeTo);
+        var pTypeTo = PTypeFromPieceCode(pieceCodeTo);
+        if (colourFrom == colourTo && pTypeTo != PType.None) return false; // TODO: check castling
+        return true;
+    }
+
+    private static C ColourFromPieceCode(int pieceCode) => (pieceCode & 0b1000) == 0 ? C.White : C.Black;
+    private static PType PTypeFromPieceCode(int pieceCode) => (PType)(pieceCode & 0b111);
 }
 
 public class Piece

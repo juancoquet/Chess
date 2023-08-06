@@ -63,58 +63,87 @@ public class BitBoard
             RookAttacks(colour) | QueenAttacks(colour) | KingAttacks(colour);
     }
 
-    private ulong WPawnSinglePushTargets() => NortOne(this[C.White, PType.WPawn]) & Empty;
-    private ulong WPawnDoublePushTargets() => NortOne(WPawnSinglePushTargets()) & Empty & (ulong)Ranks.R4;
     private ulong WPawnsAbleToSinglePush() => SoutOne(Empty) & this[C.White, PType.WPawn];
     private ulong WPawnsAbleToDoublePush()
     {
         var emptyR3SquaresWithEmptyR4SquaresAhead = SoutOne(Empty & (ulong)Ranks.R4) & Empty;
         return SoutOne(emptyR3SquaresWithEmptyR4SquaresAhead) & this[C.White, PType.WPawn];
     }
-    private ulong WPawnAttacks() => NoEaOne(this[C.White, PType.WPawn]) | noWeOne(this[C.White, PType.WPawn]);
-
-    private ulong BPawnSinglePushTargets() => SoutOne(this[C.Black, PType.BPawn]) & Empty;
-    private ulong BPawnDoublePushTargets() => SoutOne(BPawnSinglePushTargets()) & Empty & (ulong)Ranks.R5;
     private ulong BPawnsAbleToSinglePush() => NortOne(Empty) & this[C.Black, PType.BPawn];
     private ulong BPawnsAbleToDoublePush()
     {
         var emptyR6SquaresWithEmptyR5SquaresAhead = NortOne(Empty & (ulong)Ranks.R5) & Empty;
         return NortOne(emptyR6SquaresWithEmptyR5SquaresAhead) & this[C.Black, PType.BPawn];
     }
-    private ulong BPawnAttacks() => SoEaOne(this[C.Black, PType.BPawn]) | SoWeOne(this[C.Black, PType.BPawn]);
 
-    private ulong KnightAttacks(C colour)
+    private ulong WPawnSinglePushTargets(ulong? bitBoard = null)
     {
-        var knight = this[colour, PType.Knight];
+        var wPawn = bitBoard ?? this[C.White, PType.WPawn];
+        return NortOne(wPawn) & Empty;
+    }
+
+    private ulong WPawnDoublePushTargets(ulong? bitBoard = null)
+    {
+        var wPawn = bitBoard ?? this[C.White, PType.WPawn];
+        return NortOne(WPawnSinglePushTargets(wPawn)) & Empty & (ulong)Ranks.R4;
+    }
+
+    private ulong WPawnAttacks(ulong? bitBoard = null)
+    {
+        var wPawn = bitBoard ?? this[C.White, PType.WPawn];
+        return NoEaOne(wPawn) | noWeOne(wPawn);
+    }
+
+    private ulong BPawnSinglePushTargets(ulong? bitBoard = null)
+    {
+        var bPawn = bitBoard ?? this[C.Black, PType.BPawn];
+        return SoutOne(bPawn) & Empty;
+    }
+
+    private ulong BPawnDoublePushTargets(ulong? bitBoard = null)
+    {
+        var bPawn = bitBoard ?? this[C.Black, PType.BPawn];
+        return SoutOne(BPawnSinglePushTargets(bPawn)) & Empty & (ulong)Ranks.R5;
+    }
+
+    private ulong BPawnAttacks(ulong? bitBoard = null)
+    {
+        var bPawn = bitBoard ?? this[C.Black, PType.BPawn];
+        return SoEaOne(bPawn) | SoWeOne(bPawn);
+    }
+
+    private ulong KnightAttacks(C colour, ulong? bitBoard = null)
+    {
+        var knight = bitBoard ?? this[colour, PType.Knight];
         return NoNoEa(knight) | NoEaEa(knight) | SoEaEa(knight) | SoSoEa(knight) |
             SoSoWe(knight) | SoWeWe(knight) | NoWeWe(knight) | NoNoWe(knight);
     }
 
-    private ulong KingAttacks(C colour)
+    private ulong KingAttacks(C colour, ulong? bitBoard = null)
     {
-        var king = this[colour, PType.King];
+        var king = bitBoard ?? this[colour, PType.King];
         var laterals = EastOne(king) | WestOne(king);
         var threeSqMask = laterals | king;
         return NortOne(threeSqMask) | SoutOne(threeSqMask) | laterals;
     }
 
-    private ulong RookAttacks(C colour)
+    private ulong RookAttacks(C colour, ulong? bitBoard = null)
     {
-        var rook = this[colour, PType.Rook];
+        var rook = bitBoard ?? this[colour, PType.Rook];
         return RayAttacks(rook, NortOne) | RayAttacks(rook, SoutOne) |
             RayAttacks(rook, EastOne) | RayAttacks(rook, WestOne);
     }
 
-    private ulong BishopAttacks(C colour)
+    private ulong BishopAttacks(C colour, ulong? bitBoard = null)
     {
-        var bishop = this[colour, PType.Bishop];
+        var bishop = bitBoard ?? this[colour, PType.Bishop];
         return RayAttacks(bishop, NoEaOne) | RayAttacks(bishop, SoEaOne) |
             RayAttacks(bishop, SoWeOne) | RayAttacks(bishop, noWeOne);
     }
 
-    private ulong QueenAttacks(C colour)
+    private ulong QueenAttacks(C colour, ulong? bitBoard = null)
     {
-        var queen = this[colour, PType.Queen];
+        var queen = bitBoard ?? this[colour, PType.Queen];
         return RayAttacks(queen, NortOne) | RayAttacks(queen, SoutOne) |
             RayAttacks(queen, EastOne) | RayAttacks(queen, WestOne) |
             RayAttacks(queen, NoEaOne) | RayAttacks(queen, SoEaOne) |

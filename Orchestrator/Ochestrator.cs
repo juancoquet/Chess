@@ -23,7 +23,7 @@ class GameOrchestrator
         while (!_gui.Quit())
         {
             _gui.DrawBoard();
-            _gui.DrawGameState(board);
+            _gui.DrawGameState(board.Squares);
             if (PlayerHasMoved())
             {
                 var proposedMove = new Move()
@@ -31,15 +31,11 @@ class GameOrchestrator
                     From = _moveFrom,
                     To = _moveTo
                 };
-                // move validation to happen in board class
-                // var pieceCode = boardSquares[(int)_fromSquare];
-                // var ptype = PTypeFromPieceCode(pieceCode); // likely move this function to board
-                // var colour = ColourFromPieceCode(pieceCode); // likely move this function to baard
-                // if (ptype == PType.None) return boardSquares;
-                // boardSquares[(int)_fromSquare] = 0;
-                // boardSquares[(int)toSquare] = pieceCode;
-                Console.Write("\r" + new string(' ', Console.WindowWidth));
-                Console.WriteLine($"\r{proposedMove.From} to {proposedMove.To}");
+                if (board.IsValidMove(proposedMove))
+                {
+                    Console.Write("\r" + new string(' ', Console.WindowWidth));
+                    Console.WriteLine($"\r{proposedMove.From} to {proposedMove.To}");
+                }
             }
             _gui.EndDraw();
             if (!ProcessInput(50)) { break; }

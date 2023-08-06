@@ -49,11 +49,11 @@ public class GameUI
         }
     }
 
-    public void DrawGameState(ChessBoard board)
+    public void DrawGameState(int[] piecesArray)
     {
         for (var i = 0; i < 64; i++)
         {
-            var piece = board.Squares[i];
+            var piece = piecesArray[i];
             if (piece == 0) // empty square
                 continue;
             DrawPiece(piece, (Square)i);
@@ -113,8 +113,6 @@ public class GameUI
     public Vector2 MousePosition() => Raylib.GetMousePosition();
     public bool DragBegins() => Raylib.IsMouseButtonPressed(MouseButton.MOUSE_BUTTON_LEFT);
     public bool DragEnds() => Raylib.IsMouseButtonReleased(MouseButton.MOUSE_BUTTON_LEFT);
-    private static C ColourFromPieceCode(int pieceCode) => (pieceCode & 0b1000) == 0 ? C.White : C.Black;
-    private static PType PTypeFromPieceCode(int pieceCode) => (PType)(pieceCode & 0b111);
     public void EndDraw() => Raylib.EndDrawing();
     public bool Quit() => Raylib.IsKeyDown(KeyboardKey.KEY_Q) || Raylib.WindowShouldClose();
 }
