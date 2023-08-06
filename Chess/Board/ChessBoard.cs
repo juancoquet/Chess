@@ -44,7 +44,7 @@ public class ChessBoard
         _history.Add(new BoardState()
         {
             BitBoard = BitBoard,
-            Squares = Squares,
+            SquaresOccupants = Squares,
             Turn = Turn,
             MoveNumber = MoveNumber,
             HalfMoveClock = HalfMoveClock,
@@ -56,7 +56,7 @@ public class ChessBoard
     internal record BoardState
     {
         public BitBoard BitBoard          { get; init; }
-        public int[] Squares              { get; init; }
+        public int[] SquaresOccupants     { get; init; }  // 64 piece codes
         public C Turn                     { get; init; }
         public int MoveNumber             { get; init; }
         public int HalfMoveClock          { get; init; }
@@ -66,15 +66,14 @@ public class ChessBoard
 
     public bool IsValidMove(Move move)
     {
-        var pieceCodeFrom = Squares[(int)move.From];
-        var colourFrom = ColourFromPieceCode(pieceCodeFrom);
         // TODO: check colour matches turn
-        var pTypeFrom = PTypeFromPieceCode(pieceCodeFrom);
-        if (pTypeFrom == PType.None) return false;
+        // what defines a pseudo legal move?
+        var pieceCodeFrom = Squares[(int)move.From];
+        var pieceFrom = Piece.FromPieceCode(pieceCodeFrom);
+        if (pieceFrom.Type == PType.None) return false;
         var pieceCodeTo = Squares[(int)move.To];
-        var colourTo = ColourFromPieceCode(pieceCodeTo);
-        var pTypeTo = PTypeFromPieceCode(pieceCodeTo);
-        if (colourFrom == colourTo && pTypeTo != PType.None) return false; // TODO: check castling
+        var pieceTo = Piece.FromPieceCode(pieceCodeTo);
+        if (pieceFrom.Colour == pieceTo.Colour && pieceTo.Type != PType.None) return false; // TODO: check castling
         return true;
     }
 
@@ -93,6 +92,8 @@ public class Piece
         Colour = colour;
         Type = pieceType;
     }
+
+    public static Piece FromPieceCode(int pieceCode) => new Piece((C)(pieceCode >> 3), (PType)(pieceCode & 0b111));
 
     public static Piece None() => new Piece(C.White, PType.None);
 

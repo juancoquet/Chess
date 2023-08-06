@@ -10,10 +10,26 @@ namespace Chess.Board;
 /// </summary>
 public class BitBoard
 {
-    private Dictionary<int, ulong> _bitBoards { get; set; } = new Dictionary<int, ulong>();
+    private Dictionary<int, ulong> _bitBoards { get; set; }
+    private Dictionary<int, Func<C, ulong?, ulong>> _pCodeMoveFunctionMap;
 
     public ulong Occupied => this[C.White] | this[C.Black];
     public ulong Empty => ~Occupied;
+
+    public BitBoard()
+    {
+        _bitBoards = new Dictionary<int, ulong>();
+        _pCodeMoveFunctionMap = new Dictionary<int, Func<C, ulong?, ulong>>()
+        {
+            [(int)PType.WPawn]  = PawnPossibleMoves,
+            [(int)PType.BPawn]  = PawnPossibleMoves,
+            [(int)PType.Knight] = KnightAttacks,
+            [(int)PType.Bishop] = BishopAttacks,
+            [(int)PType.Rook]   = RookAttacks,
+            [(int)PType.Queen]  = QueenAttacks,
+            [(int)PType.King]   = KingAttacks
+        };
+    }
 
     public static BitBoard FromDictionary(Dictionary<int, ulong> bitBoards)
     {
@@ -55,6 +71,12 @@ public class BitBoard
     }
 
     internal bool SquareIsAttackedBy(Square square, C colour) => (Attacks(colour) & square.BitMask()) != 0;
+
+    // public bool MoveValidForPieceType(Move move, Piece pieceFrom)
+    // {
+    //     var bitBoard = this[pieceFrom.Colour, pieceFrom.Type] & move.From.BitMask();
+    //     return false;
+    // }
 
     private ulong Attacks(C colour)
     {
@@ -110,6 +132,25 @@ public class BitBoard
     {
         var bPawn = bitBoard ?? this[C.Black, PType.BPawn];
         return SoEaOne(bPawn) | SoWeOne(bPawn);
+    }
+
+    private ulong PawnPushTargets(C colour, ulong? bitBoard = null)
+    {
+        var pawn = bitBoard ?? this[colour, colour == C.White ? PType.WPawn : PType.BPawn];
+        return (colour == C.White ? WPawnSinglePushTargets(pawn) : BPawnSinglePushTargets(pawn))
+            |  (colour == C.White ? WPawnDoublePushTargets(pawn) : BPawnDoublePushTargets(pawn));
+    }
+
+    private ulong PawnAttacks(C colour, ulong? bitBoard = null)
+    {
+        var pawn = bitBoard ?? this[colour, colour == C.White ? PType.WPawn : PType.BPawn];
+        return colour == C.White ? WPawnAttacks(pawn) : BPawnAttacks(pawn);
+    }
+
+    private ulong PawnPossibleMoves(C colour, ulong? bitBoard = null)
+    {
+        var pawn = bitBoard ?? this[colour, colour == C.White ? PType.WPawn : PType.BPawn];
+        return PawnAttacks(colour, pawn) | PawnPushTargets(colour, pawn);
     }
 
     private ulong KnightAttacks(C colour, ulong? bitBoard = null)
