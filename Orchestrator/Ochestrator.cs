@@ -23,7 +23,7 @@ class GameOrchestrator
         while (!_gui.Quit())
         {
             _gui.DrawBoard();
-            _gui.DrawGameState(board.Squares);
+            _gui.DrawGameState(board.SquaresOccupants);
             if (PlayerHasMoved())
             {
                 var proposedMove = new Move()
@@ -33,6 +33,7 @@ class GameOrchestrator
                 };
                 if (board.IsValidMove(proposedMove))
                 {
+                    board.MakeMove(proposedMove);
                     Console.Write("\r" + new string(' ', Console.WindowWidth));
                     Console.WriteLine($"\r{proposedMove.From} to {proposedMove.To}");
                 }

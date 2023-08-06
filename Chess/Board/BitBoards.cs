@@ -1,4 +1,5 @@
 using Chess.Generics;
+using ConsoleExtensions;
 
 namespace Chess.Board;
 
@@ -70,13 +71,28 @@ public class BitBoard
         }
     }
 
+    public void MakeMove(Move move, Piece pieceFrom, Piece pieceTo)
+    {
+        this[pieceFrom.Colour, pieceFrom.Type] ^= move.From.BitMask();
+        this[pieceFrom.Colour, pieceFrom.Type] |= move.To.BitMask();
+        if (pieceTo.Type != PType.None)
+        {
+            this[pieceTo.Colour, pieceTo.Type] = this[pieceTo.Colour, pieceTo.Type] ^= move.To.BitMask();
+        }
+    }
+
     internal bool SquareIsAttackedBy(Square square, C colour) => (Attacks(colour) & square.BitMask()) != 0;
 
-    // public bool MoveValidForPieceType(Move move, Piece pieceFrom)
-    // {
-    //     var bitBoard = this[pieceFrom.Colour, pieceFrom.Type] & move.From.BitMask();
-    //     return false;
-    // }
+    public bool IsValidMoveForPiece(Move move, Piece pieceFrom)
+    {
+        if ((this[pieceFrom.Colour, pieceFrom.Type] & move.From.BitMask()) == 0)
+        {
+            throw new ArgumentException($"{pieceFrom} not on 'From' square {move.From}");
+        }
+        var bitBoard = this[pieceFrom.Colour, pieceFrom.Type] & move.From.BitMask();
+        var moveFunc = _pCodeMoveFunctionMap[(int)pieceFrom.Type];
+        return (moveFunc(pieceFrom.Colour, bitBoard) & move.To.BitMask()) != 0;
+    }
 
     private ulong Attacks(C colour)
     {
@@ -150,7 +166,7 @@ public class BitBoard
     private ulong PawnPossibleMoves(C colour, ulong? bitBoard = null)
     {
         var pawn = bitBoard ?? this[colour, colour == C.White ? PType.WPawn : PType.BPawn];
-        return PawnAttacks(colour, pawn) | PawnPushTargets(colour, pawn);
+        return (PawnAttacks(colour, pawn) & this[colour.Opposite()]) | PawnPushTargets(colour, pawn);
     }
 
     private ulong KnightAttacks(C colour, ulong? bitBoard = null)

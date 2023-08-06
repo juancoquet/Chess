@@ -6,7 +6,7 @@ namespace Chess.Board;
 public class ChessBoard
 {
     public BitBoard BitBoard          { get; set; }
-    public int[] Squares              { get; set; }
+    public int[] SquaresOccupants     { get; set; }  // 64 piece codes
     public C Turn                     { get; set; }
     public int MoveNumber             { get; set; }
     public int HalfMoveClock          { get; set; }
@@ -44,7 +44,7 @@ public class ChessBoard
         _history.Add(new BoardState()
         {
             BitBoard = BitBoard,
-            SquaresOccupants = Squares,
+            SquaresOccupants = SquaresOccupants,
             Turn = Turn,
             MoveNumber = MoveNumber,
             HalfMoveClock = HalfMoveClock,
@@ -67,16 +67,23 @@ public class ChessBoard
     public bool IsValidMove(Move move)
     {
         // TODO: check colour matches turn
-        // what defines a pseudo legal move?
-        var pieceCodeFrom = Squares[(int)move.From];
-        var pieceFrom = Piece.FromPieceCode(pieceCodeFrom);
+        var pieceFrom = PieceAt(move.From);
         if (pieceFrom.Type == PType.None) return false;
-        var pieceCodeTo = Squares[(int)move.To];
-        var pieceTo = Piece.FromPieceCode(pieceCodeTo);
+        var pieceTo = PieceAt(move.To);
         if (pieceFrom.Colour == pieceTo.Colour && pieceTo.Type != PType.None) return false; // TODO: check castling
-        return true;
+        return BitBoard.IsValidMoveForPiece(move, pieceFrom);
     }
 
+    public void MakeMove(Move move)
+    {
+        var pieceFrom = PieceAt(move.From);
+        var pieceTo = PieceAt(move.To);  // WARN: must extract before overwriting
+        SquaresOccupants[(int)move.From] = Piece.None().PieceCode;
+        SquaresOccupants[(int)move.To] = pieceFrom.PieceCode;
+        BitBoard.MakeMove(move, pieceFrom, pieceTo);
+    }
+
+    private Piece PieceAt(Square square) => Piece.FromPieceCode(SquaresOccupants[(int)square]);
     private static C ColourFromPieceCode(int pieceCode) => (pieceCode & 0b1000) == 0 ? C.White : C.Black;
     private static PType PTypeFromPieceCode(int pieceCode) => (PType)(pieceCode & 0b111);
 }
@@ -108,6 +115,8 @@ public class Piece
         Type == other.Type;
 
     public override int GetHashCode() => HashCode.Combine(Colour, Type);
+
+    public override string ToString() => $"{Colour} {Type}";
 }
 
 public record Move

@@ -44,7 +44,7 @@ public class FenParser
         return new ChessBoard()
         {
             BitBoard = bitBoard,
-            Squares = pieceArr,
+            SquaresOccupants = pieceArr,
             Turn = turn,
             MoveNumber = moveNumber,
             HalfMoveClock = halfMoveClock,
