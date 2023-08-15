@@ -211,11 +211,6 @@ public class BitBoard
         DirectionOneStep(Dumb7Fill(bitBoard, DirectionOneStep));
 
     private ulong Dumb7Fill(ulong bitBoard, Func<ulong, ulong> directionOneStep) =>
-        // TODO: test this
-        // i don't think i actually need to include wrap exclusions; the direction funcs should handle
-        // var inclusionSet = Empty & ~(ulong)boundaryWrapExclusion;
-        // return Enumerable.Range(0, 7)
-        //     .Aggregate(bitBoard, (current, _) => (inclusionSet & directionOneStep(current)) | current);
         Enumerable.Range(0, 7)
             .Aggregate(bitBoard, (current, _) => (Empty & directionOneStep(current)) | current);
 

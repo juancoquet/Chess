@@ -66,9 +66,8 @@ public class ChessBoard
 
     public bool IsValidMove(Move move)
     {
-        // TODO: check colour matches turn
         var pieceFrom = PieceAt(move.From);
-        if (pieceFrom.Type == PType.None) return false;
+        if (pieceFrom.Type == PType.None || pieceFrom.Colour != Turn) return false;
         var pieceTo = PieceAt(move.To);
         if (pieceFrom.Colour == pieceTo.Colour && pieceTo.Type != PType.None) return false; // TODO: check castling
         return BitBoard.IsValidMoveForPiece(move, pieceFrom);
@@ -76,11 +75,13 @@ public class ChessBoard
 
     public void MakeMove(Move move)
     {
+        RecordState();
         var pieceFrom = PieceAt(move.From);
-        var pieceTo = PieceAt(move.To);  // WARN: must extract before overwriting
+        var pieceTo = PieceAt(move.To);  // WARN: must capture in variable before overwriting
         SquaresOccupants[(int)move.From] = Piece.None().PieceCode;
         SquaresOccupants[(int)move.To] = pieceFrom.PieceCode;
         BitBoard.MakeMove(move, pieceFrom, pieceTo);
+        Turn = Turn.Opposite();
     }
 
     private Piece PieceAt(Square square) => Piece.FromPieceCode(SquaresOccupants[(int)square]);
