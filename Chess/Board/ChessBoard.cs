@@ -6,8 +6,8 @@ namespace Chess.Board;
 public class ChessBoard
 {
     public BitBoard BitBoard          { get; set; }
-    public int[] Squares            { get; set; }
-    public C Turn                { get; set; }
+    public int[] SquaresOccupants     { get; set; }  // 64 piece codes
+    public C Turn                     { get; set; }
     public int MoveNumber             { get; set; }
     public int HalfMoveClock          { get; set; }
     public Square EnPassantTarget     { get; set; }
@@ -44,7 +44,7 @@ public class ChessBoard
         _history.Add(new BoardState()
         {
             BitBoard = BitBoard,
-            Squares = Squares,
+            SquaresOccupants = SquaresOccupants,
             Turn = Turn,
             MoveNumber = MoveNumber,
             HalfMoveClock = HalfMoveClock,
@@ -56,13 +56,37 @@ public class ChessBoard
     internal record BoardState
     {
         public BitBoard BitBoard          { get; init; }
-        public int[] Squares            { get; init; }
-        public C Turn                { get; init; }
+        public int[] SquaresOccupants     { get; init; }  // 64 piece codes
+        public C Turn                     { get; init; }
         public int MoveNumber             { get; init; }
         public int HalfMoveClock          { get; init; }
         public Square EnPassantTarget     { get; init; }
         public ICastleRights CastleRights { get; init; }
     }
+
+    public bool IsValidMove(Move move)
+    {
+        var pieceFrom = PieceAt(move.From);
+        if (pieceFrom.Type == PType.None || pieceFrom.Colour != Turn) return false;
+        var pieceTo = PieceAt(move.To);
+        if (pieceFrom.Colour == pieceTo.Colour && pieceTo.Type != PType.None) return false; // TODO: check castling
+        return BitBoard.IsValidMoveForPiece(move, pieceFrom);
+    }
+
+    public void MakeMove(Move move)
+    {
+        RecordState();
+        var pieceFrom = PieceAt(move.From);
+        var pieceTo = PieceAt(move.To);  // WARN: must capture in variable before overwriting
+        SquaresOccupants[(int)move.From] = Piece.None().PieceCode;
+        SquaresOccupants[(int)move.To] = pieceFrom.PieceCode;
+        BitBoard.MakeMove(move, pieceFrom, pieceTo);
+        Turn = Turn.Opposite();
+    }
+
+    private Piece PieceAt(Square square) => Piece.FromPieceCode(SquaresOccupants[(int)square]);
+    private static C ColourFromPieceCode(int pieceCode) => (pieceCode & 0b1000) == 0 ? C.White : C.Black;
+    private static PType PTypeFromPieceCode(int pieceCode) => (PType)(pieceCode & 0b111);
 }
 
 public class Piece
@@ -77,6 +101,8 @@ public class Piece
         Type = pieceType;
     }
 
+    public static Piece FromPieceCode(int pieceCode) => new Piece((C)(pieceCode >> 3), (PType)(pieceCode & 0b111));
+
     public static Piece None() => new Piece(C.White, PType.None);
 
     public bool Is(C colour, PType pieceType) => Colour == colour && Type == pieceType;
@@ -90,4 +116,12 @@ public class Piece
         Type == other.Type;
 
     public override int GetHashCode() => HashCode.Combine(Colour, Type);
+
+    public override string ToString() => $"{Colour} {Type}";
+}
+
+public record Move
+{
+    public Square From { get; init; }
+    public Square To { get; init; }
 }

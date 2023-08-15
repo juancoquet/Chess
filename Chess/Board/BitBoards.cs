@@ -1,4 +1,5 @@
 using Chess.Generics;
+using ConsoleExtensions;
 
 namespace Chess.Board;
 
@@ -10,10 +11,26 @@ namespace Chess.Board;
 /// </summary>
 public class BitBoard
 {
-    private Dictionary<int, ulong> _bitBoards { get; set; } = new Dictionary<int, ulong>();
+    private Dictionary<int, ulong> _bitBoards { get; set; }
+    private Dictionary<int, Func<C, ulong?, ulong>> _pCodeMoveFunctionMap;
 
     public ulong Occupied => this[C.White] | this[C.Black];
     public ulong Empty => ~Occupied;
+
+    public BitBoard()
+    {
+        _bitBoards = new Dictionary<int, ulong>();
+        _pCodeMoveFunctionMap = new Dictionary<int, Func<C, ulong?, ulong>>()
+        {
+            [(int)PType.WPawn]  = PawnPossibleMoves,
+            [(int)PType.BPawn]  = PawnPossibleMoves,
+            [(int)PType.Knight] = KnightAttacks,
+            [(int)PType.Bishop] = BishopAttacks,
+            [(int)PType.Rook]   = RookAttacks,
+            [(int)PType.Queen]  = QueenAttacks,
+            [(int)PType.King]   = KingAttacks
+        };
+    }
 
     public static BitBoard FromDictionary(Dictionary<int, ulong> bitBoards)
     {
@@ -54,7 +71,28 @@ public class BitBoard
         }
     }
 
+    public void MakeMove(Move move, Piece pieceFrom, Piece pieceTo)
+    {
+        this[pieceFrom.Colour, pieceFrom.Type] ^= move.From.BitMask();
+        this[pieceFrom.Colour, pieceFrom.Type] |= move.To.BitMask();
+        if (pieceTo.Type != PType.None)
+        {
+            this[pieceTo.Colour, pieceTo.Type] = this[pieceTo.Colour, pieceTo.Type] ^= move.To.BitMask();
+        }
+    }
+
     internal bool SquareIsAttackedBy(Square square, C colour) => (Attacks(colour) & square.BitMask()) != 0;
+
+    public bool IsValidMoveForPiece(Move move, Piece pieceFrom)
+    {
+        if ((this[pieceFrom.Colour, pieceFrom.Type] & move.From.BitMask()) == 0)
+        {
+            throw new ArgumentException($"{pieceFrom} not on 'From' square {move.From}");
+        }
+        var bitBoard = this[pieceFrom.Colour, pieceFrom.Type] & move.From.BitMask();
+        var moveFunc = _pCodeMoveFunctionMap[(int)pieceFrom.Type];
+        return (moveFunc(pieceFrom.Colour, bitBoard) & move.To.BitMask()) != 0;
+    }
 
     private ulong Attacks(C colour)
     {
@@ -63,58 +101,106 @@ public class BitBoard
             RookAttacks(colour) | QueenAttacks(colour) | KingAttacks(colour);
     }
 
-    private ulong WPawnSinglePushTargets() => NortOne(this[C.White, PType.WPawn]) & Empty;
-    private ulong WPawnDoublePushTargets() => NortOne(WPawnSinglePushTargets()) & Empty & (ulong)Ranks.R4;
     private ulong WPawnsAbleToSinglePush() => SoutOne(Empty) & this[C.White, PType.WPawn];
     private ulong WPawnsAbleToDoublePush()
     {
         var emptyR3SquaresWithEmptyR4SquaresAhead = SoutOne(Empty & (ulong)Ranks.R4) & Empty;
         return SoutOne(emptyR3SquaresWithEmptyR4SquaresAhead) & this[C.White, PType.WPawn];
     }
-    private ulong WPawnAttacks() => NoEaOne(this[C.White, PType.WPawn]) | noWeOne(this[C.White, PType.WPawn]);
-
-    private ulong BPawnSinglePushTargets() => SoutOne(this[C.Black, PType.BPawn]) & Empty;
-    private ulong BPawnDoublePushTargets() => SoutOne(BPawnSinglePushTargets()) & Empty & (ulong)Ranks.R5;
     private ulong BPawnsAbleToSinglePush() => NortOne(Empty) & this[C.Black, PType.BPawn];
     private ulong BPawnsAbleToDoublePush()
     {
         var emptyR6SquaresWithEmptyR5SquaresAhead = NortOne(Empty & (ulong)Ranks.R5) & Empty;
         return NortOne(emptyR6SquaresWithEmptyR5SquaresAhead) & this[C.Black, PType.BPawn];
     }
-    private ulong BPawnAttacks() => SoEaOne(this[C.Black, PType.BPawn]) | SoWeOne(this[C.Black, PType.BPawn]);
 
-    private ulong KnightAttacks(C colour)
+    private ulong WPawnSinglePushTargets(ulong? bitBoard = null)
     {
-        var knight = this[colour, PType.Knight];
+        var wPawn = bitBoard ?? this[C.White, PType.WPawn];
+        return NortOne(wPawn) & Empty;
+    }
+
+    private ulong WPawnDoublePushTargets(ulong? bitBoard = null)
+    {
+        var wPawn = bitBoard ?? this[C.White, PType.WPawn];
+        return NortOne(WPawnSinglePushTargets(wPawn)) & Empty & (ulong)Ranks.R4;
+    }
+
+    private ulong WPawnAttacks(ulong? bitBoard = null)
+    {
+        var wPawn = bitBoard ?? this[C.White, PType.WPawn];
+        return NoEaOne(wPawn) | noWeOne(wPawn);
+    }
+
+    private ulong BPawnSinglePushTargets(ulong? bitBoard = null)
+    {
+        var bPawn = bitBoard ?? this[C.Black, PType.BPawn];
+        return SoutOne(bPawn) & Empty;
+    }
+
+    private ulong BPawnDoublePushTargets(ulong? bitBoard = null)
+    {
+        var bPawn = bitBoard ?? this[C.Black, PType.BPawn];
+        return SoutOne(BPawnSinglePushTargets(bPawn)) & Empty & (ulong)Ranks.R5;
+    }
+
+    private ulong BPawnAttacks(ulong? bitBoard = null)
+    {
+        var bPawn = bitBoard ?? this[C.Black, PType.BPawn];
+        return SoEaOne(bPawn) | SoWeOne(bPawn);
+    }
+
+    private ulong PawnPushTargets(C colour, ulong? bitBoard = null)
+    {
+        var pawn = bitBoard ?? this[colour, colour == C.White ? PType.WPawn : PType.BPawn];
+        return (colour == C.White ? WPawnSinglePushTargets(pawn) : BPawnSinglePushTargets(pawn))
+            |  (colour == C.White ? WPawnDoublePushTargets(pawn) : BPawnDoublePushTargets(pawn));
+    }
+
+    private ulong PawnAttacks(C colour, ulong? bitBoard = null)
+    {
+        var pawn = bitBoard ?? this[colour, colour == C.White ? PType.WPawn : PType.BPawn];
+        return colour == C.White ? WPawnAttacks(pawn) : BPawnAttacks(pawn);
+    }
+
+    private ulong PawnPossibleMoves(C colour, ulong? bitBoard = null)
+    {
+        var pawn = bitBoard ?? this[colour, colour == C.White ? PType.WPawn : PType.BPawn];
+        return (PawnAttacks(colour, pawn) & this[colour.Opposite()]) | PawnPushTargets(colour, pawn);
+    }
+
+    private ulong KnightAttacks(C colour, ulong? bitBoard = null)
+    {
+        var knight = bitBoard ?? this[colour, PType.Knight];
         return NoNoEa(knight) | NoEaEa(knight) | SoEaEa(knight) | SoSoEa(knight) |
             SoSoWe(knight) | SoWeWe(knight) | NoWeWe(knight) | NoNoWe(knight);
     }
 
-    private ulong KingAttacks(C colour)
+    private ulong KingAttacks(C colour, ulong? bitBoard = null)
     {
-        var king = this[colour, PType.King];
+        var king = bitBoard ?? this[colour, PType.King];
         var laterals = EastOne(king) | WestOne(king);
         var threeSqMask = laterals | king;
         return NortOne(threeSqMask) | SoutOne(threeSqMask) | laterals;
     }
 
-    private ulong RookAttacks(C colour)
+    private ulong RookAttacks(C colour, ulong? bitBoard = null)
     {
-        var rook = this[colour, PType.Rook];
+        var rook = bitBoard ?? this[colour, PType.Rook];
         return RayAttacks(rook, NortOne) | RayAttacks(rook, SoutOne) |
             RayAttacks(rook, EastOne) | RayAttacks(rook, WestOne);
     }
 
-    private ulong BishopAttacks(C colour)
+    private ulong BishopAttacks(C colour, ulong? bitBoard = null)
     {
-        var bishop = this[colour, PType.Bishop];
+        var bishop = bitBoard ?? this[colour, PType.Bishop];
         return RayAttacks(bishop, NoEaOne) | RayAttacks(bishop, SoEaOne) |
             RayAttacks(bishop, SoWeOne) | RayAttacks(bishop, noWeOne);
     }
 
-    private ulong QueenAttacks(C colour)
+    private ulong QueenAttacks(C colour, ulong? bitBoard = null)
     {
-        var queen = this[colour, PType.Queen];
+        var queen = bitBoard ?? this[colour, PType.Queen];
         return RayAttacks(queen, NortOne) | RayAttacks(queen, SoutOne) |
             RayAttacks(queen, EastOne) | RayAttacks(queen, WestOne) |
             RayAttacks(queen, NoEaOne) | RayAttacks(queen, SoEaOne) |
@@ -125,11 +211,6 @@ public class BitBoard
         DirectionOneStep(Dumb7Fill(bitBoard, DirectionOneStep));
 
     private ulong Dumb7Fill(ulong bitBoard, Func<ulong, ulong> directionOneStep) =>
-        // TODO: test this
-        // i don't think i actually need to include wrap exclusions; the direction funcs should handle
-        // var inclusionSet = Empty & ~(ulong)boundaryWrapExclusion;
-        // return Enumerable.Range(0, 7)
-        //     .Aggregate(bitBoard, (current, _) => (inclusionSet & directionOneStep(current)) | current);
         Enumerable.Range(0, 7)
             .Aggregate(bitBoard, (current, _) => (Empty & directionOneStep(current)) | current);
 

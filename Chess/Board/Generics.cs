@@ -7,6 +7,11 @@ public enum C : byte
     Black = 1
 }
 
+public static class CExtensions
+{
+    public static C Opposite(this C color) => color == C.White ? C.Black : C.White;
+}
+
 [Flags]
 public enum PType : byte
 {
