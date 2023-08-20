@@ -25,6 +25,9 @@ public class ChessBoardTests
         _board.IsValidMove(new Move() { From = Square.C2, To = Square.C3 }).Should().BeTrue();
         _board.IsValidMove(new Move() { From = Square.C2, To = Square.C5 }).Should().BeFalse();
         _board.IsValidMove(new Move() { From = Square.D5, To = Square.F4 }).Should().BeTrue();
+        _board.IsValidMove(new Move() { From = Square.G7, To = Square.G8 }).Should().BeFalse();
+        _board.IsValidMove(new Move() { From = Square.D3, To = Square.D2 }).Should().BeFalse();
+        _board.IsValidMove(new Move() { From = Square.D3, To = Square.E4 }).Should().BeFalse();
     }
 
     [Fact]
