@@ -246,6 +246,22 @@ public class BitBoardTests
         board.SquareIsAttackedBy(Square.G2, C.Black).Should().BeTrue();
     }
 
+    [Fact]
+    public void TestCheck()
+    {
+        var board = CreateOtherwiseEmptyBoard(Q: new[] { Square.D5 }, K: new[] { Square.A1 }, k: new[] { Square.F5 });
+        board.IsInCheck(C.Black).Should().BeTrue();
+        board.IsInCheck(C.White).Should().BeFalse();
+
+        var board2 = CreateOtherwiseEmptyBoard(p: new[] { Square.D4 }, K: new[] { Square.C3 }, k: new[] { Square.H8 });
+        board2.IsInCheck(C.White).Should().BeTrue();
+        board2.IsInCheck(C.Black).Should().BeFalse();
+
+        var board3 = CreateOtherwiseEmptyBoard(N: new[] { Square.C3 }, k: new[] { Square.D5 }, K: new[] { Square.A1 });
+        board3.IsInCheck(C.Black).Should().BeTrue();
+        board3.IsInCheck(C.White).Should().BeFalse();
+    }
+
     private static BitBoard CreateOtherwiseEmptyBoard(
         Square[] p = null,
         Square[] P = null,

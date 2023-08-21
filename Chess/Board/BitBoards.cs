@@ -81,8 +81,6 @@ public class BitBoard
         }
     }
 
-    internal bool SquareIsAttackedBy(Square square, C colour) => (Attacks(colour) & square.BitMask()) != 0;
-
     public bool IsValidMoveForPiece(Move move, Piece pieceFrom)
     {
         if ((this[pieceFrom.Colour, pieceFrom.Type] & move.From.BitMask()) == 0)
@@ -93,6 +91,14 @@ public class BitBoard
         var moveFunc = _pCodeMoveFunctionMap[(int)pieceFrom.Type];
         return (moveFunc(pieceFrom.Colour, bitBoard) & move.To.BitMask()) != 0;
     }
+
+    public bool IsInCheck(C colour)
+    {
+        var kingBitMask = this[colour, PType.King];
+        var kingSquare = (Square)(int)Math.Log2(kingBitMask);
+        return SquareIsAttackedBy(kingSquare, colour.Opposite());
+    }
+    internal bool SquareIsAttackedBy(Square square, C colour) => (Attacks(colour) & square.BitMask()) != 0;
 
     private ulong Attacks(C colour)
     {
