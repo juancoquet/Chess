@@ -57,4 +57,18 @@ public class ChessBoardTests
         _board.IsValidMove(new Move() { From = Square.F6, To = Square.D5 }).Should().BeTrue();
         _board.IsValidMove(new Move() { From = Square.C4, To = Square.D3 }).Should().BeTrue();
     }
+
+    [Fact]
+    public void MoveThatLeavesSelfInCheckIllegal()
+    {
+        var board = ChessBoard.FromFen("7k/7r/8/8/8/8/7Q/7K w -- - 23 12");
+        board.IsValidMove(new Move() { From = Square.H2, To = Square.A2 }).Should().BeFalse();
+        board.IsValidMove(new Move() { From = Square.H2, To = Square.H3 }).Should().BeTrue();
+        board.Turn = C.Black;
+        board.IsValidMove(new Move() { From = Square.H7, To = Square.A7 }).Should().BeFalse();
+        board.IsValidMove(new Move() { From = Square.H7, To = Square.H6 }).Should().BeTrue();
+        var board2 = ChessBoard.FromFen("7k/8/6P1/8/8/8/8/7K b -- - 23 12");
+        board2.IsValidMove(new Move() { From = Square.H8, To = Square.H7 }).Should().BeFalse();
+        board2.IsValidMove(new Move() { From = Square.H8, To = Square.G7 }).Should().BeTrue();
+    }
 }

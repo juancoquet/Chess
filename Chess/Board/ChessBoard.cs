@@ -70,7 +70,8 @@ public class ChessBoard
         if (pieceFrom.Type == PType.None || pieceFrom.Colour != Turn) return false;
         var pieceTo = PieceAt(move.To);
         if (pieceFrom.Colour == pieceTo.Colour && pieceTo.Type != PType.None) return false; // TODO: check castling
-        return BitBoard.IsValidMoveForPiece(move, pieceFrom);
+        var hypotheticalState = BitBoard.HypotheticalMove(move, pieceFrom, pieceTo);
+        return BitBoard.IsValidMoveForPiece(move, pieceFrom) && !hypotheticalState.IsInCheck(Turn);
     }
 
     public void MakeMove(Move move)

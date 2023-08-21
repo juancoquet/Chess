@@ -18,7 +18,8 @@ class GameOrchestrator
     public void Run()
     {
         Terminal.WriteLine("starting chess engine...");
-        var board = ChessBoard.FromStartPosition();
+        // var board = ChessBoard.FromStartPosition();
+        var board = ChessBoard.FromFen("7k/8/6P1/8/8/8/8/7K b -- - 23 12");
 
         while (!_gui.Quit())
         {

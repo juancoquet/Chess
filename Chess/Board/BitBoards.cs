@@ -81,6 +81,14 @@ public class BitBoard
         }
     }
 
+    public BitBoard HypotheticalMove(Move move, Piece pieceFrom, Piece pieceTo)
+    {
+        var hypotheticalState = new BitBoard();
+        hypotheticalState._bitBoards = new Dictionary<int, ulong>(_bitBoards);
+        hypotheticalState.MakeMove(move, pieceFrom, pieceTo);
+        return hypotheticalState;
+    }
+
     public bool IsValidMoveForPiece(Move move, Piece pieceFrom)
     {
         if ((this[pieceFrom.Colour, pieceFrom.Type] & move.From.BitMask()) == 0)
